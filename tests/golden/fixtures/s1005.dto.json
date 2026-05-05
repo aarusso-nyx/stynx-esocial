@@ -1,0 +1,10 @@
+{
+  "eventClass": "S-1005",
+  "tenantId": "00000000-0000-0000-0000-000000000100",
+  "sourceEventId": "source-s1005-batch1",
+  "sourceEntityId": "00000000-0000-4000-8000-000000000005",
+  "employerCnpj": "12345678000199",
+  "validityStart": "2026-01",
+  "establishmentRegistrationNumber": "12345678000199",
+  "cnaePreponderante": "8411600"
+}

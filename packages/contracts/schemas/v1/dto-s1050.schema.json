@@ -42,19 +42,48 @@
         "exclusion"
       ]
     },
-    "round1Pending": {
-      "const": true
+    "employerCnpj": {
+      "type": "string",
+      "minLength": 1
     },
-    "deferredReason": {
-      "const": "builder_not_promoted_in_round0"
+    "validityStart": {
+      "type": "string",
+      "minLength": 1
+    },
+    "validityEnd": {
+      "type": "string",
+      "minLength": 1
+    },
+    "workScheduleCode": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "dailyHours": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "number"
+        }
+      ]
     }
   },
   "required": [
     "eventClass",
     "tenantId",
     "sourceEventId",
-    "round1Pending",
-    "deferredReason"
+    "sourceEntityId",
+    "employerCnpj",
+    "validityStart",
+    "workScheduleCode",
+    "description",
+    "dailyHours"
   ],
   "not": {
     "anyOf": [

@@ -24,14 +24,10 @@ import { ES04Service } from './builders/es04.service';
 import { ES05Controller } from './builders/es05.controller';
 import { ES05Service } from './builders/es05.service';
 import { S1000Builder } from './builders/s1000.builder';
-import { S1005Builder } from './builders/s1005.builder';
 import { S1010Builder } from './builders/s1010.builder';
-import { S1020Builder } from './builders/s1020.builder';
 import { S1030Builder } from './builders/s1030.builder';
 import { S1040Builder } from './builders/s1040.builder';
 import { S1060Builder } from './builders/s1060.builder';
-import { S1050Builder } from './builders/s1050.builder';
-import { S1070Builder } from './builders/s1070.builder';
 import { S1200Builder } from './builders/s1200.builder';
 import { S1202Builder } from './builders/s1202.builder';
 import { S1207Builder } from './builders/s1207.builder';
@@ -122,14 +118,10 @@ const ESOCIAL_QUEUE_TRANSPORT = 'ESOCIAL_QUEUE_TRANSPORT';
     ES04Service,
     ES05Service,
     S1000Builder,
-    S1005Builder,
     S1010Builder,
-    S1020Builder,
     S1030Builder,
     S1040Builder,
     S1060Builder,
-    S1050Builder,
-    S1070Builder,
     S1200Builder,
     S1202Builder,
     S1207Builder,

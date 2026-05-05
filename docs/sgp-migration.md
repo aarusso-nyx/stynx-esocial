@@ -19,8 +19,9 @@ service internals, SQL files, handlers, or domain modules into SGP.
 
 For every event class listed in `docs/events.md`, SGP sends a v1 request
 envelope to `sgp.esocial.submit.request`. Round 0 implements the five families
-below end to end; the other exported event classes remain typed Round 1 pending
-DTOs with `round1Pending: true`.
+below end to end; Round 1 Batch 1 adds the unblocked table families
+`S-1005`, `S-1020`, `S-1050`, and `S-1070`. The other exported event classes
+remain typed Round 1 pending DTOs with `round1Pending: true`.
 
 Required SGP-sourced fields:
 
@@ -40,12 +41,16 @@ Use `buildEsocialIdempotencyKey()` from `@esocial/contracts` before enqueueing.
 The same tenant, environment, event class, source identity, competence, and
 payload hash must produce the same key.
 
-Round 0 DTO map:
+Active DTO map:
 
 | Event | SGP builder inputs | Evidence fixture |
 | --- | --- | --- |
 | `S-1000` | Employer CNPJ, validity start, legal name, tax classification, optional cooperation/construction/payroll-exemption indicators. | `docs/release/0.1.0/input-dtos/s1000.dto.json` |
+| `S-1005` | Employer CNPJ, validity start, opaque establishment source id, establishment registration number, optional CNAE preponderante. | `packages/contracts/examples/v1/requests/S-1005.request.json` |
 | `S-1010` | Employer CNPJ, validity start, rubric code/table id, description, type, nature, incidence codes, optional ceiling data. | `docs/release/0.1.0/input-dtos/s1010.dto.json` |
+| `S-1020` | Employer CNPJ, validity start, opaque lotation source id, lotation code, optional lotation type, FPAS, and third-party code. | `packages/contracts/examples/v1/requests/S-1020.request.json` |
+| `S-1050` | Employer CNPJ, validity start, opaque schedule source id, schedule code, description, daily hours. | `packages/contracts/examples/v1/requests/S-1050.request.json` |
+| `S-1070` | Employer CNPJ, validity start, opaque process source id, process number, subject, optional process type and matter indicator. | `packages/contracts/examples/v1/requests/S-1070.request.json` |
 | `S-1200` | Employer CNPJ, competence, payroll run id, worker remuneration entries, rubrics, lotation and establishment references. | `docs/release/0.1.0/input-dtos/s1200.dto.json` |
 | `S-1299` | Employer CNPJ, competence, payroll run id, accepted periodic event counts, pending periodic event list, closure metadata. | `docs/release/0.1.0/input-dtos/s1299.dto.json` |
 | `S-2200` | Employer CNPJ, employee id, CPF, registration, admission date, category, contract and personal source identifiers. | `docs/release/0.1.0/input-dtos/s2200.dto.json` |

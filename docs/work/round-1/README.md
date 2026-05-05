@@ -51,6 +51,7 @@ release**.
 | --- | --- | --- |
 | 0 | [`prompts/00-round-0-fixups.md`](prompts/00-round-0-fixups.md) | Blocking. Closes round-0 structural gaps before any promotion. |
 | 1 | [`prompts/01-remaining-tables.md`](prompts/01-remaining-tables.md) | Tables. Promotes the unblocked subset; documents leiaute deferrals. |
+| 1B | [`prompts/01b-blocked-table-events.md`](prompts/01b-blocked-table-events.md) | Follow-on for S-1030, S-1040, and S-1060 after leiaute owner decision. |
 | 2 | [`prompts/02-remaining-periodic.md`](prompts/02-remaining-periodic.md) | Periodic. After Batch 1 (S-1207 ↔ S-2410 dependency noted). |
 | 3 | [`prompts/03-worker-sst-tsv.md`](prompts/03-worker-sst-tsv.md) | Worker / SST / TS-V. Largest batch; can split by SST vs. TS-V. |
 | 4 | [`prompts/04-benefits-process-exclusion.md`](prompts/04-benefits-process-exclusion.md) | Benefits / process / exclusion. S-3000 and S-2501 carry extra cases. |

@@ -302,6 +302,51 @@ function dtoForEvent(eventClass) {
     };
   }
 
+  if (eventClass === 'S-1005') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      validityStart: '2026-05',
+      establishmentRegistrationNumber: '12345678000199',
+      cnaePreponderante: '8411600',
+    };
+  }
+
+  if (eventClass === 'S-1020') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      validityStart: '2026-05',
+      lotationCode: 'LOT01',
+      lotationTypeCode: '01',
+      fpasCode: '582',
+      thirdPartyCode: '0000',
+    };
+  }
+
+  if (eventClass === 'S-1050') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      validityStart: '2026-05',
+      workScheduleCode: 'JORN01',
+      description: 'Jornada padrao',
+      dailyHours: '8.00',
+    };
+  }
+
+  if (eventClass === 'S-1070') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      validityStart: '2026-05',
+      processNumber: '12345678901234567',
+      subject: 'Processo administrativo',
+      processType: '1',
+      matterIndicator: '1',
+    };
+  }
+
   if (eventClass === 'S-1200') {
     return {
       ...common,
@@ -505,7 +550,8 @@ function kindFor(eventClass) {
 }
 
 function competenceFor(eventClass) {
-  return eventClass.startsWith('S-12') ||
+  return ['S-1000', 'S-1005', 'S-1010', 'S-1020', 'S-1050', 'S-1070'].includes(eventClass) ||
+    eventClass.startsWith('S-12') ||
     eventClass.startsWith('S-50') ||
     eventClass === 'S-1298' ||
     eventClass === 'S-1299'

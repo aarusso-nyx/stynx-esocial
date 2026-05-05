@@ -3,7 +3,7 @@
   "family": "request",
   "request-id": "req-request-S-1020",
   "correlation-id": "corr-S-1020",
-  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-1020:source-event-S-1020:source-entity-S-1020:-:-:sha256%3A08c28657b1e40a012d26bb1a2c76fb7fb54de817ae6ac5c82451d30fde9b4c45:-:-",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-1020:source-event-S-1020:source-entity-S-1020:-:2026-05:sha256%3A6775558b629cada8353987ddf763a9a889336676820648a1d674806e2d9dde74:-:-",
   "created_at": "2026-05-05T12:00:00.000Z",
   "tenant_id": "tenant-a",
   "environment": "QUALIFICATION",
@@ -11,10 +11,11 @@
   "source": {
     "source_event_id": "source-event-S-1020",
     "source_entity_id": "source-entity-S-1020",
+    "payroll_run_id": "payroll-2026-05",
     "source_system": "SGP"
   },
   "kind": "tabelas",
-  "payload_hash": "sha256:08c28657b1e40a012d26bb1a2c76fb7fb54de817ae6ac5c82451d30fde9b4c45",
+  "payload_hash": "sha256:6775558b629cada8353987ddf763a9a889336676820648a1d674806e2d9dde74",
   "attempt": 1,
   "max-attempts": 3,
   "reply-to": "sgp.esocial.submit.response",
@@ -25,7 +26,11 @@
     "sourceEventId": "source-event-S-1020",
     "sourceEntityId": "source-entity-S-1020",
     "environment": "qualification",
-    "round1Pending": true,
-    "deferredReason": "builder_not_promoted_in_round0"
+    "employerCnpj": "12345678000199",
+    "validityStart": "2026-05",
+    "lotationCode": "LOT01",
+    "lotationTypeCode": "01",
+    "fpasCode": "582",
+    "thirdPartyCode": "0000"
   }
 }

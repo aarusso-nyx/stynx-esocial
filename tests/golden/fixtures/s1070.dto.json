@@ -1,0 +1,12 @@
+{
+  "eventClass": "S-1070",
+  "tenantId": "00000000-0000-0000-0000-000000000100",
+  "sourceEventId": "source-s1070-batch1",
+  "sourceEntityId": "00000000-0000-4000-8000-000000000070",
+  "employerCnpj": "12345678000199",
+  "validityStart": "2026-01",
+  "processNumber": "12345678901234567",
+  "subject": "Processo administrativo",
+  "processType": "1",
+  "matterIndicator": "1"
+}

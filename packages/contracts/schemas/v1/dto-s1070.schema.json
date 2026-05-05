@@ -42,19 +42,44 @@
         "exclusion"
       ]
     },
-    "round1Pending": {
-      "const": true
+    "employerCnpj": {
+      "type": "string",
+      "minLength": 1
     },
-    "deferredReason": {
-      "const": "builder_not_promoted_in_round0"
+    "validityStart": {
+      "type": "string",
+      "minLength": 1
+    },
+    "validityEnd": {
+      "type": "string",
+      "minLength": 1
+    },
+    "processNumber": {
+      "type": "string",
+      "minLength": 1
+    },
+    "subject": {
+      "type": "string",
+      "minLength": 1
+    },
+    "processType": {
+      "type": "string",
+      "minLength": 1
+    },
+    "matterIndicator": {
+      "type": "string",
+      "minLength": 1
     }
   },
   "required": [
     "eventClass",
     "tenantId",
     "sourceEventId",
-    "round1Pending",
-    "deferredReason"
+    "sourceEntityId",
+    "employerCnpj",
+    "validityStart",
+    "processNumber",
+    "subject"
   ],
   "not": {
     "anyOf": [

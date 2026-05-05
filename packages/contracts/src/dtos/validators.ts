@@ -5,9 +5,14 @@ import type { EsocialDtoEnvironment } from './common.js';
 import type { EsocialRound0RequestDto } from './round0.js';
 import { ESOCIAL_ROUND0_DTO_EVENT_CLASSES } from './round1-pending.js';
 import type { EsocialRound1PendingDto } from './round1-pending.js';
+import {
+  ESOCIAL_PROMOTED_TABLE_DTO_EVENT_CLASSES,
+} from './tables.js';
+import type { EsocialPromotedTableDto } from './tables.js';
 
 export type EsocialSgpRequestDto =
   | EsocialRound0RequestDto
+  | EsocialPromotedTableDto
   | EsocialRound1PendingDto;
 
 export type EsocialRelayRequestPayload =
@@ -58,6 +63,10 @@ export function validateEsocialSgpRequestDto(
 
   if (includesString(ESOCIAL_ROUND0_DTO_EVENT_CLASSES, candidate.eventClass)) {
     validateRound0Dto(candidate, candidate.eventClass, errors);
+  } else if (
+    includesString(ESOCIAL_PROMOTED_TABLE_DTO_EVENT_CLASSES, candidate.eventClass)
+  ) {
+    validatePromotedTableDto(candidate, candidate.eventClass, errors);
   } else if (
     includesString(ESOCIAL_RELAY_EVENT_CLASSES, candidate.eventClass) &&
     candidate.round1Pending !== true
@@ -141,6 +150,41 @@ function validateRound0Dto(
       'contractType',
       'jobCode',
     ]);
+  }
+}
+
+function validatePromotedTableDto(
+  candidate: Record<string, unknown>,
+  eventClass: EsocialRelayEventClass,
+  errors: string[],
+): void {
+  requireStrings(candidate, errors, [
+    'sourceEntityId',
+    'employerCnpj',
+    'validityStart',
+  ]);
+
+  if (eventClass === 'S-1005') {
+    requireStrings(candidate, errors, ['establishmentRegistrationNumber']);
+  }
+
+  if (eventClass === 'S-1020') {
+    requireStrings(candidate, errors, ['lotationCode']);
+  }
+
+  if (eventClass === 'S-1050') {
+    requireStrings(candidate, errors, ['workScheduleCode', 'description']);
+    if (
+      candidate.dailyHours === undefined ||
+      candidate.dailyHours === null ||
+      candidate.dailyHours === ''
+    ) {
+      errors.push('dailyHours is required.');
+    }
+  }
+
+  if (eventClass === 'S-1070') {
+    requireStrings(candidate, errors, ['processNumber', 'subject']);
   }
 }
 

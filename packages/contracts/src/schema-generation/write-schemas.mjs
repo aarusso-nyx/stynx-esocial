@@ -10,7 +10,17 @@ const examplesDir = join(packageRoot, 'examples', 'v1', 'requests');
 const kinds = await import(new URL('../../dist/kinds.js', import.meta.url));
 const idempotency = await import(new URL('../../dist/idempotency.js', import.meta.url));
 
-const round0Events = new Set(['S-1000', 'S-1010', 'S-1200', 'S-1299', 'S-2200']);
+const promotedDtoEvents = new Set([
+  'S-1000',
+  'S-1005',
+  'S-1010',
+  'S-1020',
+  'S-1050',
+  'S-1070',
+  'S-1200',
+  'S-1299',
+  'S-2200',
+]);
 const eventClasses = [...kinds.ESOCIAL_RELAY_EVENT_CLASSES];
 const statuses = [...kinds.ESOCIAL_STATUSES];
 const errorCategories = [...kinds.ESOCIAL_ERROR_CATEGORIES];
@@ -119,8 +129,8 @@ const schemas = {
 
 for (const eventClass of eventClasses) {
   schemas[`dto-${schemaEventName(eventClass)}.schema.json`] =
-    round0Events.has(eventClass)
-      ? round0DtoSchema(eventClass)
+    promotedDtoEvents.has(eventClass)
+      ? activeDtoSchema(eventClass)
       : round1PendingDtoSchema(eventClass);
 }
 
@@ -218,7 +228,7 @@ function envelopeSchema(family, properties) {
   };
 }
 
-function round0DtoSchema(eventClass) {
+function activeDtoSchema(eventClass) {
   const byEvent = {
     'S-1000': {
       required: ['employerCnpj', 'validityStart', 'legalName', 'taxClassification'],
@@ -262,6 +272,71 @@ function round0DtoSchema(eventClass) {
         incomeTaxIncidence: nonEmptyString(),
         fgtsIncidence: nonEmptyString(),
         unionContributionIncidence: nonEmptyString(),
+      },
+    },
+    'S-1005': {
+      required: [
+        'sourceEntityId',
+        'employerCnpj',
+        'validityStart',
+        'establishmentRegistrationNumber',
+      ],
+      properties: {
+        employerCnpj: nonEmptyString(),
+        validityStart: nonEmptyString(),
+        validityEnd: nonEmptyString(),
+        establishmentRegistrationNumber: nonEmptyString(),
+        cnaePreponderante: nonEmptyString(),
+      },
+    },
+    'S-1020': {
+      required: ['sourceEntityId', 'employerCnpj', 'validityStart', 'lotationCode'],
+      properties: {
+        employerCnpj: nonEmptyString(),
+        validityStart: nonEmptyString(),
+        validityEnd: nonEmptyString(),
+        lotationCode: nonEmptyString(),
+        lotationTypeCode: nonEmptyString(),
+        fpasCode: nonEmptyString(),
+        thirdPartyCode: nonEmptyString(),
+      },
+    },
+    'S-1050': {
+      required: [
+        'sourceEntityId',
+        'employerCnpj',
+        'validityStart',
+        'workScheduleCode',
+        'description',
+        'dailyHours',
+      ],
+      properties: {
+        employerCnpj: nonEmptyString(),
+        validityStart: nonEmptyString(),
+        validityEnd: nonEmptyString(),
+        workScheduleCode: nonEmptyString(),
+        description: nonEmptyString(),
+        dailyHours: {
+          anyOf: [nonEmptyString(), { type: 'number' }],
+        },
+      },
+    },
+    'S-1070': {
+      required: [
+        'sourceEntityId',
+        'employerCnpj',
+        'validityStart',
+        'processNumber',
+        'subject',
+      ],
+      properties: {
+        employerCnpj: nonEmptyString(),
+        validityStart: nonEmptyString(),
+        validityEnd: nonEmptyString(),
+        processNumber: nonEmptyString(),
+        subject: nonEmptyString(),
+        processType: nonEmptyString(),
+        matterIndicator: nonEmptyString(),
       },
     },
     'S-1200': {
@@ -482,6 +557,51 @@ function dtoExample(eventClass) {
     };
   }
 
+  if (eventClass === 'S-1005') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      validityStart: '2026-05',
+      establishmentRegistrationNumber: '12345678000199',
+      cnaePreponderante: '8411600',
+    };
+  }
+
+  if (eventClass === 'S-1020') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      validityStart: '2026-05',
+      lotationCode: 'LOT01',
+      lotationTypeCode: '01',
+      fpasCode: '582',
+      thirdPartyCode: '0000',
+    };
+  }
+
+  if (eventClass === 'S-1050') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      validityStart: '2026-05',
+      workScheduleCode: 'JORN01',
+      description: 'Jornada padrao',
+      dailyHours: '8.00',
+    };
+  }
+
+  if (eventClass === 'S-1070') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      validityStart: '2026-05',
+      processNumber: '12345678901234567',
+      subject: 'Processo administrativo',
+      processType: '1',
+      matterIndicator: '1',
+    };
+  }
+
   if (eventClass === 'S-1200') {
     return {
       ...common,
@@ -639,7 +759,8 @@ function kindFor(eventClass) {
 }
 
 function competenceFor(eventClass) {
-  return eventClass.startsWith('S-12') ||
+  return ['S-1000', 'S-1005', 'S-1010', 'S-1020', 'S-1050', 'S-1070'].includes(eventClass) ||
+    eventClass.startsWith('S-12') ||
     eventClass.startsWith('S-50') ||
     eventClass === 'S-1298' ||
     eventClass === 'S-1299'

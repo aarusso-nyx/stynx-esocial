@@ -10,6 +10,7 @@ prompt (plus the assessment docs it references) and execute that batch.
 | --- | --- | --- | --- |
 | 00 | [`00-round-0-fixups.md`](00-round-0-fixups.md) | A (structural) | — |
 | 01 | [`01-remaining-tables.md`](01-remaining-tables.md) | B (promotion) | 00 |
+| 01B | [`01b-blocked-table-events.md`](01b-blocked-table-events.md) | B follow-on | 01 + leiaute owner decision |
 | 02 | [`02-remaining-periodic.md`](02-remaining-periodic.md) | B | 00, 01 |
 | 03 | [`03-worker-sst-tsv.md`](03-worker-sst-tsv.md) | B | 00 (S-2210 notes S-2298 dependency on benefit reactivation) |
 | 04 | [`04-benefits-process-exclusion.md`](04-benefits-process-exclusion.md) | B | 00 (S-2410 ↔ S-1207 from batch 02) |

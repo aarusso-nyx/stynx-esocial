@@ -42,19 +42,43 @@
         "exclusion"
       ]
     },
-    "round1Pending": {
-      "const": true
+    "employerCnpj": {
+      "type": "string",
+      "minLength": 1
     },
-    "deferredReason": {
-      "const": "builder_not_promoted_in_round0"
+    "validityStart": {
+      "type": "string",
+      "minLength": 1
+    },
+    "validityEnd": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lotationCode": {
+      "type": "string",
+      "minLength": 1
+    },
+    "lotationTypeCode": {
+      "type": "string",
+      "minLength": 1
+    },
+    "fpasCode": {
+      "type": "string",
+      "minLength": 1
+    },
+    "thirdPartyCode": {
+      "type": "string",
+      "minLength": 1
     }
   },
   "required": [
     "eventClass",
     "tenantId",
     "sourceEventId",
-    "round1Pending",
-    "deferredReason"
+    "sourceEntityId",
+    "employerCnpj",
+    "validityStart",
+    "lotationCode"
   ],
   "not": {
     "anyOf": [

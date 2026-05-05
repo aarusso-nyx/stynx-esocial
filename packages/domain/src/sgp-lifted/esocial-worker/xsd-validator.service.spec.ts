@@ -3,11 +3,7 @@ import { XsdValidatorService } from './xsd/xsd-validator.service';
 
 const BUILDER_XSD_REFERENCES: Record<string, string[]> = {
   'builders/s1000.builder.ts': ['evtInfoEmpregador.xsd'],
-  'builders/s1005.builder.ts': ['evtTabEstab.xsd'],
   'builders/s1010.builder.ts': ['evtTabRubrica.xsd'],
-  'builders/s1020.builder.ts': ['evtTabLotacao.xsd'],
-  'builders/s1050.builder.ts': ['evtTabJornada.xsd'],
-  'builders/s1070.builder.ts': ['evtTabProcesso.xsd'],
   'builders/s1200.builder.ts': ['evtRemun.xsd'],
   'builders/s1207.builder.ts': ['evtBenPrRP.xsd'],
   'builders/s1210.builder.ts': ['evtPgtos.xsd'],

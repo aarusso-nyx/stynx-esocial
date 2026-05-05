@@ -483,7 +483,7 @@ export function validateIngressIdempotencyKey(
     source_event_id: stringValue(source.source_event_id),
     source_entity_id: stringValue(source.source_entity_id),
     source_entity_ids: stringArray(source.source_entity_ids),
-    competence: stringValue(payload.competence),
+    competence: stringValue(payload.competence) ?? stringValue(payload.validityStart),
     payload_hash: request.payload_hash,
   });
 

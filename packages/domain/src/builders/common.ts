@@ -1,12 +1,25 @@
 import { createHash } from 'node:crypto';
 
 export type BuilderMetadata = Readonly<{
-  eventCode: 'S-1000' | 'S-1010' | 'S-1200' | 'S-1299' | 'S-2200';
+  eventCode:
+    | 'S-1000'
+    | 'S-1005'
+    | 'S-1010'
+    | 'S-1020'
+    | 'S-1050'
+    | 'S-1070'
+    | 'S-1200'
+    | 'S-1299'
+    | 'S-2200';
   leiauteVersion: 'S-1.3';
   xmlRoot: 'eSocial';
   eventElement:
     | 'evtInfoEmpregador'
+    | 'evtTabEstab'
     | 'evtTabRubrica'
+    | 'evtTabLotacao'
+    | 'evtTabJornada'
+    | 'evtTabProcesso'
     | 'evtRemun'
     | 'evtFechaEvPer'
     | 'evtAdmissao';

@@ -3,7 +3,11 @@ import type {
   EsocialRelayEventClass,
   EsocialRelayRequestPayload,
   S1000EmployerInfoDto,
+  S1005EstablishmentDto,
   S1010RubricDto,
+  S1020TaxLotationDto,
+  S1050WorkScheduleDto,
+  S1070ProcessDto,
   S1200RemunerationDto,
   S1299ClosureDto,
   S2200AdmissionDto,
@@ -11,7 +15,11 @@ import type {
 
 import {
   buildS1000,
+  buildS1005,
   buildS1010,
+  buildS1020,
+  buildS1050,
+  buildS1070,
   buildS1200,
   buildS1299,
   buildS2200,
@@ -65,9 +73,29 @@ const ROUND0_DISPATCHERS: Partial<Record<EsocialRelayEventClass, SubmissionDispa
         buildS1000(dto as S1000EmployerInfoDto, builderContext(context)),
         context,
       ),
+    'S-1005': (dto, context) =>
+      dispatchBuiltXml(
+        buildS1005(dto as S1005EstablishmentDto, builderContext(context)),
+        context,
+      ),
     'S-1010': (dto, context) =>
       dispatchBuiltXml(
         buildS1010(dto as S1010RubricDto, builderContext(context)),
+        context,
+      ),
+    'S-1020': (dto, context) =>
+      dispatchBuiltXml(
+        buildS1020(dto as S1020TaxLotationDto, builderContext(context)),
+        context,
+      ),
+    'S-1050': (dto, context) =>
+      dispatchBuiltXml(
+        buildS1050(dto as S1050WorkScheduleDto, builderContext(context)),
+        context,
+      ),
+    'S-1070': (dto, context) =>
+      dispatchBuiltXml(
+        buildS1070(dto as S1070ProcessDto, builderContext(context)),
         context,
       ),
     'S-1200': (dto, context) =>

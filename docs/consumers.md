@@ -92,20 +92,26 @@ opaque source identifiers only; it does not send XML, SOAP envelopes, PKCS#7
 material, or a `signedEnvelope`. The eSocial service builds XML, validates XSD,
 signs, submits, parses returns, and publishes status.
 
-Round 0 DTOs are implemented for:
+Active DTOs are implemented for:
 
 | Event | DTO purpose | Required source fields |
 | --- | --- | --- |
 | `S-1000` | Employer/contributor information | `tenantId`, `sourceEventId`, `employerCnpj`, `validityStart`, `legalName`, `taxClassification` |
+| `S-1005` | Establishment/workplace table | `tenantId`, `sourceEventId`, `sourceEntityId`, `employerCnpj`, `validityStart`, `establishmentRegistrationNumber` |
 | `S-1010` | Rubric table | `tenantId`, `sourceEventId`, `employerCnpj`, `validityStart`, `rubricCode`, `rubricTableId`, incidence codes |
+| `S-1020` | Tax lotation table | `tenantId`, `sourceEventId`, `sourceEntityId`, `employerCnpj`, `validityStart`, `lotationCode` |
+| `S-1050` | Work schedule table | `tenantId`, `sourceEventId`, `sourceEntityId`, `employerCnpj`, `validityStart`, `workScheduleCode`, `description`, `dailyHours` |
+| `S-1070` | Administrative/judicial process table | `tenantId`, `sourceEventId`, `sourceEntityId`, `employerCnpj`, `validityStart`, `processNumber`, `subject` |
 | `S-1200` | Worker remuneration | `tenantId`, `sourceEventId`, `employerCnpj`, `competence`, `payrollRunId`, `workers[]` |
 | `S-1299` | Periodic closure | `tenantId`, `sourceEventId`, `employerCnpj`, `competence`, `payrollRunId`, accepted/pending event summary |
 | `S-2200` | Admission/initial worker registration | `tenantId`, `sourceEventId`, `employerCnpj`, `employeeId`, `cpf`, `admissionDate`, registration/contract fields |
 
 All other exported event classes have `Round1Pending` DTO stubs so the v1 type
 surface covers the full 40-class taxonomy without pretending their builders
-landed in Round 0. Stub payloads carry `round1Pending: true` and
-`deferredReason: "builder_not_promoted_in_round0"`.
+landed. Stub payloads carry `round1Pending: true` and
+`deferredReason: "builder_not_promoted_in_round0"`. The table exceptions still
+pending after Round 1 Batch 1 are `S-1030`, `S-1040`, and `S-1060`; their
+leiaute/XSD blockers are tracked in `docs/work/round-1/leiaute-blockers.md`.
 
 DTO-level `environment`, when present, is one of `qualification`,
 `restricted_production`, or `production`. Envelope environment values remain the

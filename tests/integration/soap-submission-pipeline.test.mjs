@@ -10,7 +10,11 @@ import {
   DeterministicSandboxTransport,
   SubmissionProcessor,
   buildS1000,
+  buildS1005,
   buildS1010,
+  buildS1020,
+  buildS1050,
+  buildS1070,
   buildS1200,
   buildS1299,
   buildS2200,
@@ -29,13 +33,17 @@ const fixedNow = new Date('2026-05-05T12:00:00.000Z');
 
 const familySpecs = {
   'S-1000': { fixture: 's1000.dto.json', build: buildS1000, kind: 'tabelas' },
+  'S-1005': { fixture: 's1005.dto.json', build: buildS1005, kind: 'tabelas' },
   'S-1010': { fixture: 's1010.dto.json', build: buildS1010, kind: 'tabelas' },
+  'S-1020': { fixture: 's1020.dto.json', build: buildS1020, kind: 'tabelas' },
+  'S-1050': { fixture: 's1050.dto.json', build: buildS1050, kind: 'tabelas' },
+  'S-1070': { fixture: 's1070.dto.json', build: buildS1070, kind: 'tabelas' },
   'S-1200': { fixture: 's1200.dto.json', build: buildS1200, kind: 'folha' },
   'S-1299': { fixture: 's1299.dto.json', build: buildS1299, kind: 'fechamento' },
   'S-2200': { fixture: 's2200.dto.json', build: buildS2200, kind: 'trabalhador' },
 };
 
-test('round-0 DTO to SOAP pipeline persists sent status and deterministic hashes for all promoted families', async () => {
+test('promoted DTO to SOAP pipeline persists sent status and deterministic hashes for all active families', async () => {
   const suffix = randomUUID().replaceAll('-', '').slice(0, 12);
   const databaseName = `esocial_b4_${suffix}`;
   const databaseUrl = withDatabase(adminUrl, databaseName);
@@ -97,9 +105,10 @@ test('round-0 DTO to SOAP pipeline persists sent status and deterministic hashes
       assert.equal(result.spoolUpdate.status_transition.to, 'sent');
     }
 
-    assert.equal(queryScalar(workerUrl, 'SELECT count(*) FROM esocial.submission_batch;'), '5');
-    assert.equal(queryScalar(workerUrl, "SELECT count(*) FROM esocial.submission_batch WHERE status = 'SENT';"), '5');
-    assert.equal(queryScalar(workerUrl, "SELECT count(*) FROM esocial.event_record WHERE status = 'SENT';"), '5');
+    const expectedCount = String(Object.keys(familySpecs).length);
+    assert.equal(queryScalar(workerUrl, 'SELECT count(*) FROM esocial.submission_batch;'), expectedCount);
+    assert.equal(queryScalar(workerUrl, "SELECT count(*) FROM esocial.submission_batch WHERE status = 'SENT';"), expectedCount);
+    assert.equal(queryScalar(workerUrl, "SELECT count(*) FROM esocial.event_record WHERE status = 'SENT';"), expectedCount);
     assert.equal(
       queryScalar(
         workerUrl,
@@ -111,10 +120,10 @@ test('round-0 DTO to SOAP pipeline persists sent status and deterministic hashes
            AND soap_response_sha256 IS NOT NULL
            AND protocol_number LIKE 'LOCAL-%';`,
       ),
-      '5',
+      expectedCount,
     );
-    assert.equal(published.spool.length, 5);
-    assert.equal(published.response.length, 5);
+    assert.equal(published.spool.length, Object.keys(familySpecs).length);
+    assert.equal(published.response.length, Object.keys(familySpecs).length);
   } finally {
     if (repository) await repository.close();
     cleanup(databaseName, workerRole);

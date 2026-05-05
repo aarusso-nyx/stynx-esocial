@@ -1,6 +1,7 @@
 import type { EsocialRelayEventClass } from '../kinds.js';
 
 import type { EsocialSourceDtoBase } from './common.js';
+import type { EsocialPromotedTableDtoEventClass } from './tables.js';
 
 export const ESOCIAL_ROUND0_DTO_EVENT_CLASSES = [
   'S-1000',
@@ -15,7 +16,7 @@ export type EsocialRound0DtoEventClass =
 
 export type EsocialRound1PendingEventClass = Exclude<
   EsocialRelayEventClass,
-  EsocialRound0DtoEventClass
+  EsocialRound0DtoEventClass | EsocialPromotedTableDtoEventClass
 >;
 
 export type EsocialRound1PendingDto<

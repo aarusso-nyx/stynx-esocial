@@ -3,7 +3,7 @@
   "family": "request",
   "request-id": "req-request-S-1005",
   "correlation-id": "corr-S-1005",
-  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-1005:source-event-S-1005:source-entity-S-1005:-:-:sha256%3A795b6b90be55ca05989687bda042a94120e930aea053aeb1f88d1f4802c6bf4d:-:-",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-1005:source-event-S-1005:source-entity-S-1005:-:2026-05:sha256%3Ada60b8890bcbd63d0f3918f210d43c695d7f0243c9d9f68066b0d372da650531:-:-",
   "created_at": "2026-05-05T12:00:00.000Z",
   "tenant_id": "tenant-a",
   "environment": "QUALIFICATION",
@@ -11,10 +11,11 @@
   "source": {
     "source_event_id": "source-event-S-1005",
     "source_entity_id": "source-entity-S-1005",
+    "payroll_run_id": "payroll-2026-05",
     "source_system": "SGP"
   },
   "kind": "tabelas",
-  "payload_hash": "sha256:795b6b90be55ca05989687bda042a94120e930aea053aeb1f88d1f4802c6bf4d",
+  "payload_hash": "sha256:da60b8890bcbd63d0f3918f210d43c695d7f0243c9d9f68066b0d372da650531",
   "attempt": 1,
   "max-attempts": 3,
   "reply-to": "sgp.esocial.submit.response",
@@ -25,7 +26,9 @@
     "sourceEventId": "source-event-S-1005",
     "sourceEntityId": "source-entity-S-1005",
     "environment": "qualification",
-    "round1Pending": true,
-    "deferredReason": "builder_not_promoted_in_round0"
+    "employerCnpj": "12345678000199",
+    "validityStart": "2026-05",
+    "establishmentRegistrationNumber": "12345678000199",
+    "cnaePreponderante": "8411600"
   }
 }

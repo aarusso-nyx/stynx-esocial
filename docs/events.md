@@ -7,29 +7,24 @@ payload shape without walking source fixtures.
 
 ## Table Events
 
-Round 0 Wave B active builders live in `packages/domain/src/builders/<event>/`.
-They consume A3 DTOs from `@esocial/contracts`, produce unsigned XML for the
-signing/XSD/SOAP workers, and do not import or query SGP code. Earlier
-`xml/builders/*` entries remain compatibility evidence until B1 switches the
-dispatcher to the Round 0 entrypoints.
-
-Promoted table builders live in
-`packages/domain/src/xml/builders/tables/index.ts`. They accept normalized DTOs
-from the bus and never read SGP databases, SGP schemas, or SGP modules. The
-lifted `sgp-lifted` builder files remain migration evidence only when the
-family has not yet been promoted.
+Active builders live in `packages/domain/src/builders/<event>/`. They consume
+DTOs from `@esocial/contracts`, produce unsigned XML for the signing/XSD/SOAP
+workers, and do not import or query SGP code. Shared table XML helpers live in
+`packages/domain/src/xml/builders/tables/index.ts`; the lifted `sgp-lifted`
+builder files remain migration evidence only when the family has not yet been
+promoted.
 
 | Event | Purpose | Production implementation | Status | XML example |
 | --- | --- | --- | --- | --- |
 | S-1000 | Employer/contributor information | `builders/s1000/builder.ts` | Promoted in Round 0 Wave B | `templates/golden/builders/s1000.golden.xml` |
-| S-1005 | Establishment/workplace table | `xml/builders/tables` | Promoted in Phase 5 | `templates/golden/builders/s1005.golden.xml` |
+| S-1005 | Establishment/workplace table | `builders/s1005/builder.ts` | Promoted in Round 1 Batch 1 | `templates/golden/builders/s1005.golden.xml` |
 | S-1010 | Rubric table | `builders/s1010/builder.ts` | Promoted in Round 0 Wave B | `templates/golden/builders/s1010.golden.xml` |
-| S-1020 | Tax lotation table | `xml/builders/tables` | Promoted in Phase 5 | `templates/golden/builders/s1020.golden.xml` |
+| S-1020 | Tax lotation table | `builders/s1020/builder.ts` | Promoted in Round 1 Batch 1 | `templates/golden/builders/s1020.golden.xml` |
 | S-1030 | Job/cargo table | `builders/s1030.builder.ts` | Deferred: lifted golden exists, but no active XSD binding is present in `packages/domain/src/sgp-lifted/esocial-worker/xsd/` | `templates/golden/builders/s1030.golden.xml` |
 | S-1040 | Function table | `builders/s1040.builder.ts` | Deferred: lifted golden exists, but no active XSD binding is present in `packages/domain/src/sgp-lifted/esocial-worker/xsd/` | `templates/golden/builders/s1040.golden.xml` |
-| S-1050 | Work schedule table | `xml/builders/tables` | Promoted in Phase 5 | `templates/golden/builders/s1050.golden.xml` |
+| S-1050 | Work schedule table | `builders/s1050/builder.ts` | Promoted in Round 1 Batch 1 | `templates/golden/builders/s1050.golden.xml` |
 | S-1060 | Work environment table | `builders/s1060.builder.ts` | Deferred: lifted golden uses legacy `evtTabAmbiente/v02_05_00`, and no active XSD binding is present in the current bundle | `templates/golden/builders/s1060.golden.xml` |
-| S-1070 | Administrative/judicial process table | `xml/builders/tables` | Promoted in Phase 5 | `templates/golden/builders/s1070.golden.xml` |
+| S-1070 | Administrative/judicial process table | `builders/s1070/builder.ts` | Promoted in Round 1 Batch 1 | `templates/golden/builders/s1070.golden.xml` |
 
 ### Promoted Table DTOs
 
@@ -41,23 +36,21 @@ Common DTO fields for every promoted table event:
 | `tenantId` | Yes | Opaque eSocial tenant identifier from the ingress contract. |
 | `sourceEntityId` | Yes | Opaque SGP source entity id. The eSocial service does not dereference it. |
 | `sourceEventId` | No | Opaque producer event id used for traceability when present. |
-| `competence` | Yes | Table validity start in `YYYY-MM` format. |
-| `operation` | No | Currently `inclusao`; alteration/exclusion DTOs are a follow-up contract decision. |
-| `environment` | No | eSocial environment code; defaults to `2` for qualification/sandbox. |
-| `processEmitter` | No | eSocial `procEmi`; defaults to `1`. |
-| `processVersion` | No | eSocial `verProc`; defaults to the lifted golden value `SGP-0.0.1` until Phase 10 product-version finalization. |
-| `eventId` | No | Optional precomputed eSocial `Id`; otherwise derived deterministically from `eventClass`, `tenantId`, and `sourceEntityId`. |
+| `sourceEventId` | Yes | Opaque producer event id used for traceability and idempotency. |
+| `validityStart` | Yes | Table validity start in `YYYY-MM` format. |
+| `employerCnpj` | Yes | Employer registration used to fill `ideEmpregador`; eSocial stores it as DTO data, not as an SGP relation. |
+| `environment` | No | DTO environment: `qualification`, `restricted_production`, or `production`. |
 
 Event-specific DTO fields:
 
 | Event | DTO branch | Required event-specific fields |
 | --- | --- | --- |
-| S-1000 | `employer` | `registrationNumber`; optional `classTrib`, `cooperativeIndicator`, `constructionIndicator`, `payrollExemptionIndicator`, `electronicRecordOption`. |
-| S-1005 | `establishment` | `registrationNumber`, `employerRegistrationNumber`; optional `cnaePreponderante`. |
-| S-1010 | `rubric` | `code`, `description`, `type`, `employerRegistrationNumber`; optional `tableId`, `natureCode`, `incidences`, `remunerationCeiling`. |
-| S-1020 | `taxLotation` | `code`, `employerRegistrationNumber`; optional `typeCode`, `fpasCode`, `thirdPartyCode`. |
-| S-1050 | `workSchedule` | `code`, `description`, `dailyHours`, `employerRegistrationNumber`. |
-| S-1070 | `process` | `processNumber`, `subject`, `employerRegistrationNumber`; optional `processType`, `matterIndicator`. |
+| S-1000 | `S1000EmployerInfoDto` | `legalName`, `taxClassification`; optional cooperation/construction/payroll-exemption indicators. |
+| S-1005 | `S1005EstablishmentDto` | `establishmentRegistrationNumber`; optional `cnaePreponderante`. |
+| S-1010 | `S1010RubricDto` | `rubricCode`, `rubricTableId`, `description`, `rubricType`, `natureCode`, and incidence codes. |
+| S-1020 | `S1020TaxLotationDto` | `lotationCode`; optional `lotationTypeCode`, `fpasCode`, `thirdPartyCode`. |
+| S-1050 | `S1050WorkScheduleDto` | `workScheduleCode`, `description`, `dailyHours`. |
+| S-1070 | `S1070ProcessDto` | `processNumber`, `subject`; optional `processType`, `matterIndicator`. |
 
 ### Promoted Table Metadata
 
@@ -156,7 +149,11 @@ submission, and status persistence are owned by the adjacent Wave B workers.
 | Event | DTO type | Active builder | Event element | XSD binding | Dependencies |
 | --- | --- | --- | --- | --- | --- |
 | S-1000 | `S1000EmployerInfoDto` | `packages/domain/src/builders/s1000/builder.ts` | `evtInfoEmpregador` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtInfoEmpregador.xsd` | None |
+| S-1005 | `S1005EstablishmentDto` | `packages/domain/src/builders/s1005/builder.ts` | `evtTabEstab` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabEstab.xsd` | S-1000 |
 | S-1010 | `S1010RubricDto` | `packages/domain/src/builders/s1010/builder.ts` | `evtTabRubrica` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabRubrica.xsd` | S-1000 |
+| S-1020 | `S1020TaxLotationDto` | `packages/domain/src/builders/s1020/builder.ts` | `evtTabLotacao` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabLotacao.xsd` | S-1000 |
+| S-1050 | `S1050WorkScheduleDto` | `packages/domain/src/builders/s1050/builder.ts` | `evtTabJornada` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabJornada.xsd` | S-1000 |
+| S-1070 | `S1070ProcessDto` | `packages/domain/src/builders/s1070/builder.ts` | `evtTabProcesso` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabProcesso.xsd` | S-1000 |
 | S-1200 | `S1200RemunerationDto` | `packages/domain/src/builders/s1200/builder.ts` | `evtRemun` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtRemun.xsd` | S-1000, S-1005, S-1010, S-1020 |
 | S-1299 | `S1299ClosureDto` | `packages/domain/src/builders/s1299/builder.ts` | `evtFechaEvPer` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtFechaEvPer.xsd` | S-1000; receipts from S-1200, S-1202, S-1207, S-1210 |
 | S-2200 | `S2200AdmissionDto` | `packages/domain/src/builders/s2200/builder.ts` | `evtAdmissao` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtAdmissao.xsd` | S-1000, S-1030, S-1050 |

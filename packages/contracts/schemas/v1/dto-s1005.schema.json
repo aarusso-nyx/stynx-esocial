@@ -42,19 +42,35 @@
         "exclusion"
       ]
     },
-    "round1Pending": {
-      "const": true
+    "employerCnpj": {
+      "type": "string",
+      "minLength": 1
     },
-    "deferredReason": {
-      "const": "builder_not_promoted_in_round0"
+    "validityStart": {
+      "type": "string",
+      "minLength": 1
+    },
+    "validityEnd": {
+      "type": "string",
+      "minLength": 1
+    },
+    "establishmentRegistrationNumber": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cnaePreponderante": {
+      "type": "string",
+      "minLength": 1
     }
   },
   "required": [
     "eventClass",
     "tenantId",
     "sourceEventId",
-    "round1Pending",
-    "deferredReason"
+    "sourceEntityId",
+    "employerCnpj",
+    "validityStart",
+    "establishmentRegistrationNumber"
   ],
   "not": {
     "anyOf": [
