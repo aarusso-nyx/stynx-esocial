@@ -1,40 +1,32 @@
 {
   "version": "v1",
   "family": "request",
-  "request-id": "00000000-0000-4000-8000-000000020029",
-  "correlation-id": "00000000-0000-4000-8000-000000030029",
-  "idempotency-key": "esocial:v1:request:00000000-0000-4000-8000-000000009029:QUALIFICATION:S-2405:00000000-0000-4000-8000-000000010029:source-s-2405-29:-:2026-05:sha256%3A92a61e75a583be25af58caf182d410428a15436ddd3f5696dc4d7b769f1f561a:-:-",
+  "request-id": "req-request-S-2405",
+  "correlation-id": "corr-S-2405",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-2405:source-event-S-2405:source-entity-S-2405:-:-:sha256%3A22a8a8758a370604724a4264b5b5f273efe6d98b2bd2c7c664c664e32b945f4b:-:-",
   "created_at": "2026-05-05T12:00:00.000Z",
-  "tenant_id": "00000000-0000-4000-8000-000000009029",
+  "tenant_id": "tenant-a",
   "environment": "QUALIFICATION",
   "event_class": "S-2405",
   "source": {
-    "source_event_id": "00000000-0000-4000-8000-000000010029",
-    "source_entity_id": "source-s-2405-29",
-    "payroll_run_id": "payroll-2026-05-29",
+    "source_event_id": "source-event-S-2405",
+    "source_entity_id": "source-entity-S-2405",
+    "employee_id": "employee-1",
     "source_system": "SGP"
   },
   "kind": "submit",
-  "payload_hash": "sha256:92a61e75a583be25af58caf182d410428a15436ddd3f5696dc4d7b769f1f561a",
+  "payload_hash": "sha256:22a8a8758a370604724a4264b5b5f273efe6d98b2bd2c7c664c664e32b945f4b",
   "attempt": 1,
   "max-attempts": 3,
   "reply-to": "sgp.esocial.submit.response",
   "dead-letter-topic": "sgp.esocial.dlq",
   "payload": {
-    "batchId": "00000000-0000-4000-8000-000000040029",
-    "environment": "QUALIFICATION",
-    "endpointUrl": "https://sandbox.esocial.example.test/submit",
-    "eventIds": [
-      "00000000-0000-4000-8000-000000050029"
-    ],
     "eventClass": "S-2405",
-    "signedEnvelope": {
-      "tenantId": "00000000-0000-4000-8000-000000009029",
-      "eventKind": "S-2405",
-      "payloadXml": "<eSocial />",
-      "payloadSha256": "sha256:92a61e75a583be25af58caf182d410428a15436ddd3f5696dc4d7b769f1f561a",
-      "pkcs7Sha256": "sha256:863809e55698cc5fbd8398ed7f759f65e4e9c5446b5fe3a51b784256fa3e4163",
-      "signedAt": "2026-05-05T12:00:00.000Z"
-    }
+    "tenantId": "tenant-a",
+    "sourceEventId": "source-event-S-2405",
+    "sourceEntityId": "source-entity-S-2405",
+    "environment": "qualification",
+    "round1Pending": true,
+    "deferredReason": "builder_not_promoted_in_round0"
   }
 }

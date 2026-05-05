@@ -1,5 +1,7 @@
-import type { EsocialRelayEventClass, EsocialRelayScenario } from '../kinds.js';
+import type { EsocialRelayRequestPayload } from '../dtos/validators.js';
+import type { EsocialRelayEventClass } from '../kinds.js';
 
+/** @deprecated SGP v1 request DTOs do not carry XML or signatures. */
 export type EsocialPadesPkcs7Envelope = Readonly<{
   tenantId: string;
   eventKind: EsocialRelayEventClass;
@@ -9,15 +11,7 @@ export type EsocialPadesPkcs7Envelope = Readonly<{
   signedAt: string;
 }>;
 
-export type EsocialRelayRequestPayload = Readonly<{
-  batchId: string;
-  environment: 'PRODUCTION' | 'QUALIFICATION';
-  endpointUrl: string;
-  eventIds: string[];
-  eventClass: EsocialRelayEventClass;
-  signedEnvelope: EsocialPadesPkcs7Envelope;
-  scenario?: EsocialRelayScenario;
-}>;
+export type { EsocialRelayRequestPayload };
 
 export type EsocialRelayResponsePayload = Readonly<{
   relay: 'esocial';

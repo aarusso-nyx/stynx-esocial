@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import { createHash, randomUUID } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
+import { createHash, randomUUID } from 'node:crypto';
 import { test } from 'node:test';
 
 import { buildEsocialIdempotencyKey } from '../../packages/contracts/src/idempotency.ts';
@@ -146,18 +146,18 @@ function submissionEnvelope() {
     'reply-to': 'sgp.esocial.submit.response',
     'dead-letter-topic': 'sgp.esocial.dlq',
     payload: {
-      batchId: '20000000-0000-4000-8000-000000000201',
-      environment,
-      endpointUrl: 'https://sandbox.esocial.example.test/submit',
-      eventIds: ['30000000-0000-4000-8000-000000000201'],
+      tenantId,
+      sourceEventId,
+      sourceEntityId,
+      environment: 'qualification',
       eventClass,
-      signedEnvelope: {
-        tenantId,
-        eventKind: eventClass,
-        payloadXml: '<eSocial />',
-        payloadSha256: payloadHash,
-        pkcs7Sha256: `sha256:${createHash('sha256').update(`signed:${payloadHash}`).digest('hex')}`,
-        signedAt: fixedNow.toISOString(),
+      employerCnpj: '12345678000195',
+      competence: '2026-05',
+      payrollRunId: 'payroll-2026-05',
+      pendingPeriodicEvents: [],
+      acceptedEventCounts: {
+        remuneration: 1,
+        payments: 1,
       },
     },
   };

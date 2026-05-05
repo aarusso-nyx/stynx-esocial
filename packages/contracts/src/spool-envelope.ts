@@ -9,11 +9,11 @@ export type SpoolUpdateEnvelope = EsocialEnvelopeBase<'spool'> &
     message_id: string;
     kind: EsocialClass;
     status_transition: {
-      from?: EsocialSpoolStatus;
+      from?: EsocialSpoolStatus | undefined;
       to: EsocialSpoolStatus;
     };
-    response_payload?: unknown;
-    response_hash?: string;
-    errors?: readonly EsocialContractError[];
+    response_payload?: unknown | undefined;
+    response_hash?: string | undefined;
+    errors?: readonly EsocialContractError[] | undefined;
     occurred_at: string;
   }>;

@@ -1,13 +1,13 @@
 import { randomUUID } from 'node:crypto';
 
-import pg from 'pg';
-import type { Pool, PoolClient } from 'pg';
-
 import type {
   PersistSubmissionCommand,
   SubmissionPersistenceRecord,
   SubmissionRepository,
 } from '@esocial/domain';
+import pg from 'pg';
+import type { Pool, PoolClient } from 'pg';
+
 
 const { Pool: PgPool } = pg;
 
@@ -476,7 +476,7 @@ function statusFromDatabase(status: string): 'building' | 'validation_failed' {
   return 'building';
 }
 
-function competenceFromSource(source: { payroll_run_id?: string }): string | null {
+function competenceFromSource(source: { payroll_run_id?: string | undefined }): string | null {
   const match = source.payroll_run_id?.match(/(\d{4}-\d{2})/u);
   return match?.[1] ?? null;
 }

@@ -26,8 +26,8 @@ export type XsdValidationSeverity = 'ERROR' | 'WARNING';
 
 export type XsdValidationFailureRecord = Readonly<{
   tenantId: string;
-  eventRecordId?: string;
-  batchId?: string;
+  eventRecordId?: string | undefined;
+  batchId?: string | undefined;
   environment: string;
   eventClass: PromotedTableEventClass;
   payloadHash: string;
@@ -42,19 +42,19 @@ export type XsdValidationIssue = Readonly<{
   code: string;
   message: string;
   nodePath: string;
-  line?: number;
-  column?: number;
+  line?: number | undefined;
+  column?: number | undefined;
 }>;
 
 export type PromotedTableXsdValidationInput = Readonly<{
   eventClass: string;
   xml: string;
-  tenantId?: string;
-  eventRecordId?: string;
-  batchId?: string;
-  environment?: string;
-  allowUnsigned?: boolean;
-  now?: Date;
+  tenantId?: string | undefined;
+  eventRecordId?: string | undefined;
+  batchId?: string | undefined;
+  environment?: string | undefined;
+  allowUnsigned?: boolean | undefined;
+  now?: Date | undefined;
 }>;
 
 export type PromotedTableXsdValidationResult = Readonly<{
@@ -123,11 +123,11 @@ export function signValidatedPromotedTableXml(input: Readonly<{
   eventClass: PromotedTableEventClass;
   xml: string;
   certificate: CertificateHandle;
-  tenantId?: string;
-  eventRecordId?: string;
-  batchId?: string;
-  environment?: string;
-  now?: Date;
+  tenantId?: string | undefined;
+  eventRecordId?: string | undefined;
+  batchId?: string | undefined;
+  environment?: string | undefined;
+  now?: Date | undefined;
 }>): Readonly<{
   validation: PromotedTableXsdValidationResult;
   signed: SignedXmlBytes;
@@ -397,7 +397,7 @@ function nodePathFromXmllint(line: string, fallbackElement: string): string {
 
 function lineColumnFromXmllint(
   line: string,
-): { line?: number; column?: number } {
+): { line?: number | undefined; column?: number } {
   const match = line.match(/:(\d+):(?: element| parser| Schemas)/u);
   if (!match) return {};
   return { line: Number(match[1]) };

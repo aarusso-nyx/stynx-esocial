@@ -1,4 +1,5 @@
 import eslint from '@eslint/js';
+import importPlugin from 'eslint-plugin-import';
 import tseslint from 'typescript-eslint';
 
 const nodeGlobals = {
@@ -11,6 +12,7 @@ export default [
   {
     ignores: [
       'dist/**',
+      '**/dist/**',
       'node_modules/**',
       'coverage/**',
       'infra/cdk/cdk.out/**',
@@ -20,6 +22,21 @@ export default [
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
+  {
+    plugins: {
+      import: importPlugin,
+    },
+    rules: {
+      'import/order': [
+        'error',
+        {
+          alphabetize: { order: 'asc', caseInsensitive: true },
+          groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+          'newlines-between': 'always',
+        },
+      ],
+    },
+  },
   {
     files: ['**/*.mjs', '**/*.js'],
     languageOptions: {

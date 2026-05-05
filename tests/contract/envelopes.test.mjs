@@ -4,13 +4,13 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { test } from 'node:test';
 
+import { buildEsocialIdempotencyKey } from '../../packages/contracts/src/idempotency.ts';
 import {
   ESOCIAL_ERROR_CATEGORIES,
   ESOCIAL_RELAY_EVENT_CLASSES,
   ESOCIAL_STATUSES,
   ESOCIAL_TRANSPORT_FAMILIES,
 } from '../../packages/contracts/src/kinds.ts';
-import { buildEsocialIdempotencyKey } from '../../packages/contracts/src/idempotency.ts';
 
 const root = new URL('../..', import.meta.url).pathname;
 const now = '2026-05-04T12:00:00.000Z';

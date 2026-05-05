@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import { randomUUID } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
+import { randomUUID } from 'node:crypto';
 import { test } from 'node:test';
 
 const root = new URL('../..', import.meta.url).pathname;
@@ -20,8 +20,12 @@ test('fresh migrations enforce tenant RLS, idempotency, and append-only history'
   const workerUrl = roleUrl(databaseUrl, workerRole, workerPassword);
 
   try {
-    runNode(['scripts/check-migrations.mjs', 'migrate:dev'], {
-      ESOCIAL_DATABASE_URL: databaseUrl,
+    createDatabase(databaseName);
+    runNode(['scripts/migrate-dev.mjs'], {
+      DATABASE_URL: databaseUrl,
+    });
+    runNode(['scripts/migrate-dev.mjs'], {
+      DATABASE_URL: databaseUrl,
     });
 
     psql(databaseUrl, `
@@ -40,6 +44,7 @@ test('fresh migrations enforce tenant RLS, idempotency, and append-only history'
       'event_record',
       'event_retry_schedule',
       'response_classification',
+      'dlq_item',
       's1xxx_dispatch_state',
       's1200_emission_state',
       's1202_emission_state',
@@ -59,11 +64,23 @@ test('fresh migrations enforce tenant RLS, idempotency, and append-only history'
       'xsd_validation_failure',
       'audit_event_log',
       'event_status_history',
-    ]), 27);
+    ]), 28);
     assert.equal(countRelations(databaseUrl, 'VIEW', [
       'v_competence_periodics_pending',
       'v_event_failures',
     ]), 2);
+    assert.equal(psql(databaseUrl, `
+      SELECT count(*) >= 13
+      FROM esocial.response_classification
+      WHERE regulatory_code IS NOT NULL
+        AND status IN ('accepted', 'rejected', 'retry', 'timeout', 'dlq', 'failed');
+    `).stdout.trim(), 't');
+    assert.equal(psql(databaseUrl, `
+      SELECT status || ':' || retryable::text
+      FROM esocial.response_classification
+      WHERE regulatory_code = '503'
+        AND environment = 'ANY';
+    `).stdout.trim(), 'retry:true');
 
     const tenantA = '00000000-0000-4000-8000-0000000000a1';
     const tenantB = '00000000-0000-4000-8000-0000000000b2';
@@ -88,6 +105,102 @@ test('fresh migrations enforce tenant RLS, idempotency, and append-only history'
     assert.equal(psql(workerUrl, `
       SELECT count(*) FROM esocial.tenant;
     `).stdout.trim(), '2');
+
+    const invalidSecretRef = psql(appUrl, `
+      SET app.current_tenant_id = ${quoteLiteral(tenantA)};
+      INSERT INTO esocial.tenant_certificate (
+        tenant_id,
+        environment,
+        secret_ref,
+        certificate_fingerprint_sha256,
+        valid_from,
+        valid_until
+      )
+      VALUES (
+        ${quoteLiteral(tenantA)},
+        'QUALIFICATION',
+        'local-test-secret',
+        'sha256:invalid-secret-ref',
+        now(),
+        now() + interval '1 year'
+      );
+    `, { expectFailure: true });
+    assert.match(invalidSecretRef.stderr, /tenant_certificate_secret_ref_arn_check/u);
+
+    psql(appUrl, `
+      SET app.current_tenant_id = ${quoteLiteral(tenantA)};
+      INSERT INTO esocial.tenant_certificate (
+        tenant_id,
+        environment,
+        label,
+        secret_ref,
+        certificate_fingerprint_sha256,
+        valid_from,
+        valid_until
+      )
+      VALUES (
+        ${quoteLiteral(tenantA)},
+        'QUALIFICATION',
+        'tenant-a qualification',
+        'arn:aws:secretsmanager:sa-east-1:123456789012:secret:esocial/tenant-a/cert-AbCd12',
+        'sha256:valid-secret-ref',
+        now(),
+        now() + interval '1 year'
+      );
+    `);
+
+    psql(appUrl, `
+      SET app.current_tenant_id = ${quoteLiteral(tenantA)};
+      INSERT INTO esocial.submission_message (
+        message_id,
+        tenant_id,
+        kind,
+        event_class,
+        payload_hash,
+        payload,
+        status,
+        environment,
+        idempotency_key
+      )
+      VALUES (
+        '30000000-0000-4000-8000-000000000001',
+        ${quoteLiteral(tenantA)},
+        'submit',
+        'S-1299',
+        'payload-hash-message-1',
+        '{}'::jsonb,
+        'building',
+        'QUALIFICATION',
+        'idem-message-duplicate'
+      );
+    `);
+
+    const duplicateMessage = psql(appUrl, `
+      SET app.current_tenant_id = ${quoteLiteral(tenantA)};
+      INSERT INTO esocial.submission_message (
+        message_id,
+        tenant_id,
+        kind,
+        event_class,
+        payload_hash,
+        payload,
+        status,
+        environment,
+        idempotency_key
+      )
+      VALUES (
+        '30000000-0000-4000-8000-000000000002',
+        ${quoteLiteral(tenantA)},
+        'retorno',
+        'S-1299',
+        'payload-hash-message-2',
+        '{}'::jsonb,
+        'accepted',
+        'QUALIFICATION',
+        'idem-message-duplicate'
+      );
+    `, { expectFailure: true });
+    assert.match(duplicateMessage.stderr, /submission_message_transport_idempotency_ux/u);
 
     const sourceEvent = '10000000-0000-4000-8000-000000000001';
     psql(appUrl, `
@@ -144,6 +257,47 @@ test('fresh migrations enforce tenant RLS, idempotency, and append-only history'
     assert.match(duplicate.stderr, /event_record_regulatory_idempotency_ux/u);
 
     psql(workerUrl, `
+      INSERT INTO esocial.dlq_item (
+        tenant_id,
+        environment,
+        event_class,
+        original_envelope,
+        last_classification,
+        attempt_history,
+        hashes,
+        replay_hint
+      )
+      VALUES
+        (
+          ${quoteLiteral(tenantA)},
+          'QUALIFICATION',
+          'S-1299',
+          '{"request-id":"dlq-a"}'::jsonb,
+          '{"category":"validation"}'::jsonb,
+          '[]'::jsonb,
+          '{"original_envelope_sha256":"sha256:a"}'::jsonb,
+          '{"eligible":true}'::jsonb
+        ),
+        (
+          ${quoteLiteral(tenantB)},
+          'QUALIFICATION',
+          'S-1299',
+          '{"request-id":"dlq-b"}'::jsonb,
+          '{"category":"validation"}'::jsonb,
+          '[]'::jsonb,
+          '{"original_envelope_sha256":"sha256:b"}'::jsonb,
+          '{"eligible":true}'::jsonb
+        );
+    `);
+    assert.equal(psql(appUrl, `
+      SET app.current_tenant_id = ${quoteLiteral(tenantA)};
+      SELECT count(*) FROM esocial.dlq_item;
+    `).stdout.trim(), '1');
+    assert.equal(psql(workerUrl, `
+      SELECT count(*) FROM esocial.dlq_item;
+    `).stdout.trim(), '2');
+
+    psql(workerUrl, `
       INSERT INTO esocial.event_status_history (
         tenant_id,
         event_record_id,
@@ -185,6 +339,11 @@ test('fresh migrations enforce tenant RLS, idempotency, and append-only history'
     cleanup(databaseName, appRole, workerRole);
   }
 });
+
+function createDatabase(databaseName) {
+  const maintenanceUrl = withDatabase(adminUrl, 'postgres');
+  psql(maintenanceUrl, `CREATE DATABASE ${quoteIdent(databaseName)};`);
+}
 
 function countRelations(databaseUrl, tableType, names) {
   const rows = psql(databaseUrl, `

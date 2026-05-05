@@ -1,0 +1,7 @@
+node_modules/
+**/dist/
+coverage/
+infra/cdk/cdk.out/
+packages/domain/src/sgp-lifted/
+tests/sgp-lifted/
+docs/release/

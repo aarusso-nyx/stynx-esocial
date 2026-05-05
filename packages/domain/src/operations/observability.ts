@@ -26,15 +26,15 @@ export type EsocialMetricName =
 export type StructuredLogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 export type StructuredLogContext = Readonly<{
-  requestId?: string;
-  correlationId?: string;
-  tenantId?: string;
-  environment?: string;
-  eventClass?: string;
-  batchId?: string;
-  protocol?: string;
-  receipt?: string;
-  idempotencyKey?: string;
+  requestId?: string | undefined;
+  correlationId?: string | undefined;
+  tenantId?: string | undefined;
+  environment?: string | undefined;
+  eventClass?: string | undefined;
+  batchId?: string | undefined;
+  protocol?: string | undefined;
+  receipt?: string | undefined;
+  idempotencyKey?: string | undefined;
 }>;
 
 export type StructuredLogEntry = StructuredLogContext &
@@ -44,8 +44,8 @@ export type StructuredLogEntry = StructuredLogContext &
     service: string;
     stage: string;
     message: string;
-    errorCode?: string;
-    errorMessage?: string;
+    errorCode?: string | undefined;
+    errorMessage?: string | undefined;
   }>;
 
 export type StructuredLogInput = Readonly<{
@@ -53,12 +53,12 @@ export type StructuredLogInput = Readonly<{
   service: string;
   stage: string;
   message: string;
-  context?: StructuredLogContext;
+  context?: StructuredLogContext | undefined;
   error?: Readonly<{
-    code?: string;
-    message?: string;
+    code?: string | undefined;
+    message?: string | undefined;
   }>;
-  now?: Date;
+  now?: Date | undefined;
 }>;
 
 export type StructuredLogger = Readonly<{
@@ -72,8 +72,8 @@ export type MetricUnit = 'Count' | 'Milliseconds';
 
 export type MetricContext = StructuredLogContext &
   Readonly<{
-    classification?: string;
-    endpointName?: string;
+    classification?: string | undefined;
+    endpointName?: string | undefined;
   }>;
 
 export type MetricPayload = MetricContext &
@@ -114,7 +114,7 @@ export type TraceSpanRecord = StructuredLogContext &
     endedAt: string;
     durationMs: number;
     status: 'ok' | 'error';
-    errorMessage?: string;
+    errorMessage?: string | undefined;
   }>;
 
 export function buildStructuredLogEntry(
@@ -133,7 +133,7 @@ export function buildStructuredLogEntry(
 }
 
 export function createStructuredLogger(options: Readonly<{
-  sink?: (line: string) => void;
+  sink?: (line: string) => void | undefined;
 }> = {}): StructuredLogger {
   const sink = options.sink ?? ((line: string) => console.log(line));
 
@@ -156,9 +156,9 @@ export function createNoopStructuredLogger(): StructuredLogger {
 export function buildMetricPayload(input: Readonly<{
   name: EsocialMetricName;
   value: number;
-  context?: MetricContext;
-  unit?: MetricUnit;
-  now?: Date;
+  context?: MetricContext | undefined;
+  unit?: MetricUnit | undefined;
+  now?: Date | undefined;
 }>): MetricPayload {
   const context = compactObject(input.context ?? {}) as MetricContext;
   const dimensions = [
@@ -191,7 +191,7 @@ export function buildMetricPayload(input: Readonly<{
 }
 
 export function createMetricEmitter(options: Readonly<{
-  sink?: (line: string) => void;
+  sink?: (line: string) => void | undefined;
 }> = {}): MetricEmitter {
   const sink = options.sink ?? ((line: string) => console.log(line));
 
@@ -240,9 +240,9 @@ export async function withTraceSpan<TResult>(
   input: Readonly<{
     service: string;
     spanName: string;
-    context?: StructuredLogContext;
-    sink?: (span: TraceSpanRecord) => void;
-    now?: () => Date;
+    context?: StructuredLogContext | undefined;
+    sink?: ((span: TraceSpanRecord) => void) | undefined;
+    now?: (() => Date) | undefined;
   }>,
   run: () => Promise<TResult>,
 ): Promise<TResult> {
@@ -271,8 +271,8 @@ function emitTraceSpan(
   input: Readonly<{
     service: string;
     spanName: string;
-    context?: StructuredLogContext;
-    sink?: (span: TraceSpanRecord) => void;
+    context?: StructuredLogContext | undefined;
+    sink?: ((span: TraceSpanRecord) => void) | undefined;
   }>,
   startedAt: Date,
   endedAt: Date,

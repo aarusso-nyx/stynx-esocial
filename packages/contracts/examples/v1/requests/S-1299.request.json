@@ -1,40 +1,38 @@
 {
   "version": "v1",
   "family": "request",
-  "request-id": "00000000-0000-4000-8000-000000020015",
-  "correlation-id": "00000000-0000-4000-8000-000000030015",
-  "idempotency-key": "esocial:v1:request:00000000-0000-4000-8000-000000009015:QUALIFICATION:S-1299:00000000-0000-4000-8000-000000010015:source-s-1299-15:-:2026-05:sha256%3A5d7f1589a232d9b3e0b7c23b7cc6fead5e489761db98a79feb9da12695df363e:-:-",
+  "request-id": "req-request-S-1299",
+  "correlation-id": "corr-S-1299",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-1299:source-event-S-1299:source-entity-S-1299:-:2026-05:sha256%3A99d77e674bccd0de28d6474e096213542483bc690895380043a92af79bd1608f:-:-",
   "created_at": "2026-05-05T12:00:00.000Z",
-  "tenant_id": "00000000-0000-4000-8000-000000009015",
+  "tenant_id": "tenant-a",
   "environment": "QUALIFICATION",
   "event_class": "S-1299",
   "source": {
-    "source_event_id": "00000000-0000-4000-8000-000000010015",
-    "source_entity_id": "source-s-1299-15",
-    "payroll_run_id": "payroll-2026-05-15",
+    "source_event_id": "source-event-S-1299",
+    "source_entity_id": "source-entity-S-1299",
+    "payroll_run_id": "payroll-2026-05",
     "source_system": "SGP"
   },
-  "kind": "submit",
-  "payload_hash": "sha256:5d7f1589a232d9b3e0b7c23b7cc6fead5e489761db98a79feb9da12695df363e",
+  "kind": "folha",
+  "payload_hash": "sha256:99d77e674bccd0de28d6474e096213542483bc690895380043a92af79bd1608f",
   "attempt": 1,
   "max-attempts": 3,
   "reply-to": "sgp.esocial.submit.response",
   "dead-letter-topic": "sgp.esocial.dlq",
   "payload": {
-    "batchId": "00000000-0000-4000-8000-000000040015",
-    "environment": "QUALIFICATION",
-    "endpointUrl": "https://sandbox.esocial.example.test/submit",
-    "eventIds": [
-      "00000000-0000-4000-8000-000000050015"
-    ],
     "eventClass": "S-1299",
-    "signedEnvelope": {
-      "tenantId": "00000000-0000-4000-8000-000000009015",
-      "eventKind": "S-1299",
-      "payloadXml": "<eSocial />",
-      "payloadSha256": "sha256:5d7f1589a232d9b3e0b7c23b7cc6fead5e489761db98a79feb9da12695df363e",
-      "pkcs7Sha256": "sha256:773035abaa4461c4fbf4bb64f7ad47e385466cc949fa312cf86030056fadb8e1",
-      "signedAt": "2026-05-05T12:00:00.000Z"
+    "tenantId": "tenant-a",
+    "sourceEventId": "source-event-S-1299",
+    "sourceEntityId": "source-entity-S-1299",
+    "environment": "qualification",
+    "employerCnpj": "12345678000199",
+    "competence": "2026-05",
+    "payrollRunId": "payroll-2026-05",
+    "pendingPeriodicEvents": [],
+    "acceptedEventCounts": {
+      "remuneration": 1,
+      "payments": 1
     }
   }
 }

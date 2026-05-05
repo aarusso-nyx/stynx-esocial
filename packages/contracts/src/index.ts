@@ -1,4 +1,5 @@
 export type * from './audit-envelope.js';
+export * from './dtos/index.js';
 export type * from './envelope.js';
 export * from './idempotency.js';
 export * from './kinds.js';

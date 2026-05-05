@@ -10,20 +10,20 @@ export type CertificateReference = Readonly<{
   environment: string;
   label: string;
   secretRef: string;
-  version?: string;
+  version?: string | undefined;
 }>;
 
 export type CertificateHandle = Readonly<{
   reference: CertificateReference;
   privateKeyPem: string;
   publicKeyPem: string;
-  certificatePem?: string;
-  subjectName?: string;
-  issuerName?: string;
-  serialNumber?: string;
-  validFrom?: string;
-  validUntil?: string;
-  revokedAt?: string;
+  certificatePem?: string | undefined;
+  subjectName?: string | undefined;
+  issuerName?: string | undefined;
+  serialNumber?: string | undefined;
+  validFrom?: string | undefined;
+  validUntil?: string | undefined;
+  revokedAt?: string | undefined;
 }>;
 
 export type SignedXmlBytes = Readonly<{
@@ -40,7 +40,7 @@ export type SignedXmlBytes = Readonly<{
 export type SignXmlInput = Readonly<{
   xmlBytes: string | Buffer | Uint8Array;
   certificate: CertificateHandle;
-  now?: Date;
+  now?: Date | undefined;
 }>;
 
 export type VerifySignedXmlInput = Readonly<{

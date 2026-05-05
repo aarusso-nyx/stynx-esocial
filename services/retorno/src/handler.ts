@@ -1,3 +1,4 @@
+import type { EsocialContractError } from '@esocial/contracts';
 import {
   ReturnProcessor,
   validateReturnIngressEnvelope,
@@ -6,19 +7,18 @@ import type {
   ReturnPublishers,
   ReturnRepository,
 } from '@esocial/domain';
-import type { EsocialContractError } from '@esocial/contracts';
 
 import { createPostgresReturnRepositoryFromEnv } from './postgres-return-repository.js';
 import { createAwsReturnPublishersFromEnv } from './transport-publishers.js';
 
 export type SqsReturnRecord = Readonly<{
-  messageId?: string;
-  messageID?: string;
-  body?: string;
+  messageId?: string | undefined;
+  messageID?: string | undefined;
+  body?: string | undefined;
 }>;
 
 export type SqsReturnEvent = Readonly<{
-  Records?: readonly SqsReturnRecord[];
+  Records?: readonly SqsReturnRecord[] | undefined;
 }>;
 
 export type SqsBatchResponse = Readonly<{
@@ -28,10 +28,10 @@ export type SqsBatchResponse = Readonly<{
 }>;
 
 export type CreateReturnHandlerOptions = Readonly<{
-  processor?: ReturnProcessor;
-  repository?: ReturnRepository;
-  publishers?: ReturnPublishers;
-  now?: () => Date;
+  processor?: ReturnProcessor | undefined;
+  repository?: ReturnRepository | undefined;
+  publishers?: ReturnPublishers | undefined;
+  now?: (() => Date) | undefined;
 }>;
 
 export function createReturnHandler(

@@ -4,20 +4,20 @@ import type { EsocialStatus } from '../kinds.js';
 export type EsocialClassRequestPayload<TClass extends EsocialClass> = Readonly<{
   class: TClass;
   tenantId: string;
-  correlationId?: string;
-  idempotencyKey?: string;
+  correlationId?: string | undefined;
+  idempotencyKey?: string | undefined;
   payload: unknown;
 }>;
 
 export type EsocialClassResponsePayload<TClass extends EsocialClass> = Readonly<{
   class: TClass;
   tenantId: string;
-  correlationId?: string;
+  correlationId?: string | undefined;
   status: EsocialStatus;
-  payload?: unknown;
+  payload?: unknown | undefined;
   error?: {
-    code?: string;
+    code?: string | undefined;
     message: string;
-    details?: unknown;
+    details?: unknown | undefined;
   };
 }>;

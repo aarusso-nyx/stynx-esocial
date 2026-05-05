@@ -10,16 +10,17 @@
     "infra/cdk"
   ],
   "scripts": {
-    "lint": "eslint \"packages/**/*.ts\" \"services/**/*.ts\" \"infra/cdk/src/**/*.ts\" \"scripts/**/*.mjs\" \"tests/contract/*.mjs\" \"tests/certificado/*.mjs\" \"tests/db/*.mjs\" \"tests/golden/*.mjs\" \"tests/handler/*.mjs\" \"tests/integration/*.mjs\" \"tests/integration/localstack/*.mjs\" \"tests/integration/retry/*.mjs\" \"tests/pki/*.mjs\" \"tests/returns/*.mjs\" \"tests/soap/*.mjs\" \"tests/xml/*.mjs\" && node scripts/check.mjs lint && node scripts/check-migrations.mjs lint:migrations",
+    "lint": "eslint . --max-warnings=0 && npm run lint:boundaries --silent && npm run lint:migrations --silent",
+    "lint:boundaries": "node scripts/check.mjs lint",
     "lint:migrations": "node scripts/check-migrations.mjs lint:migrations",
-    "test": "npm run build --silent && node --test tests/contract/*.test.mjs tests/certificado/*.test.mjs tests/golden/*.test.mjs tests/handler/*.test.mjs tests/pki/*.test.mjs tests/returns/*.test.mjs tests/xml/*.test.mjs",
-    "build": "tsc -b",
-    "coverage": "npm run build --silent && node --test --experimental-test-coverage tests/contract/*.test.mjs tests/certificado/*.test.mjs tests/golden/*.test.mjs tests/handler/*.test.mjs tests/pki/*.test.mjs tests/returns/*.test.mjs tests/xml/*.test.mjs",
+    "test": "npm run build --silent && vitest run && node --test tests/contract/*.test.mjs tests/certificado/*.test.mjs tests/golden/*.test.mjs tests/handler/*.test.mjs tests/pki/*.test.mjs tests/returns/*.test.mjs tests/xml/*.test.mjs",
+    "build": "tsc -b && npm run schemas:generate --workspace @esocial/contracts --silent",
+    "coverage": "npm run build --silent && vitest run --coverage && node --test --experimental-test-coverage tests/contract/*.test.mjs tests/certificado/*.test.mjs tests/golden/*.test.mjs tests/handler/*.test.mjs tests/pki/*.test.mjs tests/returns/*.test.mjs tests/xml/*.test.mjs",
     "templates:generate": "node scripts/templates-generate.mjs",
     "templates:check": "node scripts/templates-generate.mjs --check",
     "integration:localstack": "npm run build --silent && node tests/integration/localstack/harness.mjs",
-    "migrate:dev": "node scripts/check-migrations.mjs migrate:dev",
-    "test:db": "node scripts/check-migrations.mjs lint:migrations && node --test tests/db/*.test.mjs",
+    "migrate:dev": "node scripts/migrate-dev.mjs",
+    "test:db": "node scripts/test-db.mjs",
     "test:integration": "npm run build --silent && npm run templates:check --silent && node --test tests/integration/*.test.mjs tests/integration/localstack/*.test.mjs tests/integration/retry/*.test.mjs tests/soap/*.test.mjs"
   },
   "engines": {
@@ -28,8 +29,15 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@typescript-eslint/eslint-plugin": "8.59.2",
+    "@typescript-eslint/parser": "8.59.2",
+    "@vitest/coverage-v8": "4.1.5",
     "eslint": "^9.39.1",
+    "eslint-plugin-import": "2.32.0",
+    "prettier": "3.8.3",
+    "tsx": "4.21.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.46.3"
+    "typescript-eslint": "^8.46.3",
+    "vitest": "4.1.5"
   }
 }

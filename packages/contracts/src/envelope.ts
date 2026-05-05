@@ -8,28 +8,28 @@ import type {
 } from './kinds.js';
 
 export type EsocialSourceReference = Readonly<{
-  source_event_id?: string;
-  payroll_run_id?: string;
-  employee_id?: string;
-  source_entity_id?: string;
-  source_entity_ids?: readonly string[];
-  source_system?: string;
+  source_event_id?: string | undefined;
+  payroll_run_id?: string | undefined;
+  employee_id?: string | undefined;
+  source_entity_id?: string | undefined;
+  source_entity_ids?: readonly string[] | undefined;
+  source_system?: string | undefined;
 }>;
 
 export type EsocialContractError = Readonly<{
   category: EsocialErrorCategory;
   code: string;
   message: string;
-  details?: unknown;
-  retryable?: boolean;
-  occurred_at?: string;
+  details?: unknown | undefined;
+  retryable?: boolean | undefined;
+  occurred_at?: string | undefined;
 }>;
 
 export type EsocialPayloadHashes = Readonly<{
-  request_sha256?: string;
-  payload_sha256?: string;
-  signed_payload_sha256?: string;
-  response_sha256?: string;
+  request_sha256?: string | undefined;
+  payload_sha256?: string | undefined;
+  signed_payload_sha256?: string | undefined;
+  response_sha256?: string | undefined;
 }>;
 
 export type EsocialEnvelopeBase<TFamily extends EsocialTransportFamily> =
@@ -69,13 +69,13 @@ export type EsocialResponseEnvelope<
     status: EsocialStatus;
     attempt: number;
     processed_at: string;
-    protocol_number?: string;
-    receipt_number?: string;
-    response_code?: string;
-    response_description?: string;
-    hashes?: EsocialPayloadHashes;
-    payload?: TPayload;
-    errors?: readonly EsocialContractError[];
+    protocol_number?: string | undefined;
+    receipt_number?: string | undefined;
+    response_code?: string | undefined;
+    response_description?: string | undefined;
+    hashes?: EsocialPayloadHashes | undefined;
+    payload?: TPayload | undefined;
+    errors?: readonly EsocialContractError[] | undefined;
   }>;
 
 export type EsocialRetryEnvelope<TKind extends string = string> =
@@ -87,7 +87,7 @@ export type EsocialRetryEnvelope<TKind extends string = string> =
       'max-attempts': number;
       next_attempt_at: string;
       retry_reason: string;
-      errors?: readonly EsocialContractError[];
+      errors?: readonly EsocialContractError[] | undefined;
     }>;
 
 export type EsocialDlqEnvelope<TKind extends string = string> =
@@ -99,7 +99,7 @@ export type EsocialDlqEnvelope<TKind extends string = string> =
       dlq_reason: string;
       failed_at: string;
       errors: readonly EsocialContractError[];
-      replay_topic?: string;
+      replay_topic?: string | undefined;
     }>;
 
 export type EsocialReplayEnvelope<
@@ -113,7 +113,7 @@ export type EsocialReplayEnvelope<
     replay_request_id: string;
     replayed_by: string;
     replay_reason: string;
-    payload?: TPayload;
+    payload?: TPayload | undefined;
   }>;
 
 export type QueueAdapterResponseStatus = EsocialStatus;

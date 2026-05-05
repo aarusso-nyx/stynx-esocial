@@ -1,0 +1,284 @@
+
+===== pwd =====
+/Users/aarusso/Development/stech/stynx-esocial
+
+[exit 0] pwd
+
+===== git status --short --branch =====
+## main...origin/main
+?? docs/work/round-0/
+
+[exit 0] git status --short --branch
+
+===== git log --oneline -10 =====
+da08386 Implement production-grade eSocial service bus
+f68758e Add eSocial lift-out docs and examples
+15384a4 first commit
+
+[exit 0] git log --oneline -10
+
+===== node --version =====
+v24.15.0
+
+[exit 0] node --version
+
+===== npm --version =====
+11.12.1
+
+[exit 0] npm --version
+
+===== npm test =====
+
+> esocial@0.0.0 test
+> npm run build --silent && node --test tests/contract/*.test.mjs tests/certificado/*.test.mjs tests/golden/*.test.mjs tests/handler/*.test.mjs tests/pki/*.test.mjs tests/returns/*.test.mjs tests/xml/*.test.mjs
+
+✔ certificate custody resolves local test secret handles and audits access without storing key bytes (210.688333ms)
+✔ certificate custody denies expired metadata and audits the denial (43.472ms)
+✔ contract taxonomy exports the full event, status, and error surface (9.4975ms)
+✔ consumer documentation matches exported statuses and error categories (8.398167ms)
+✔ versioned envelope fixtures cover every event class and family (87.465375ms)
+✔ idempotency builder is deterministic and collision-resistant for contract inputs (0.162542ms)
+✔ submission Lambda uses contracts and emits spool updates without SGP DB strings (5.659709ms)
+✔ contracts package uses locked esocial naming and class taxonomy (0.585125ms)
+✔ migrations do not reference SGP schemas or cross-database access (2.307459ms)
+✔ documentation lists lifted events and keeps XML examples (3.531542ms)
+✔ promoted periodic builders match committed golden XML bytes (6.597625ms)
+✔ promoted periodic metadata pins event code, leiaute, namespace, XSD, and dependencies (1.602541ms)
+✔ promoted periodic builders reject invalid DTOs before signing or submission (1.5995ms)
+✔ promoted periodic builder source has no SGP database or module coupling (0.94825ms)
+✔ promoted table builders match committed golden XML bytes (3.225ms)
+✔ promoted table metadata pins event code, leiaute, namespace, XSD, and dependencies (1.830334ms)
+✔ promoted table builders reject invalid DTOs before signing or submission (0.387ms)
+✔ promoted table builder source has no SGP database or module coupling (0.30625ms)
+✔ accepted-shape request persists as building and emits no synthetic receipt (2.801709ms)
+✔ duplicate request re-emits the prior outcome without inserting twice (0.40175ms)
+✔ malformed JSON and unsupported version are terminal DLQ messages with no DB row (0.284417ms)
+✔ contract-level payload validation is persisted as validation_failed and audited (0.197083ms)
+✔ retry-classified outbound failure returns only the failed SQS item (0.300375ms)
+✔ DLQ-classified terminal failure publishes DLQ and does not request redrive (0.239125ms)
+✔ PKI boundary signs and verifies eSocial XML with generated local key material (48.823334ms)
+✔ PKI boundary rejects DTD and unsigned non-eSocial candidates (24.762875ms)
+✔ return parsers cover protocol success, processing rejection, SOAP fault, and malformed XML (8.310291ms)
+✔ totalizer parser covers every S-50xx variant and preserves trace fields (2.868292ms)
+✔ return processor persists accepted processing returns and publishes idempotent spool/audit updates (3.425125ms)
+✔ return processor maps regulatory rejection and SOAP fault without SGP table writes (0.879791ms)
+✔ return processor persists totalizer traceability and publishes SGP-facing totalizer status (0.570667ms)
+✔ promoted table XML validates against bound S-1.3 XSDs with unsigned pre-signing stub (44.541208ms)
+✔ XSD validation captures invalid node failures for persistence (7.489375ms)
+✔ XXE and DTD payloads are rejected before XSD and signing (20.307ms)
+✔ valid promoted table XML can be signed only after XSD validation (64.938042ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 440.768583
+
+[exit 0] npm test
+
+===== npm run lint =====
+
+> esocial@0.0.0 lint
+> eslint "packages/**/*.ts" "services/**/*.ts" "infra/cdk/src/**/*.ts" "scripts/**/*.mjs" "tests/contract/*.mjs" "tests/certificado/*.mjs" "tests/db/*.mjs" "tests/golden/*.mjs" "tests/handler/*.mjs" "tests/integration/*.mjs" "tests/integration/localstack/*.mjs" "tests/integration/retry/*.mjs" "tests/pki/*.mjs" "tests/returns/*.mjs" "tests/soap/*.mjs" "tests/xml/*.mjs" && node scripts/check.mjs lint && node scripts/check-migrations.mjs lint:migrations
+
+[lint] esocial workspace checks passed
+[lint:migrations] esocial migration checks passed
+
+[exit 0] npm run lint
+
+===== npm run build =====
+
+> esocial@0.0.0 build
+> tsc -b
+
+
+[exit 0] npm run build
+
+===== npm run coverage =====
+
+> esocial@0.0.0 coverage
+> npm run build --silent && node --test --experimental-test-coverage tests/contract/*.test.mjs tests/certificado/*.test.mjs tests/golden/*.test.mjs tests/handler/*.test.mjs tests/pki/*.test.mjs tests/returns/*.test.mjs tests/xml/*.test.mjs
+
+✔ certificate custody resolves local test secret handles and audits access without storing key bytes (100.075917ms)
+✔ certificate custody denies expired metadata and audits the denial (11.834958ms)
+✔ contract taxonomy exports the full event, status, and error surface (1.225167ms)
+✔ consumer documentation matches exported statuses and error categories (0.291625ms)
+✔ versioned envelope fixtures cover every event class and family (44.671834ms)
+✔ idempotency builder is deterministic and collision-resistant for contract inputs (0.138083ms)
+✔ submission Lambda uses contracts and emits spool updates without SGP DB strings (1.463417ms)
+✔ contracts package uses locked esocial naming and class taxonomy (0.681709ms)
+✔ migrations do not reference SGP schemas or cross-database access (0.716625ms)
+✔ documentation lists lifted events and keeps XML examples (0.529833ms)
+✔ promoted periodic builders match committed golden XML bytes (4.111042ms)
+✔ promoted periodic metadata pins event code, leiaute, namespace, XSD, and dependencies (0.575584ms)
+✔ promoted periodic builders reject invalid DTOs before signing or submission (0.406083ms)
+✔ promoted periodic builder source has no SGP database or module coupling (0.306291ms)
+✔ promoted table builders match committed golden XML bytes (1.83675ms)
+✔ promoted table metadata pins event code, leiaute, namespace, XSD, and dependencies (1.644625ms)
+✔ promoted table builders reject invalid DTOs before signing or submission (0.372167ms)
+✔ promoted table builder source has no SGP database or module coupling (0.286167ms)
+✔ accepted-shape request persists as building and emits no synthetic receipt (3.224458ms)
+✔ duplicate request re-emits the prior outcome without inserting twice (0.343459ms)
+✔ malformed JSON and unsupported version are terminal DLQ messages with no DB row (0.317ms)
+✔ contract-level payload validation is persisted as validation_failed and audited (0.174458ms)
+✔ retry-classified outbound failure returns only the failed SQS item (0.27625ms)
+✔ DLQ-classified terminal failure publishes DLQ and does not request redrive (0.230708ms)
+✔ PKI boundary signs and verifies eSocial XML with generated local key material (96.099875ms)
+✔ PKI boundary rejects DTD and unsigned non-eSocial candidates (29.03875ms)
+✔ return parsers cover protocol success, processing rejection, SOAP fault, and malformed XML (6.312625ms)
+✔ totalizer parser covers every S-50xx variant and preserves trace fields (4.143208ms)
+✔ return processor persists accepted processing returns and publishes idempotent spool/audit updates (4.7145ms)
+✔ return processor maps regulatory rejection and SOAP fault without SGP table writes (0.84425ms)
+✔ return processor persists totalizer traceability and publishes SGP-facing totalizer status (0.389625ms)
+✔ promoted table XML validates against bound S-1.3 XSDs with unsigned pre-signing stub (36.958083ms)
+✔ XSD validation captures invalid node failures for persistence (6.958042ms)
+✔ XXE and DTD payloads are rejected before XSD and signing (45.269375ms)
+✔ valid promoted table XML can be signed only after XSD validation (21.77525ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 373.267042
+ℹ start of coverage report
+ℹ --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ℹ file                                    | line % | branch % | funcs % | uncovered lines
+ℹ --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ℹ packages                                |        |          |         | 
+ℹ  contracts                              |        |          |         | 
+ℹ   dist                                  |        |          |         | 
+ℹ    idempotency.js                       |   7.14 |   100.00 |    0.00 | 3-41
+ℹ    index.js                             | 100.00 |   100.00 |  100.00 | 
+ℹ    kinds.js                             | 100.00 |   100.00 |  100.00 | 
+ℹ   src                                   |        |          |         | 
+ℹ    idempotency.ts                       | 100.00 |   100.00 |  100.00 | 
+ℹ    kinds.ts                             | 100.00 |   100.00 |  100.00 | 
+ℹ  domain                                 |        |          |         | 
+ℹ   dist                                  |        |          |         | 
+ℹ    index.js                             | 100.00 |   100.00 |  100.00 | 
+ℹ    operations                           |        |          |         | 
+ℹ     circuit-breaker.js                  |  10.53 |   100.00 |    0.00 | 7-35 37-75
+ℹ     index.js                            | 100.00 |   100.00 |  100.00 | 
+ℹ     observability.js                    |  19.33 |   100.00 |    0.00 | 22-32 34-44 46-47 49-76 78-84 86-87 89-109 111-149
+ℹ     replay.js                           |  10.00 |   100.00 |    0.00 | 6-8 11-21 23-78 80-83 85-109
+ℹ     retry.js                            |  14.29 |   100.00 |    0.00 | 24-65 67-76 78-85 87-97 99-114 116-202
+ℹ    returns                              |        |          |         | 
+ℹ     index.js                            | 100.00 |   100.00 |  100.00 | 
+ℹ     parsers.js                          |  70.74 |    58.73 |   73.24 | 53-64 70-71 81-82 89-90 97-98 115-116 147-148 150-151 169-170 182-183 189-190 227-243 279-280 283-284 312-315 383-393 396-398 405-421 425-503 537-543 562-563 604 611-613 615-620 643-645
+ℹ     return-processor.js                 |  61.54 |    71.43 |   75.00 | 70-73 100-115 125-142 146-207 281-309 317 319 322 324 330-339 361-365 371-383 425-428
+ℹ     xml-tree.js                         |  81.82 |    81.25 |   88.24 | 46-47 88-90 92-98 110-111 113-114 119-120 142-144 163-164 187 214-230 239-241
+ℹ    submission                           |        |          |         | 
+ℹ     submission-processor.js             |  85.04 |    75.00 |   97.14 | 58-64 134-135 140-141 143-144 146-147 149-150 152-153 155-156 158-159 161-162 164-165 167-168 170-171 173-174 176-177 187-190 192-193 195-196 201-202 204-205 207-209 211-212 214-215 217-218 220-221 223-224
+ℹ     submission-router.js                |  94.44 |    75.00 |  100.00 | 32-33
+ℹ    transport                            |        |          |         | 
+ℹ     submission-publishers.js            | 100.00 |   100.00 |  100.00 | 
+ℹ    xml                                  |        |          |         | 
+ℹ     builders                            |        |          |         | 
+ℹ      tables                             |        |          |         | 
+ℹ       index.js                          |  92.82 |    53.13 |   90.00 | 74-75 92 97-99 283-284 289-290 292-293 295-296 298-299 335 337 339 345 354 361-362 374 379 387-389
+ℹ     security.js                         |  70.59 |    71.43 |   80.00 | 15-16 18-19 21-22 25-26 32-33
+ℹ     xsd-validation.js                   |  71.67 |    66.00 |  100.00 | 57-79 106-113 115-128 138-151 172-174 210-215 217-222 238-245 260
+ℹ   src                                   |        |          |         | 
+ℹ    xml                                  |        |          |         | 
+ℹ     builders                            |        |          |         | 
+ℹ      periodic                           |        |          |         | 
+ℹ       index.ts                          |  94.59 |    70.87 |   96.72 | 296-299 320 764-767 771-774 777-780 782-785 801-804 817-820 837-839 849-852 863-866 876-879 889-892 920 924-926 1050-1054
+ℹ      tables                             |        |          |         | 
+ℹ       index.ts                          |  94.35 |    63.64 |   93.33 | 239-242 261 524-527 532-535 537-540 542-545 547-550 603 605 607 618 624 655-657 668-672
+ℹ  pki-pades                              |        |          |         | 
+ℹ   dist                                  |        |          |         | 
+ℹ    index.js                             |  86.27 |    61.54 |  100.00 | 66-67 69-70 77-78 80-81 83-84 87-88 95-96 98-99 101-102 129-130 138
+ℹ services                                |        |          |         | 
+ℹ  certificado                            |        |          |         | 
+ℹ   dist                                  |        |          |         | 
+ℹ    handler.js                           |  87.77 |    65.63 |   94.44 | 4-5 25-27 33-34 79-80 102-103 105-106 108-109 122-123
+ℹ  shared                                 |        |          |         | 
+ℹ   dist                                  |        |          |         | 
+ℹ    handler-result.js                    |  25.00 |   100.00 |    0.00 | 2-7
+ℹ    index.js                             | 100.00 |   100.00 |  100.00 | 
+ℹ  submission                             |        |          |         | 
+ℹ   dist                                  |        |          |         | 
+ℹ    handler.js                           |  85.07 |    55.56 |   75.00 | 35-39 46-48 64-65
+ℹ    postgres-submission-repository.js    |   3.03 |    50.00 |    0.00 | 5-10 12-16 20-21 23-117 119-120 122-395
+ℹ    transport-publishers.js              |  20.99 |    33.33 |    0.00 | 4-11 13-22 27-29 31-42 48-50 52-66 68-80
+ℹ --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ℹ all files                               |  72.07 |    68.54 |   74.58 | 
+ℹ --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ℹ end of coverage report
+
+[exit 0] npm run coverage
+
+===== npm run test:db =====
+
+> esocial@0.0.0 test:db
+> node scripts/check-migrations.mjs lint:migrations && node --test tests/db/*.test.mjs
+
+[lint:migrations] esocial migration checks passed
+✔ fresh migrations enforce tenant RLS, idempotency, and append-only history (953.647875ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1000.483667
+
+[exit 0] npm run test:db
+
+===== npm run migrate:dev =====
+
+> esocial@0.0.0 migrate:dev
+> node scripts/check-migrations.mjs migrate:dev
+
+[migrate:dev] applied 6 migrations to postgresql://aarusso@localhost:5432/esocial_dev
+
+[exit 0] npm run migrate:dev
+
+===== npm run integration:localstack =====
+
+> esocial@0.0.0 integration:localstack
+> npm run build --silent && node tests/integration/localstack/harness.mjs
+
+[integration:localstack] local queue/event/PostgreSQL round trip completed in 499ms (request=sgp.esocial.submit.request.qualification.fifo, response=1, spool=1, audit=1)
+
+[exit 0] npm run integration:localstack
+
+===== npm run test:integration =====
+
+> esocial@0.0.0 test:integration
+> npm run build --silent && npm run templates:check --silent && node --test tests/integration/*.test.mjs tests/integration/localstack/*.test.mjs tests/integration/retry/*.test.mjs tests/soap/*.test.mjs
+
+[templates:check] qualification, restricted-production templates verified in /Users/aarusso/Development/stech/stynx-esocial/infra/cdk/cdk.out
+✔ generated templates enforce stages and production confirmation (59.7495ms)
+✔ transient transport failure schedules retry and the replayed attempt produces exactly one accepted submission (7.002375ms)
+✔ terminal failure produces DLQ payload and no accepted regulatory submission (12.625333ms)
+✔ operator replay derives a fresh request and audit evidence from DLQ payload (0.348208ms)
+✔ observability helpers emit stable log fields, metrics, traces, and circuit decisions (0.49525ms)
+✔ return processor persists status and totalizer evidence against the esocial schema (711.372208ms)
+✔ submission handler persists and deduplicates against the esocial schema (670.071042ms)
+✔ SOAP sandbox performs deterministic submit and return exchanges with hashes (75.70725ms)
+✔ SOAP WSDL stub is committed and dev/test guard rejects gov.br and production routing (0.693708ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 834.260792
+
+[exit 0] npm run test:integration
+
+===== npm run cdk:synth =====
+npm error Missing script: "cdk:synth"
+npm error
+npm error To see a list of scripts, run:
+npm error   npm run
+npm error A complete log of this run can be found in: /Users/aarusso/.npm/_logs/2026-05-05T18_38_27_160Z-debug-0.log
+
+[exit 1] npm run cdk:synth

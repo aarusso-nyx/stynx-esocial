@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.sistematech.local/esocial/v1/request.schema.json",
+  "$id": "https://schemas.sistematech.local/esocial/v1/esocial-request-envelope-v1.schema.json",
   "title": "eSocial request envelope v1",
   "type": "object",
   "additionalProperties": true,
@@ -29,7 +29,7 @@
     },
     "tenant_id": {
       "type": "string",
-      "format": "uuid"
+      "minLength": 1
     },
     "environment": {
       "enum": [
@@ -82,7 +82,37 @@
       ]
     },
     "source": {
-      "type": "object"
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "payroll_run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "employee_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_entity_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_entity_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "source_system": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
     },
     "kind": {
       "enum": [
@@ -117,7 +147,128 @@
       "minLength": 1
     },
     "payload": {
-      "type": "object"
+      "oneOf": [
+        {
+          "$ref": "./dto-s1000.schema.json"
+        },
+        {
+          "$ref": "./dto-s1005.schema.json"
+        },
+        {
+          "$ref": "./dto-s1010.schema.json"
+        },
+        {
+          "$ref": "./dto-s1020.schema.json"
+        },
+        {
+          "$ref": "./dto-s1030.schema.json"
+        },
+        {
+          "$ref": "./dto-s1040.schema.json"
+        },
+        {
+          "$ref": "./dto-s1050.schema.json"
+        },
+        {
+          "$ref": "./dto-s1060.schema.json"
+        },
+        {
+          "$ref": "./dto-s1070.schema.json"
+        },
+        {
+          "$ref": "./dto-s1200.schema.json"
+        },
+        {
+          "$ref": "./dto-s1202.schema.json"
+        },
+        {
+          "$ref": "./dto-s1207.schema.json"
+        },
+        {
+          "$ref": "./dto-s1210.schema.json"
+        },
+        {
+          "$ref": "./dto-s1298.schema.json"
+        },
+        {
+          "$ref": "./dto-s1299.schema.json"
+        },
+        {
+          "$ref": "./dto-s2200.schema.json"
+        },
+        {
+          "$ref": "./dto-s2205.schema.json"
+        },
+        {
+          "$ref": "./dto-s2206.schema.json"
+        },
+        {
+          "$ref": "./dto-s2210.schema.json"
+        },
+        {
+          "$ref": "./dto-s2220.schema.json"
+        },
+        {
+          "$ref": "./dto-s2230.schema.json"
+        },
+        {
+          "$ref": "./dto-s2240.schema.json"
+        },
+        {
+          "$ref": "./dto-s2298.schema.json"
+        },
+        {
+          "$ref": "./dto-s2299.schema.json"
+        },
+        {
+          "$ref": "./dto-s2300.schema.json"
+        },
+        {
+          "$ref": "./dto-s2306.schema.json"
+        },
+        {
+          "$ref": "./dto-s2399.schema.json"
+        },
+        {
+          "$ref": "./dto-s2400.schema.json"
+        },
+        {
+          "$ref": "./dto-s2405.schema.json"
+        },
+        {
+          "$ref": "./dto-s2410.schema.json"
+        },
+        {
+          "$ref": "./dto-s2416.schema.json"
+        },
+        {
+          "$ref": "./dto-s2418.schema.json"
+        },
+        {
+          "$ref": "./dto-s2420.schema.json"
+        },
+        {
+          "$ref": "./dto-s2501.schema.json"
+        },
+        {
+          "$ref": "./dto-s3000.schema.json"
+        },
+        {
+          "$ref": "./dto-s5001.schema.json"
+        },
+        {
+          "$ref": "./dto-s5002.schema.json"
+        },
+        {
+          "$ref": "./dto-s5011.schema.json"
+        },
+        {
+          "$ref": "./dto-s5012.schema.json"
+        },
+        {
+          "$ref": "./dto-s5013.schema.json"
+        }
+      ]
     }
   },
   "required": [

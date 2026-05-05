@@ -22,23 +22,23 @@ export type RetryPolicy = Readonly<{
 
 export type RetryDecisionInput = Readonly<{
   attempt: number;
-  maxAttempts?: number;
+  maxAttempts?: number | undefined;
   occurredAt: Date;
-  error?: EsocialContractError;
-  classification?: RetryFailureClassification;
-  jitterSeed?: string;
-  policy?: Partial<RetryPolicy>;
+  error?: EsocialContractError | undefined;
+  classification?: RetryFailureClassification | undefined;
+  jitterSeed?: string | undefined;
+  policy?: Partial<RetryPolicy> | undefined;
 }>;
 
 export type RetryDecision = Readonly<{
   action: 'retry' | 'dlq';
   classification: RetryFailureClassification;
   attempt: number;
-  nextAttempt?: number;
+  nextAttempt?: number | undefined;
   maxAttempts: number;
   budgetRemaining: number;
-  delayMs?: number;
-  nextAttemptAt?: string;
+  delayMs?: number | undefined;
+  nextAttemptAt?: string | undefined;
   retryable: boolean;
   reason: string;
 }>;
@@ -55,17 +55,17 @@ export type RetryAttemptEvidence = Readonly<{
   attempt: number;
   attemptedAt: string;
   classification: RetryFailureClassification;
-  errorCode?: string;
+  errorCode?: string | undefined;
   errorMessage: string;
   retryable: boolean;
-  delayMs?: number;
-  nextAttemptAt?: string;
+  delayMs?: number | undefined;
+  nextAttemptAt?: string | undefined;
 }>;
 
 export type RetrySchedulePersistenceCommand = Readonly<{
   tenantId: string;
-  eventRecordId?: string;
-  batchId?: string;
+  eventRecordId?: string | undefined;
+  batchId?: string | undefined;
   environment: string;
   eventClass: string;
   nextAttemptAt: string;
@@ -73,7 +73,7 @@ export type RetrySchedulePersistenceCommand = Readonly<{
   maxAttempts: number;
   budgetRemaining: number;
   lastClassification: RetryFailureClassification;
-  lastErrorCode?: string;
+  lastErrorCode?: string | undefined;
   lastErrorMessage: string;
   status: 'SCHEDULED' | 'EXHAUSTED';
 }>;
@@ -86,17 +86,17 @@ export type TerminalDlqPayload<TRequest extends QueueAdapterRequestEnvelope = Qu
       attempt_history: readonly RetryAttemptEvidence[];
       hashes: {
         original_envelope_sha256: string;
-        request_sha256?: string;
-        payload_sha256?: string;
-        signed_payload_sha256?: string;
-        response_sha256?: string;
+        request_sha256?: string | undefined;
+        payload_sha256?: string | undefined;
+        signed_payload_sha256?: string | undefined;
+        response_sha256?: string | undefined;
       };
       replay_hint: {
         replay_topic: string;
         schema_version: 'v1';
         idempotency_derivation: 'esocial:v1:replay:sha256(original-idempotency-key + replay-request-id)';
         eligible: boolean;
-        reason?: string;
+        reason?: string | undefined;
       };
     }>;
 
@@ -189,8 +189,8 @@ export function classifyRetryFailure(
 export function calculateBackoffDelayMs(input: Readonly<{
   attempt: number;
   classification: RetryFailureClassification;
-  jitterSeed?: string;
-  policy?: RetryPolicy;
+  jitterSeed?: string | undefined;
+  policy?: RetryPolicy | undefined;
 }>): number {
   const policy = input.policy ?? DEFAULT_RETRY_POLICY;
   const exponent = Math.max(0, input.attempt - 1);
@@ -224,8 +224,8 @@ export function buildRetryAttemptEvidence(input: Readonly<{
 
 export function buildRetryScheduleCommand(input: Readonly<{
   request: QueueAdapterRequestEnvelope;
-  eventRecordId?: string;
-  batchId?: string;
+  eventRecordId?: string | undefined;
+  batchId?: string | undefined;
   decision: ScheduledRetryDecision;
   error: EsocialContractError;
 }>): RetrySchedulePersistenceCommand {
@@ -251,10 +251,10 @@ export function buildTerminalDlqPayload<TRequest extends QueueAdapterRequestEnve
     request: TRequest;
     errors: readonly EsocialContractError[];
     occurredAt: string;
-    finalAttempt?: number;
-    lastClassification?: RetryFailureClassification;
-    attemptHistory?: readonly RetryAttemptEvidence[];
-    replayTopic?: string;
+    finalAttempt?: number | undefined;
+    lastClassification?: RetryFailureClassification | undefined;
+    attemptHistory?: readonly RetryAttemptEvidence[] | undefined;
+    replayTopic?: string | undefined;
   }>,
 ): TerminalDlqPayload<TRequest> {
   const primaryError = input.errors[0];

@@ -1,3 +1,4 @@
+import type { EsocialContractError } from '@esocial/contracts';
 import {
   RetryableSubmissionError,
   SubmissionProcessor,
@@ -8,19 +9,18 @@ import type {
   SubmissionPublishers,
   SubmissionRepository,
 } from '@esocial/domain';
-import type { EsocialContractError } from '@esocial/contracts';
 
-import { createAwsSubmissionPublishersFromEnv } from './transport-publishers.js';
 import { createPostgresSubmissionRepositoryFromEnv } from './postgres-submission-repository.js';
+import { createAwsSubmissionPublishersFromEnv } from './transport-publishers.js';
 
 export type SqsSubmissionRecord = Readonly<{
-  messageId?: string;
-  messageID?: string;
-  body?: string;
+  messageId?: string | undefined;
+  messageID?: string | undefined;
+  body?: string | undefined;
 }>;
 
 export type SqsSubmissionEvent = Readonly<{
-  Records?: readonly SqsSubmissionRecord[];
+  Records?: readonly SqsSubmissionRecord[] | undefined;
 }>;
 
 export type SqsBatchResponse = Readonly<{
@@ -30,10 +30,10 @@ export type SqsBatchResponse = Readonly<{
 }>;
 
 export type CreateSubmissionHandlerOptions = Readonly<{
-  processor?: SubmissionProcessor;
-  repository?: SubmissionRepository;
-  publishers?: SubmissionPublishers;
-  now?: () => Date;
+  processor?: SubmissionProcessor | undefined;
+  repository?: SubmissionRepository | undefined;
+  publishers?: SubmissionPublishers | undefined;
+  now?: (() => Date) | undefined;
 }>;
 
 export function createSubmissionHandler(

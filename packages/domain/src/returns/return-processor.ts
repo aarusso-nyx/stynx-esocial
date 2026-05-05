@@ -22,6 +22,7 @@ import type {
   SubmissionPublisher,
 } from '../transport/submission-publishers.js';
 import { sha256Prefixed } from '../xml/security.js';
+
 import {
   ReturnXmlParseError,
   parseEsocialReturnXml,
@@ -59,17 +60,17 @@ export type PersistReturnCommand = Readonly<{
   rawResponseXml: string;
   responseHash: string;
   parsed: ParsedEsocialReturn | null;
-  classification?: ReturnResponseClassification;
+  classification?: ReturnResponseClassification | undefined;
   status: EsocialStatus;
-  previousStatus?: EsocialStatus;
+  previousStatus?: EsocialStatus | undefined;
   occurredAt: string;
   eventRecordId: string;
   batchId: string;
-  protocol?: string;
-  receipt?: string;
-  competence?: string;
-  totalizerClass?: EsocialRelayEventClass;
-  sourceEventClass?: EsocialRelayEventClass;
+  protocol?: string | undefined;
+  receipt?: string | undefined;
+  competence?: string | undefined;
+  totalizerClass?: EsocialRelayEventClass | undefined;
+  sourceEventClass?: EsocialRelayEventClass | undefined;
   errors: readonly EsocialContractError[];
 }>;
 
@@ -79,13 +80,13 @@ export type ReturnPersistenceRecord = Readonly<{
   eventRecordId: string;
   batchId: string;
   status: EsocialStatus;
-  previousStatus?: EsocialStatus;
+  previousStatus?: EsocialStatus | undefined;
   responseHash: string;
-  protocol?: string;
-  receipt?: string;
-  totalizerId?: string;
-  totalizerClass?: EsocialRelayEventClass;
-  competence?: string;
+  protocol?: string | undefined;
+  receipt?: string | undefined;
+  totalizerId?: string | undefined;
+  totalizerClass?: EsocialRelayEventClass | undefined;
+  competence?: string | undefined;
   createdAt: string;
   updatedAt: string;
 }>;
@@ -119,14 +120,14 @@ export type ReturnIngressValidationResult =
   | Readonly<{
       ok: false;
       error: EsocialContractError;
-      candidate?: Record<string, unknown>;
-      rawBody?: string;
+      candidate?: Record<string, unknown> | undefined;
+      rawBody?: string | undefined;
     }>;
 
 export type ReturnProcessorOptions = Readonly<{
   repository: ReturnRepository;
   publishers: ReturnPublishers;
-  now?: () => Date;
+  now?: (() => Date) | undefined;
 }>;
 
 export class ReturnProcessor {
@@ -247,7 +248,7 @@ export class ReturnProcessor {
     occurredAt: string,
   ): Promise<Readonly<{
     parsed: ParsedEsocialReturn | null;
-    classification?: ReturnResponseClassification;
+    classification?: ReturnResponseClassification | undefined;
     status: EsocialStatus;
     errors: readonly EsocialContractError[];
     operatorActionRequired: boolean;
@@ -399,7 +400,7 @@ function buildReturnSpoolUpdateEnvelope(
   record: ReturnPersistenceRecord,
   parsedOutcome: Readonly<{
     parsed: ParsedEsocialReturn | null;
-    classification?: ReturnResponseClassification;
+    classification?: ReturnResponseClassification | undefined;
     errors: readonly EsocialContractError[];
     operatorActionRequired: boolean;
   }>,
@@ -447,7 +448,7 @@ function buildReturnAuditEnvelope(
   record: ReturnPersistenceRecord,
   parsedOutcome: Readonly<{
     parsed: ParsedEsocialReturn | null;
-    classification?: ReturnResponseClassification;
+    classification?: ReturnResponseClassification | undefined;
     errors: readonly EsocialContractError[];
   }>,
   occurredAt: string,
@@ -495,7 +496,7 @@ function buildReturnDlqEnvelope(
   error: EsocialContractError,
   occurredAt: string,
   rawBody?: string,
-): EsocialDlqEnvelope & Readonly<{ malformed_body?: string }> {
+): EsocialDlqEnvelope & Readonly<{ malformed_body?: string | undefined }> {
   const requestId = stringValue(candidate?.['request-id']) ?? `malformed-return-${occurredAt}`;
   const correlationId = stringValue(candidate?.['correlation-id']) ?? requestId;
   const eventClass = includesString(ESOCIAL_RELAY_EVENT_CLASSES, candidate?.event_class)

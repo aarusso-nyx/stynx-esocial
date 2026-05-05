@@ -21,26 +21,26 @@ export type EsocialSoapEndpointConfig = Readonly<
 >;
 
 export type ResolveSoapEndpointOptions = Readonly<{
-  config?: EsocialSoapEndpointConfig;
-  nodeEnv?: string;
+  config?: EsocialSoapEndpointConfig | undefined;
+  nodeEnv?: string | undefined;
 }>;
 
 export type SoapEndpointGuardOptions = Readonly<{
-  nodeEnv?: string;
-  allowlistHosts?: readonly string[];
+  nodeEnv?: string | undefined;
+  allowlistHosts?: readonly string[] | undefined;
 }>;
 
 export type SoapSandboxSubmitInput = Readonly<{
   endpointUrl: string;
   signedBatchXml: string;
-  now?: Date;
-  protocolSeed?: string;
+  now?: Date | undefined;
+  protocolSeed?: string | undefined;
 }>;
 
 export type SoapSandboxReturnInput = Readonly<{
   endpointUrl: string;
   protocol: string;
-  now?: Date;
+  now?: Date | undefined;
 }>;
 
 export type SoapSandboxExchange = Readonly<{
@@ -48,8 +48,8 @@ export type SoapSandboxExchange = Readonly<{
   endpointUrl: string;
   soapRequest: string;
   soapResponse: string;
-  requestXmlSha256?: string;
-  signedPayloadSha256?: string;
+  requestXmlSha256?: string | undefined;
+  signedPayloadSha256?: string | undefined;
   soapRequestSha256: string;
   soapResponseSha256: string;
   protocol: string;

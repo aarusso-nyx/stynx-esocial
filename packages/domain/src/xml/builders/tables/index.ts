@@ -51,24 +51,24 @@ export type TableEventDtoBase<EventClass extends PromotedTableEventClass> =
     eventClass: EventClass;
     tenantId: string;
     sourceEntityId: string;
-    sourceEventId?: string;
+    sourceEventId?: string | undefined;
     competence: string;
-    operation?: EsocialTableOperation;
-    environment?: EsocialEnvironment;
-    processEmitter?: string;
-    processVersion?: string;
-    eventId?: string;
+    operation?: EsocialTableOperation | undefined;
+    environment?: EsocialEnvironment | undefined;
+    processEmitter?: string | undefined;
+    processVersion?: string | undefined;
+    eventId?: string | undefined;
   }>;
 
 export type S1000TableDto = TableEventDtoBase<'S-1000'> &
   Readonly<{
     employer: Readonly<{
       registrationNumber: string;
-      classTrib?: string;
-      cooperativeIndicator?: string;
-      constructionIndicator?: string;
-      payrollExemptionIndicator?: string;
-      electronicRecordOption?: string;
+      classTrib?: string | undefined;
+      cooperativeIndicator?: string | undefined;
+      constructionIndicator?: string | undefined;
+      payrollExemptionIndicator?: string | undefined;
+      electronicRecordOption?: string | undefined;
     }>;
   }>;
 
@@ -77,7 +77,7 @@ export type S1005TableDto = TableEventDtoBase<'S-1005'> &
     establishment: Readonly<{
       registrationNumber: string;
       employerRegistrationNumber: string;
-      cnaePreponderante?: string;
+      cnaePreponderante?: string | undefined;
     }>;
   }>;
 
@@ -85,18 +85,18 @@ export type S1010TableDto = TableEventDtoBase<'S-1010'> &
   Readonly<{
     rubric: Readonly<{
       code: string;
-      tableId?: string;
+      tableId?: string | undefined;
       description: string;
-      natureCode?: string;
+      natureCode?: string | undefined;
       type: 'earning' | 'deduction' | 'informational' | 'informational-deduction';
       incidences?: Readonly<{
-        codIncCP?: string;
-        codIncIRRF?: string;
-        codIncFGTS?: string;
-        codIncCPRP?: string;
-        codIncPisPasep?: string | number | boolean;
+        codIncCP?: string | undefined;
+        codIncIRRF?: string | undefined;
+        codIncFGTS?: string | undefined;
+        codIncCPRP?: string | undefined;
+        codIncPisPasep?: string | number | boolean | undefined;
       }>;
-      remunerationCeiling?: 'S' | 'N';
+      remunerationCeiling?: 'S' | 'N' | undefined;
       employerRegistrationNumber: string;
     }>;
   }>;
@@ -106,9 +106,9 @@ export type S1020TableDto = TableEventDtoBase<'S-1020'> &
     taxLotation: Readonly<{
       code: string;
       employerRegistrationNumber: string;
-      typeCode?: string;
-      fpasCode?: string;
-      thirdPartyCode?: string;
+      typeCode?: string | undefined;
+      fpasCode?: string | undefined;
+      thirdPartyCode?: string | undefined;
     }>;
   }>;
 
@@ -128,8 +128,8 @@ export type S1070TableDto = TableEventDtoBase<'S-1070'> &
       processNumber: string;
       subject: string;
       employerRegistrationNumber: string;
-      processType?: string;
-      matterIndicator?: string;
+      processType?: string | undefined;
+      matterIndicator?: string | undefined;
     }>;
   }>;
 
@@ -146,7 +146,7 @@ export type BuiltTableXmlEvent = Readonly<{
   operation: EsocialTableOperation;
   source: Readonly<{
     tenantId: string;
-    sourceEventId?: string;
+    sourceEventId?: string | undefined;
     sourceEntityId: string;
     sourceEntityKind: TableSourceEntityKind;
   }>;

@@ -4,15 +4,15 @@ export type EndpointCircuitSnapshot = Readonly<{
   tenantId: string;
   environment: string;
   endpointName: string;
-  endpointUrl?: string;
+  endpointUrl?: string | undefined;
   state: CircuitBreakerState;
   failureCount: number;
   successCount: number;
-  openedAt?: string;
-  halfOpenedAt?: string;
-  lastFailureAt?: string;
-  lastSuccessAt?: string;
-  lastErrorCode?: string;
+  openedAt?: string | undefined;
+  halfOpenedAt?: string | undefined;
+  lastFailureAt?: string | undefined;
+  lastSuccessAt?: string | undefined;
+  lastErrorCode?: string | undefined;
 }>;
 
 export type CircuitBreakerPolicy = Readonly<{
@@ -25,7 +25,7 @@ export type CircuitBreakerDecision = Readonly<{
   action: 'allow' | 'defer';
   state: CircuitBreakerState;
   reason: string;
-  nextCheckAt?: string;
+  nextCheckAt?: string | undefined;
 }>;
 
 export const DEFAULT_CIRCUIT_BREAKER_POLICY: CircuitBreakerPolicy = {
@@ -35,9 +35,9 @@ export const DEFAULT_CIRCUIT_BREAKER_POLICY: CircuitBreakerPolicy = {
 };
 
 export function decideCircuitBreakerState(input: Readonly<{
-  snapshot?: EndpointCircuitSnapshot;
+  snapshot?: EndpointCircuitSnapshot | undefined;
   now: Date;
-  policy?: Partial<CircuitBreakerPolicy>;
+  policy?: Partial<CircuitBreakerPolicy> | undefined;
 }>): CircuitBreakerDecision {
   const policy = normalizeCircuitPolicy(input.policy);
   const snapshot = input.snapshot;
@@ -77,8 +77,8 @@ export function recordCircuitBreakerOutcome(input: Readonly<{
   snapshot: EndpointCircuitSnapshot;
   outcome: 'success' | 'failure';
   now: Date;
-  errorCode?: string;
-  policy?: Partial<CircuitBreakerPolicy>;
+  errorCode?: string | undefined;
+  policy?: Partial<CircuitBreakerPolicy> | undefined;
 }>): EndpointCircuitSnapshot {
   const policy = normalizeCircuitPolicy(input.policy);
   const nowIso = input.now.toISOString();

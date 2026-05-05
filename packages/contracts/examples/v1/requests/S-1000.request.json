@@ -1,40 +1,33 @@
 {
   "version": "v1",
   "family": "request",
-  "request-id": "00000000-0000-4000-8000-000000020001",
-  "correlation-id": "00000000-0000-4000-8000-000000030001",
-  "idempotency-key": "esocial:v1:request:00000000-0000-4000-8000-000000009001:QUALIFICATION:S-1000:00000000-0000-4000-8000-000000010001:source-s-1000-01:-:2026-05:sha256%3A50cd2ac3cc230b8717b99a44a708504a1c9cccd1826e5f3bb409e7b83a01c8b0:-:-",
+  "request-id": "req-request-S-1000",
+  "correlation-id": "corr-S-1000",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-1000:source-event-S-1000:source-entity-S-1000:-:-:sha256%3A4d7613fc1a44faa7b90ee441e7c3e31725662f2c11e7035d6a8fd13da05063f7:-:-",
   "created_at": "2026-05-05T12:00:00.000Z",
-  "tenant_id": "00000000-0000-4000-8000-000000009001",
+  "tenant_id": "tenant-a",
   "environment": "QUALIFICATION",
   "event_class": "S-1000",
   "source": {
-    "source_event_id": "00000000-0000-4000-8000-000000010001",
-    "source_entity_id": "source-s-1000-01",
-    "payroll_run_id": "payroll-2026-05-01",
+    "source_event_id": "source-event-S-1000",
+    "source_entity_id": "source-entity-S-1000",
     "source_system": "SGP"
   },
-  "kind": "submit",
-  "payload_hash": "sha256:50cd2ac3cc230b8717b99a44a708504a1c9cccd1826e5f3bb409e7b83a01c8b0",
+  "kind": "tabelas",
+  "payload_hash": "sha256:4d7613fc1a44faa7b90ee441e7c3e31725662f2c11e7035d6a8fd13da05063f7",
   "attempt": 1,
   "max-attempts": 3,
   "reply-to": "sgp.esocial.submit.response",
   "dead-letter-topic": "sgp.esocial.dlq",
   "payload": {
-    "batchId": "00000000-0000-4000-8000-000000040001",
-    "environment": "QUALIFICATION",
-    "endpointUrl": "https://sandbox.esocial.example.test/submit",
-    "eventIds": [
-      "00000000-0000-4000-8000-000000050001"
-    ],
     "eventClass": "S-1000",
-    "signedEnvelope": {
-      "tenantId": "00000000-0000-4000-8000-000000009001",
-      "eventKind": "S-1000",
-      "payloadXml": "<eSocial />",
-      "payloadSha256": "sha256:50cd2ac3cc230b8717b99a44a708504a1c9cccd1826e5f3bb409e7b83a01c8b0",
-      "pkcs7Sha256": "sha256:ae2da1b71fb352ddb541d52e06fa7d6d3d415460bbafedc25c4e625730ab9b3c",
-      "signedAt": "2026-05-05T12:00:00.000Z"
-    }
+    "tenantId": "tenant-a",
+    "sourceEventId": "source-event-S-1000",
+    "sourceEntityId": "source-entity-S-1000",
+    "environment": "qualification",
+    "employerCnpj": "12345678000199",
+    "validityStart": "2026-05",
+    "legalName": "SistemaTech Fixture Employer",
+    "taxClassification": "99"
   }
 }

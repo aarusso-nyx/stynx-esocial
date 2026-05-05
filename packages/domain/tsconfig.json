@@ -10,7 +10,6 @@
     { "path": "../pki-pades" }
   ],
   "include": ["src/**/*.ts"],
-  // Phase 1 fences the SGP lift-out evidence tree from the active build.
-  // Phase 5 promotes boundary-clean builders/parsers into production paths.
+  // Round 0 fences SGP lift-out evidence from active builds; Round 1 promotes remaining slices.
   "exclude": ["src/sgp-lifted/**", "dist", "node_modules"]
 }

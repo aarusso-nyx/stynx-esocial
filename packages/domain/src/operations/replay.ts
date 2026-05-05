@@ -20,19 +20,19 @@ import type {
 export type ReplayableDlqPayload<TRequest extends QueueAdapterRequestEnvelope = QueueAdapterRequestEnvelope> =
   (TerminalDlqPayload<TRequest> | EsocialDlqEnvelope<TRequest['kind']>) &
     Readonly<{
-      original_envelope?: TRequest;
-      last_classification?: RetryFailureClassification;
+      original_envelope?: TRequest | undefined;
+      last_classification?: RetryFailureClassification | undefined;
       replay_hint?: {
-        schema_version?: string;
-        eligible?: boolean;
-        reason?: string;
+        schema_version?: string | undefined;
+        eligible?: boolean | undefined;
+        reason?: string | undefined;
       };
     }>;
 
 export type DlqListFilters = Readonly<{
-  tenantId?: string;
-  eventClass?: string;
-  classification?: RetryFailureClassification;
+  tenantId?: string | undefined;
+  eventClass?: string | undefined;
+  classification?: RetryFailureClassification | undefined;
 }>;
 
 export type ReplayRequestResult<TRequest extends QueueAdapterRequestEnvelope = QueueAdapterRequestEnvelope> =
@@ -68,8 +68,8 @@ export function buildReplayRequestFromDlq<TRequest extends QueueAdapterRequestEn
     dlq: ReplayableDlqPayload<TRequest>;
     replayedBy: string;
     replayReason: string;
-    now?: Date;
-    uuid?: () => string;
+    now?: Date | undefined;
+    uuid?: (() => string) | undefined;
   }>,
 ): ReplayRequestResult<TRequest> {
   const original = assertReplayCompatible(input.dlq);

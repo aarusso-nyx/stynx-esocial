@@ -1,40 +1,49 @@
 {
   "version": "v1",
   "family": "request",
-  "request-id": "00000000-0000-4000-8000-000000020010",
-  "correlation-id": "00000000-0000-4000-8000-000000030010",
-  "idempotency-key": "esocial:v1:request:00000000-0000-4000-8000-000000009010:QUALIFICATION:S-1200:00000000-0000-4000-8000-000000010010:source-s-1200-10:-:2026-05:sha256%3A2d837544730b3f1a39741544153d4cfd197167c27b575bf30a8d4c2ffb38167a:-:-",
+  "request-id": "req-request-S-1200",
+  "correlation-id": "corr-S-1200",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-1200:source-event-S-1200:source-entity-S-1200:-:2026-05:sha256%3A08bfa136bcbe1bcccc52a74a61d88e584bd9158cd014433e2234e506abe9dd00:-:-",
   "created_at": "2026-05-05T12:00:00.000Z",
-  "tenant_id": "00000000-0000-4000-8000-000000009010",
+  "tenant_id": "tenant-a",
   "environment": "QUALIFICATION",
   "event_class": "S-1200",
   "source": {
-    "source_event_id": "00000000-0000-4000-8000-000000010010",
-    "source_entity_id": "source-s-1200-10",
-    "payroll_run_id": "payroll-2026-05-10",
+    "source_event_id": "source-event-S-1200",
+    "source_entity_id": "source-entity-S-1200",
+    "payroll_run_id": "payroll-2026-05",
     "source_system": "SGP"
   },
-  "kind": "submit",
-  "payload_hash": "sha256:2d837544730b3f1a39741544153d4cfd197167c27b575bf30a8d4c2ffb38167a",
+  "kind": "folha",
+  "payload_hash": "sha256:08bfa136bcbe1bcccc52a74a61d88e584bd9158cd014433e2234e506abe9dd00",
   "attempt": 1,
   "max-attempts": 3,
   "reply-to": "sgp.esocial.submit.response",
   "dead-letter-topic": "sgp.esocial.dlq",
   "payload": {
-    "batchId": "00000000-0000-4000-8000-000000040010",
-    "environment": "QUALIFICATION",
-    "endpointUrl": "https://sandbox.esocial.example.test/submit",
-    "eventIds": [
-      "00000000-0000-4000-8000-000000050010"
-    ],
     "eventClass": "S-1200",
-    "signedEnvelope": {
-      "tenantId": "00000000-0000-4000-8000-000000009010",
-      "eventKind": "S-1200",
-      "payloadXml": "<eSocial />",
-      "payloadSha256": "sha256:2d837544730b3f1a39741544153d4cfd197167c27b575bf30a8d4c2ffb38167a",
-      "pkcs7Sha256": "sha256:05f8ebec5bb84ebd7621945423864c49705863cac448f334c39d8ce6b86f8d08",
-      "signedAt": "2026-05-05T12:00:00.000Z"
-    }
+    "tenantId": "tenant-a",
+    "sourceEventId": "source-event-S-1200",
+    "sourceEntityId": "source-entity-S-1200",
+    "environment": "qualification",
+    "employerCnpj": "12345678000199",
+    "competence": "2026-05",
+    "payrollRunId": "payroll-2026-05",
+    "payrollRunStatus": "GENERATED",
+    "workers": [
+      {
+        "employeeId": "employee-1",
+        "cpf": "12345678901",
+        "registration": "MAT-1",
+        "categoryCode": "101",
+        "rubrics": [
+          {
+            "rubricCode": "RUB-001",
+            "ideDmDev": "DM-1",
+            "amount": 1000
+          }
+        ]
+      }
+    ]
   }
 }

@@ -9,7 +9,7 @@ const ESOCIAL_IDEMPOTENCY_CONTRACT_VERSION: EsocialContractVersion = 'v1';
 
 export type EsocialIdempotencyMarker = Readonly<{
   marker: string;
-  reference?: string;
+  reference?: string | undefined;
 }>;
 
 export type EsocialIdempotencyKeyInput = Readonly<{
@@ -17,13 +17,13 @@ export type EsocialIdempotencyKeyInput = Readonly<{
   tenant_id: string;
   environment: EsocialEnvironment;
   event_class: EsocialRelayEventClass;
-  source_event_id?: string;
-  source_entity_id?: string;
-  source_entity_ids?: readonly string[];
-  competence?: string;
+  source_event_id?: string | undefined;
+  source_entity_id?: string | undefined;
+  source_entity_ids?: readonly string[] | undefined;
+  competence?: string | undefined;
   payload_hash: string;
-  rectification?: EsocialIdempotencyMarker;
-  exclusion?: EsocialIdempotencyMarker;
+  rectification?: EsocialIdempotencyMarker | undefined;
+  exclusion?: EsocialIdempotencyMarker | undefined;
 }>;
 
 export type EsocialIdempotencyKey = Readonly<{

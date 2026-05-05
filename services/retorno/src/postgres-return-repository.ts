@@ -1,15 +1,15 @@
 import { randomUUID } from 'node:crypto';
 
-import pg from 'pg';
-import type { Pool, PoolClient } from 'pg';
-
+import type { EsocialStatus } from '@esocial/contracts';
 import type {
   PersistReturnCommand,
   ReturnPersistenceRecord,
   ReturnRepository,
   ReturnResponseClassification,
 } from '@esocial/domain';
-import type { EsocialStatus } from '@esocial/contracts';
+import pg from 'pg';
+import type { Pool, PoolClient } from 'pg';
+
 
 const { Pool: PgPool } = pg;
 

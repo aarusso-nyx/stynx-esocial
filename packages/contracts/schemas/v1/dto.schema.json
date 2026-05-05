@@ -1,0 +1,127 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sistematech.local/esocial/v1/esocial-sgp-request-dto-v1.schema.json",
+  "title": "eSocial SGP request DTO v1",
+  "oneOf": [
+    {
+      "$ref": "./dto-s1000.schema.json"
+    },
+    {
+      "$ref": "./dto-s1005.schema.json"
+    },
+    {
+      "$ref": "./dto-s1010.schema.json"
+    },
+    {
+      "$ref": "./dto-s1020.schema.json"
+    },
+    {
+      "$ref": "./dto-s1030.schema.json"
+    },
+    {
+      "$ref": "./dto-s1040.schema.json"
+    },
+    {
+      "$ref": "./dto-s1050.schema.json"
+    },
+    {
+      "$ref": "./dto-s1060.schema.json"
+    },
+    {
+      "$ref": "./dto-s1070.schema.json"
+    },
+    {
+      "$ref": "./dto-s1200.schema.json"
+    },
+    {
+      "$ref": "./dto-s1202.schema.json"
+    },
+    {
+      "$ref": "./dto-s1207.schema.json"
+    },
+    {
+      "$ref": "./dto-s1210.schema.json"
+    },
+    {
+      "$ref": "./dto-s1298.schema.json"
+    },
+    {
+      "$ref": "./dto-s1299.schema.json"
+    },
+    {
+      "$ref": "./dto-s2200.schema.json"
+    },
+    {
+      "$ref": "./dto-s2205.schema.json"
+    },
+    {
+      "$ref": "./dto-s2206.schema.json"
+    },
+    {
+      "$ref": "./dto-s2210.schema.json"
+    },
+    {
+      "$ref": "./dto-s2220.schema.json"
+    },
+    {
+      "$ref": "./dto-s2230.schema.json"
+    },
+    {
+      "$ref": "./dto-s2240.schema.json"
+    },
+    {
+      "$ref": "./dto-s2298.schema.json"
+    },
+    {
+      "$ref": "./dto-s2299.schema.json"
+    },
+    {
+      "$ref": "./dto-s2300.schema.json"
+    },
+    {
+      "$ref": "./dto-s2306.schema.json"
+    },
+    {
+      "$ref": "./dto-s2399.schema.json"
+    },
+    {
+      "$ref": "./dto-s2400.schema.json"
+    },
+    {
+      "$ref": "./dto-s2405.schema.json"
+    },
+    {
+      "$ref": "./dto-s2410.schema.json"
+    },
+    {
+      "$ref": "./dto-s2416.schema.json"
+    },
+    {
+      "$ref": "./dto-s2418.schema.json"
+    },
+    {
+      "$ref": "./dto-s2420.schema.json"
+    },
+    {
+      "$ref": "./dto-s2501.schema.json"
+    },
+    {
+      "$ref": "./dto-s3000.schema.json"
+    },
+    {
+      "$ref": "./dto-s5001.schema.json"
+    },
+    {
+      "$ref": "./dto-s5002.schema.json"
+    },
+    {
+      "$ref": "./dto-s5011.schema.json"
+    },
+    {
+      "$ref": "./dto-s5012.schema.json"
+    },
+    {
+      "$ref": "./dto-s5013.schema.json"
+    }
+  ]
+}

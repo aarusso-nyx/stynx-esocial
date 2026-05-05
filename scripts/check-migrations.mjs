@@ -1,6 +1,6 @@
-import { readFileSync, readdirSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
-import { basename, join } from 'node:path';
+import { readFileSync, readdirSync } from 'node:fs';
+import { join } from 'node:path';
 
 const root = new URL('..', import.meta.url).pathname;
 const mode = process.argv[2] ?? 'lint:migrations';
@@ -17,14 +17,7 @@ const sql = migrationFiles
 assertMigrationCanaries(sql, mode);
 
 if (mode === 'migrate:dev') {
-  const explicitDatabaseUrl = process.env.ESOCIAL_DATABASE_URL
-    ?? process.env.DATABASE_URL;
-  const databaseUrl = explicitDatabaseUrl ?? defaultDatabaseUrl();
-  ensureDatabaseExists(databaseUrl, {
-    reset: process.env.ESOCIAL_MIGRATE_RESET === '1' || !explicitDatabaseUrl,
-  });
-  applyMigrations(databaseUrl);
-  console.log(`[${mode}] applied ${migrationFiles.length} migrations to ${redactDatabaseUrl(databaseUrl)}`);
+  runMigrationScript();
 } else {
   console.log(`[${mode}] esocial migration checks passed`);
 }
@@ -56,87 +49,23 @@ function assertMigrationCanaries(source, checkMode) {
   }
 }
 
-function defaultDatabaseUrl() {
-  const user = encodeURIComponent(process.env.USER ?? 'postgres');
-  return `postgresql://${user}@localhost:5432/esocial_dev`;
-}
-
-function ensureDatabaseExists(databaseUrl, options = {}) {
-  const target = new URL(databaseUrl);
-  const databaseName = target.pathname.replace(/^\//u, '');
-  if (!databaseName) {
-    throw new Error(`[${mode}] database URL must include a database name`);
-  }
-
-  const maintenanceUrl = withDatabase(databaseUrl, 'postgres');
-  const exists = runPsql(maintenanceUrl, [
-    '-Atc',
-    `SELECT 1 FROM pg_database WHERE datname = ${quoteLiteral(databaseName)}`,
-  ]).stdout.trim();
-
-  if (exists === '1' && options.reset) {
-    runPsql(maintenanceUrl, ['-c', `DROP DATABASE ${quoteIdent(databaseName)} WITH (FORCE)`]);
-    runPsql(maintenanceUrl, ['-c', `CREATE DATABASE ${quoteIdent(databaseName)}`]);
-    return;
-  }
-
-  if (exists === '1') {
-    return;
-  }
-
-  runPsql(maintenanceUrl, ['-c', `CREATE DATABASE ${quoteIdent(databaseName)}`]);
-}
-
-function applyMigrations(databaseUrl) {
-  for (const fileName of migrationFiles) {
-    runPsql(databaseUrl, ['-f', fileName], {
-      label: basename(fileName),
-    });
-  }
-}
-
-function runPsql(databaseUrl, args, options = {}) {
+function runMigrationScript() {
   const result = spawnSync(
-    'psql',
-    ['-X', '-v', 'ON_ERROR_STOP=1', databaseUrl, ...args],
+    process.execPath,
+    ['scripts/migrate-dev.mjs'],
     {
+      cwd: root,
       encoding: 'utf8',
-      stdio: ['ignore', 'pipe', 'pipe'],
+      env: process.env,
+      stdio: 'inherit',
     },
   );
 
   if (result.error) {
-    throw new Error(`[${mode}] failed to run psql: ${result.error.message}`);
+    throw new Error(`[${mode}] failed to start migrate-dev script: ${result.error.message}`);
   }
 
   if (result.status !== 0) {
-    const label = options.label ? ` while applying ${options.label}` : '';
-    throw new Error(
-      `[${mode}] psql failed${label}\n${result.stderr.trim()}`,
-    );
+    throw new Error(`[${mode}] migrate-dev script failed with exit code ${result.status}`);
   }
-
-  return result;
-}
-
-function withDatabase(databaseUrl, databaseName) {
-  const parsed = new URL(databaseUrl);
-  parsed.pathname = `/${databaseName}`;
-  return parsed.toString();
-}
-
-function quoteLiteral(value) {
-  return `'${value.replaceAll("'", "''")}'`;
-}
-
-function quoteIdent(value) {
-  return `"${value.replaceAll('"', '""')}"`;
-}
-
-function redactDatabaseUrl(databaseUrl) {
-  const parsed = new URL(databaseUrl);
-  if (parsed.password) {
-    parsed.password = '***';
-  }
-  return parsed.toString();
 }

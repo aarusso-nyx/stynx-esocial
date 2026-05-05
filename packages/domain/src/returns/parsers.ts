@@ -18,10 +18,10 @@ export { ReturnXmlParseError } from './xml-tree.js';
 export type ParsedIdentity = Readonly<{
   type: 'CNPJ' | 'CPF' | 'CAEPF' | 'CNO';
   registration: string;
-  cnpj?: string;
-  cpf?: string;
-  caepf?: string;
-  cno?: string;
+  cnpj?: string | undefined;
+  cpf?: string | undefined;
+  caepf?: string | undefined;
+  cno?: string | undefined;
 }>;
 
 export type ProtocolParseResult = Readonly<{

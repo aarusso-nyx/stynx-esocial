@@ -3,6 +3,7 @@ import {
   ESOCIAL_CONTRACT_VERSION,
   ESOCIAL_ENVIRONMENTS,
   ESOCIAL_RELAY_EVENT_CLASSES,
+  validateEsocialSgpRequestDto,
 } from '@esocial/contracts';
 import type {
   AuditEventEnvelope,
@@ -15,8 +16,6 @@ import type {
   SpoolUpdateEnvelope,
 } from '@esocial/contracts';
 
-import { routeSubmissionEventClass } from './submission-router.js';
-import type { SubmissionRoute } from './submission-router.js';
 import {
   buildSubmissionPublishCommand,
 } from '../transport/submission-publishers.js';
@@ -24,6 +23,9 @@ import type {
   SubmissionDlqEnvelope,
   SubmissionPublishers,
 } from '../transport/submission-publishers.js';
+
+import { routeSubmissionEventClass } from './submission-router.js';
+import type { SubmissionRoute } from './submission-router.js';
 
 const NIL_TENANT_ID = '00000000-0000-0000-0000-000000000000';
 const FALLBACK_EVENT_CLASS = 'S-1299';
@@ -39,13 +41,13 @@ export type SubmissionPersistenceStatus = Extract<
 export type SubmissionPersistenceRecord = Readonly<{
   inserted: boolean;
   messageId: string;
-  batchId?: string;
-  eventRecordId?: string;
+  batchId?: string | undefined;
+  eventRecordId?: string | undefined;
   status: SubmissionPersistenceStatus;
   route: SubmissionRoute;
   createdAt: string;
   updatedAt: string;
-  errors?: readonly EsocialContractError[];
+  errors?: readonly EsocialContractError[] | undefined;
 }>;
 
 export type PersistSubmissionCommand = Readonly<{
@@ -53,7 +55,7 @@ export type PersistSubmissionCommand = Readonly<{
   route: SubmissionRoute;
   status: SubmissionPersistenceStatus;
   occurredAt: string;
-  errors?: readonly EsocialContractError[];
+  errors?: readonly EsocialContractError[] | undefined;
 }>;
 
 export type SubmissionRepository = Readonly<{
@@ -63,7 +65,7 @@ export type SubmissionRepository = Readonly<{
 export type SubmissionProcessorResult = Readonly<{
   record: SubmissionPersistenceRecord;
   response: QueueAdapterResponseEnvelope<EsocialClass>;
-  spoolUpdate?: SpoolUpdateEnvelope;
+  spoolUpdate?: SpoolUpdateEnvelope | undefined;
   auditEvent: AuditEventEnvelope;
 }>;
 
@@ -75,14 +77,14 @@ export type SubmissionIngressValidationResult =
   | Readonly<{
       ok: false;
       error: EsocialContractError;
-      candidate?: Record<string, unknown>;
-      rawBody?: string;
+      candidate?: Record<string, unknown> | undefined;
+      rawBody?: string | undefined;
     }>;
 
 export type SubmissionProcessorOptions = Readonly<{
   repository: SubmissionRepository;
   publishers: SubmissionPublishers;
-  now?: () => Date;
+  now?: (() => Date) | undefined;
 }>;
 
 export class RetryableSubmissionError extends Error {
@@ -372,52 +374,38 @@ function validateSubmissionPayload(
     ];
   }
 
-  if (!isNonEmptyString(payload.batchId)) {
-    errors.push(validationError('ESOCIAL_BATCH_ID_REQUIRED', 'payload.batchId is required.'));
+  const dtoValidation = validateEsocialSgpRequestDto(payload);
+  if (!dtoValidation.ok) {
+    errors.push(
+      ...dtoValidation.errors.map((message) =>
+        validationError('ESOCIAL_DTO_INVALID', message),
+      ),
+    );
   }
 
-  if (payload.environment !== request.environment) {
-    errors.push(validationError('ESOCIAL_PAYLOAD_ENVIRONMENT_MISMATCH', 'payload.environment must match envelope.environment.'));
+  const dtoEnvironment = dtoEnvironmentToEnvelope(payload.environment);
+  if (dtoEnvironment && dtoEnvironment !== request.environment) {
+    errors.push(
+      validationError(
+        'ESOCIAL_PAYLOAD_ENVIRONMENT_MISMATCH',
+        'payload.environment must match envelope.environment.',
+      ),
+    );
   }
 
   if (payload.eventClass !== request.event_class) {
     errors.push(validationError('ESOCIAL_PAYLOAD_EVENT_CLASS_MISMATCH', 'payload.eventClass must match envelope.event_class.'));
   }
 
-  if (!Array.isArray(payload.eventIds) || payload.eventIds.some((item) => !isNonEmptyString(item))) {
-    errors.push(validationError('ESOCIAL_EVENT_IDS_INVALID', 'payload.eventIds must be an array of strings.'));
-  }
-
-  if (!isNonEmptyString(payload.endpointUrl)) {
-    errors.push(validationError('ESOCIAL_ENDPOINT_URL_REQUIRED', 'payload.endpointUrl is required.'));
-  }
-
-  if (!isRecord(payload.signedEnvelope)) {
-    errors.push(validationError('ESOCIAL_SIGNED_ENVELOPE_REQUIRED', 'payload.signedEnvelope is required by the v1 contract.'));
-    return errors;
-  }
-
-  if (payload.signedEnvelope.tenantId !== request.tenant_id) {
-    errors.push(validationError('ESOCIAL_SIGNED_TENANT_MISMATCH', 'signedEnvelope.tenantId must match envelope.tenant_id.'));
-  }
-
-  if (payload.signedEnvelope.eventKind !== request.event_class) {
-    errors.push(validationError('ESOCIAL_SIGNED_EVENT_MISMATCH', 'signedEnvelope.eventKind must match envelope.event_class.'));
-  }
-
-  if (!isNonEmptyString(payload.signedEnvelope.payloadSha256)) {
-    errors.push(validationError('ESOCIAL_SIGNED_PAYLOAD_HASH_REQUIRED', 'signedEnvelope.payloadSha256 is required.'));
-  }
-
-  if (!isNonEmptyString(payload.signedEnvelope.pkcs7Sha256)) {
-    errors.push(validationError('ESOCIAL_PKCS7_HASH_REQUIRED', 'signedEnvelope.pkcs7Sha256 is required.'));
-  }
-
-  if (payload.signedEnvelope.payloadSha256 !== request.payload_hash) {
-    errors.push(validationError('ESOCIAL_PAYLOAD_HASH_MISMATCH', 'payload_hash must match signedEnvelope.payloadSha256.'));
-  }
-
   return errors;
+}
+
+function dtoEnvironmentToEnvelope(candidate: unknown): SubmissionRequestEnvelope['environment'] | undefined {
+  if (candidate === 'production') return 'PRODUCTION';
+  if (candidate === 'qualification' || candidate === 'restricted_production') {
+    return 'QUALIFICATION';
+  }
+  return undefined;
 }
 
 function buildResponseEnvelope(

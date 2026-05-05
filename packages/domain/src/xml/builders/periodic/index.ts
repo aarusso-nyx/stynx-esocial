@@ -58,9 +58,9 @@ export type PeriodicEventMetadata = Readonly<{
 
 export type PeriodicRubricDto = Readonly<{
   code: string;
-  tableCode?: string;
+  tableCode?: string | undefined;
   amount: string | number;
-  quantity?: string | number | null;
+  quantity?: string | number | null | undefined;
   kind: PeriodicRubricKind;
 }>;
 
@@ -69,13 +69,13 @@ export type PeriodicEventDtoBase<
 > = Readonly<{
   eventClass: EventClass;
   tenantId: string;
-  sourceEventId?: string;
+  sourceEventId?: string | undefined;
   competence: string;
   employerRegistrationNumber: string;
-  operation?: EsocialPeriodicOperation;
-  environment?: EsocialEnvironment;
-  processEmitter?: string;
-  processVersion?: string;
+  operation?: EsocialPeriodicOperation | undefined;
+  environment?: EsocialEnvironment | undefined;
+  processEmitter?: string | undefined;
+  processVersion?: string | undefined;
 }>;
 
 export type S1200WorkerRemunerationDto = Readonly<{
@@ -83,10 +83,10 @@ export type S1200WorkerRemunerationDto = Readonly<{
   registration: string;
   cpf: string;
   categoryCode: string;
-  establishmentRegistrationNumber?: string;
-  lotationCode?: string;
-  ideDmDev?: string;
-  eventId?: string;
+  establishmentRegistrationNumber?: string | undefined;
+  lotationCode?: string | undefined;
+  ideDmDev?: string | undefined;
+  eventId?: string | undefined;
   rubrics: readonly PeriodicRubricDto[];
 }>;
 
@@ -102,9 +102,9 @@ export type S1202WorkerRemunerationDto = Readonly<{
   registration: string;
   cpf: string;
   categoryCode: string;
-  establishmentRegistrationNumber?: string;
-  ideDmDev?: string;
-  eventId?: string;
+  establishmentRegistrationNumber?: string | undefined;
+  ideDmDev?: string | undefined;
+  eventId?: string | undefined;
   rubrics: readonly PeriodicRubricDto[];
 }>;
 
@@ -124,9 +124,9 @@ export type S1207BenefitPaymentDto = Readonly<{
   benefitSourceId: string;
   benefitNumber: string;
   activeBenefitCount: number;
-  establishmentRegistrationNumber?: string;
-  ideDmDev?: string;
-  eventId?: string;
+  establishmentRegistrationNumber?: string | undefined;
+  ideDmDev?: string | undefined;
+  eventId?: string | undefined;
   rubrics: readonly PeriodicRubricDto[];
 }>;
 
@@ -142,44 +142,44 @@ export type S1210PaymentDto = Readonly<{
   cpf: string;
   amount: string | number;
   paymentDate: string | Date;
-  payrollRunId?: string | null;
-  ideDmDev?: string;
-  eventId?: string;
+  payrollRunId?: string | null | undefined;
+  ideDmDev?: string | undefined;
+  eventId?: string | undefined;
 }>;
 
 export type S1210PeriodicDto = PeriodicEventDtoBase<'S-1210'> &
   Readonly<{
     paymentBatchId: string;
     paymentBatchStatus: string;
-    payrollRunId?: string | null;
+    payrollRunId?: string | null | undefined;
     confirmedTotal: string | number;
     payments: readonly S1210PaymentDto[];
   }>;
 
 export type S1298PeriodicDto = PeriodicEventDtoBase<'S-1298'> &
   Readonly<{
-    sourceEntityId?: string;
+    sourceEntityId?: string | undefined;
     acceptedClosureReceipt: string;
     acceptedClosureAt: string | Date;
-    eventId?: string;
+    eventId?: string | undefined;
   }>;
 
 export type S1299PendingPeriodicDto = Readonly<{
   eventClass: 'S-1200' | 'S-1202' | 'S-1207' | 'S-1210';
   sourceEntityId: string;
-  employeeId?: string;
+  employeeId?: string | undefined;
   reason: string;
 }>;
 
 export type S1299PeriodicDto = PeriodicEventDtoBase<'S-1299'> &
   Readonly<{
-    sourceEntityId?: string;
+    sourceEntityId?: string | undefined;
     pendingPeriodicEvents: readonly S1299PendingPeriodicDto[];
     acceptedEventCounts: Readonly<{
       remuneration: string | number;
       payments: string | number;
     }>;
-    eventId?: string;
+    eventId?: string | undefined;
   }>;
 
 export type PeriodicEventDto =
@@ -195,13 +195,13 @@ export type BuiltPeriodicXmlEvent = Readonly<{
   operation: EsocialPeriodicOperation;
   source: Readonly<{
     tenantId: string;
-    sourceEventId?: string;
+    sourceEventId?: string | undefined;
     sourceEntityId: string;
     sourceEntityKind: PeriodicSourceEntityKind;
-    payrollRunId?: string;
-    paymentBatchId?: string;
-    employeeId?: string;
-    benefitSourceId?: string;
+    payrollRunId?: string | undefined;
+    paymentBatchId?: string | undefined;
+    employeeId?: string | undefined;
+    benefitSourceId?: string | undefined;
   }>;
   eventId: string;
   reference: string;
@@ -726,10 +726,10 @@ function builtEvent(
   output: Readonly<{
     sourceEntityId: string;
     sourceEntityKind: PeriodicSourceEntityKind;
-    payrollRunId?: string;
-    paymentBatchId?: string;
-    employeeId?: string;
-    benefitSourceId?: string;
+    payrollRunId?: string | undefined;
+    paymentBatchId?: string | undefined;
+    employeeId?: string | undefined;
+    benefitSourceId?: string | undefined;
     eventId: string;
     xml: string;
     metadata: PeriodicEventMetadata;

@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.sistematech.local/esocial/v1/replay.schema.json",
+  "$id": "https://schemas.sistematech.local/esocial/v1/esocial-replay-envelope-v1.schema.json",
   "title": "eSocial replay envelope v1",
   "type": "object",
   "additionalProperties": true,
@@ -29,7 +29,7 @@
     },
     "tenant_id": {
       "type": "string",
-      "format": "uuid"
+      "minLength": 1
     },
     "environment": {
       "enum": [
@@ -82,7 +82,37 @@
       ]
     },
     "source": {
-      "type": "object"
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "payroll_run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "employee_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_entity_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_entity_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "source_system": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
     },
     "kind": {
       "enum": [
@@ -114,6 +144,9 @@
     "replay_reason": {
       "type": "string",
       "minLength": 1
+    },
+    "payload": {
+      "type": "object"
     }
   },
   "required": [

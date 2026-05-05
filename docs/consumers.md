@@ -87,6 +87,31 @@ All envelopes include:
 - `payload_hash`
 - `payload`
 
+The `request.payload` is an SGP request DTO. SGP sends typed business data and
+opaque source identifiers only; it does not send XML, SOAP envelopes, PKCS#7
+material, or a `signedEnvelope`. The eSocial service builds XML, validates XSD,
+signs, submits, parses returns, and publishes status.
+
+Round 0 DTOs are implemented for:
+
+| Event | DTO purpose | Required source fields |
+| --- | --- | --- |
+| `S-1000` | Employer/contributor information | `tenantId`, `sourceEventId`, `employerCnpj`, `validityStart`, `legalName`, `taxClassification` |
+| `S-1010` | Rubric table | `tenantId`, `sourceEventId`, `employerCnpj`, `validityStart`, `rubricCode`, `rubricTableId`, incidence codes |
+| `S-1200` | Worker remuneration | `tenantId`, `sourceEventId`, `employerCnpj`, `competence`, `payrollRunId`, `workers[]` |
+| `S-1299` | Periodic closure | `tenantId`, `sourceEventId`, `employerCnpj`, `competence`, `payrollRunId`, accepted/pending event summary |
+| `S-2200` | Admission/initial worker registration | `tenantId`, `sourceEventId`, `employerCnpj`, `employeeId`, `cpf`, `admissionDate`, registration/contract fields |
+
+All other exported event classes have `Round1Pending` DTO stubs so the v1 type
+surface covers the full 40-class taxonomy without pretending their builders
+landed in Round 0. Stub payloads carry `round1Pending: true` and
+`deferredReason: "builder_not_promoted_in_round0"`.
+
+DTO-level `environment`, when present, is one of `qualification`,
+`restricted_production`, or `production`. Envelope environment values remain the
+current transport values shown above until the submission worker consumes the
+DTO contract directly.
+
 `response` envelopes add:
 
 - `kind`
@@ -268,10 +293,13 @@ Use explicit lowercase categories:
 Contract versions are forward-only.
 
 - `v1` is the initial production-target transport contract.
-- A new version is introduced by adding new exported types and fixtures while
-  keeping existing versioned types intact.
+- Additive v1 changes may add optional fields, new schemas, or new DTO branches
+  without changing existing required fields or discriminator values.
+- Breaking changes are introduced with new exported types, schemas, fixtures,
+  and a new envelope `version: "v2"` discriminator while keeping existing v1
+  types intact during the overlap window.
 - SGP discovers schema changes through the published `@esocial/contracts`
-  package version, this document, and contract fixture updates.
+  package semver, this document, and contract fixture updates.
 - Producers include the envelope `version` discriminator on every message.
 - Consumers negotiate compatibility by accepting only known versions and
   rejecting unknown versions with a `validation` error and `failed` status.
@@ -281,6 +309,16 @@ Contract versions are forward-only.
   replacement is published, unless the owner explicitly authorizes a
   pre-production hard cut.
 
+Compatibility matrix:
+
+| Change | Contract version | Package semver | SGP action |
+| --- | --- | --- | --- |
+| Optional response/status field | `v1` | minor | Consume when useful; old consumers keep working. |
+| New Round 1 DTO replacing a `Round1Pending` stub | `v1` | minor | Upgrade `@esocial/contracts`, emit the promoted DTO branch. |
+| New required field in an existing DTO/envelope | `v2` | major | Run overlap: SGP emits v1 until it is upgraded to v2. |
+| Removed/renamed field or discriminator | `v2` | major | Migrate producer and consumer together during the overlap window. |
+| Status or error taxonomy change | `v2` unless purely additive | major for breaking, minor for additive | Update SGP mappings and contract tests before cutover. |
+
 ## Package Artifacts
 
 The SGP-facing package is `@esocial/contracts@1.0.0`.
@@ -289,7 +327,8 @@ Published contents:
 
 - TypeScript definitions from `packages/contracts/dist/`.
 - JSON schemas under `packages/contracts/schemas/v1/` for `request`,
-  `response`, `spool`, `audit`, `retry`, `dlq`, and `replay`.
+  `response`, `spool`, `audit`, `retry`, `dlq`, `replay`, the DTO union, and
+  one DTO schema per exported event class.
 - Deterministic request examples under
   `packages/contracts/examples/v1/requests/` for every supported event class.
 - `packages/contracts/CHANGELOG.md` as the release surface summary.

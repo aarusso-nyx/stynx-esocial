@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://schemas.sistematech.local/esocial/v1/response.schema.json",
+  "$id": "https://schemas.sistematech.local/esocial/v1/esocial-response-envelope-v1.schema.json",
   "title": "eSocial response envelope v1",
   "type": "object",
   "additionalProperties": true,
@@ -29,7 +29,7 @@
     },
     "tenant_id": {
       "type": "string",
-      "format": "uuid"
+      "minLength": 1
     },
     "environment": {
       "enum": [
@@ -82,7 +82,37 @@
       ]
     },
     "source": {
-      "type": "object"
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "payroll_run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "employee_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_entity_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_entity_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "source_system": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
     },
     "kind": {
       "enum": [
@@ -120,8 +150,90 @@
       "type": "string",
       "format": "date-time"
     },
+    "protocol_number": {
+      "type": "string",
+      "minLength": 1
+    },
+    "receipt_number": {
+      "type": "string",
+      "minLength": 1
+    },
+    "response_code": {
+      "type": "string",
+      "minLength": 1
+    },
+    "response_description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "hashes": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "request_sha256": {
+          "type": "string",
+          "minLength": 1
+        },
+        "payload_sha256": {
+          "type": "string",
+          "minLength": 1
+        },
+        "signed_payload_sha256": {
+          "type": "string",
+          "minLength": 1
+        },
+        "response_sha256": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "payload": {
+      "type": "object"
+    },
     "errors": {
-      "type": "array"
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "category": {
+            "enum": [
+              "validation",
+              "schema",
+              "xml_build",
+              "signing",
+              "transport",
+              "regulatory",
+              "configuration",
+              "authentication",
+              "idempotency",
+              "totalizer_parse",
+              "internal"
+            ]
+          },
+          "code": {
+            "type": "string",
+            "minLength": 1
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1
+          },
+          "retryable": {
+            "type": "boolean"
+          },
+          "occurred_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "category",
+          "code",
+          "message"
+        ]
+      }
     }
   },
   "required": [

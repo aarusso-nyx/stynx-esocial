@@ -1,9 +1,11 @@
 # Architecture
 
 esocial is the isolated eSocial product boundary. It receives normalized
-event envelopes from SGP, builds and validates XML, signs payloads through the
-certificate boundary, submits batches to the eSocial national environment, parses
-returns and totalizers, and publishes status/audit updates back to SGP.
+typed DTO envelopes from SGP, builds and validates XML, signs payloads through
+the certificate boundary, submits batches to the eSocial national environment,
+parses returns and totalizers, and publishes status/audit updates back to SGP.
+This resolves the Round 0 A1 architecture decision: SGP sends DTOs and receives
+status events; SGP never sends, signs, or consumes XML payloads.
 
 ## Boundary
 
@@ -34,10 +36,12 @@ logic into standalone packages.
 1. SGP validates a business action such as admission, contract change,
    reintegration, termination, payroll generation, payment, closure, or benefit
    change.
-2. SGP records a pending event in `public.esocial_events` and sends a normalized
-   envelope to esocial.
-3. esocial builds XML from the lifted builders, validates the payload,
-   signs where required, and submits through the official SOAP transport.
+2. SGP records a pending event in `public.esocial_events` and sends a typed DTO
+   envelope to esocial. The DTO contains opaque SGP source identifiers and
+   business payload data, not XML or signing material.
+3. esocial builds XML from active standalone builders, validates the payload
+   against the bound XSD, signs where required, and submits through the official
+   SOAP transport.
 4. esocial parses responses and totalizers, updates its own operational
    records, and publishes status/audit updates.
 5. SGP consumes the update and mirrors receipt/status/error data into
@@ -57,12 +61,14 @@ connections must set it before reading or writing tenant-scoped tables:
 SET app.current_tenant_id = '<tenant uuid>';
 ```
 
-Every tenant-scoped relation has RLS enabled and forced. Normal application
-roles can only see rows whose `tenant_id` matches `app.current_tenant_id`.
-Operational workers receive membership in the `esocial_worker` database role;
-that role is the explicit cross-tenant bypass for retry, DLQ triage, replay,
-and evidence extraction. The bypass is granted by role membership, not by
-`SECURITY DEFINER` shortcuts.
+Every tenant-scoped relation, including retry, DLQ, validation, totalizer,
+audit, and event-family state tables, has RLS enabled and forced with tenant
+policies keyed on `app.current_tenant_id` plus the documented worker bypass.
+Normal application roles can only see rows whose `tenant_id` matches
+`app.current_tenant_id`. Operational workers receive
+membership in the `esocial_worker` database role; that role is the explicit
+cross-tenant bypass for retry, DLQ triage, replay, and evidence extraction. The
+bypass is granted by role membership, not by `SECURITY DEFINER` shortcuts.
 
 Certificate custody tables store encrypted secret references and certificate
 metadata only. Inline certificate material, PFX/PEM bytes, and private keys do

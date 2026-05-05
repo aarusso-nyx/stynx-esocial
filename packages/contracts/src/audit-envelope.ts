@@ -3,15 +3,15 @@ import type { EsocialStatus } from './kinds.js';
 
 export type AuditEventEnvelope = EsocialEnvelopeBase<'audit'> &
   Readonly<{
-    actor_id?: string;
+    actor_id?: string | undefined;
     action: string;
-    status?: EsocialStatus;
+    status?: EsocialStatus | undefined;
     target: {
       type: string;
-      id?: string;
+      id?: string | undefined;
     };
-    before?: unknown;
-    after?: unknown;
-    errors?: readonly EsocialContractError[];
+    before?: unknown | undefined;
+    after?: unknown | undefined;
+    errors?: readonly EsocialContractError[] | undefined;
     occurred_at: string;
   }>;

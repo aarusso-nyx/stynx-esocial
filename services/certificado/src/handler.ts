@@ -24,14 +24,14 @@ export type TenantCertificateMetadata = Readonly<{
   secretRef: string;
   secretKind: CertificateSecretKind;
   certificateFingerprintSha256: string;
-  subjectName?: string;
-  issuerName?: string;
-  serialNumber?: string;
+  subjectName?: string | undefined;
+  issuerName?: string | undefined;
+  serialNumber?: string | undefined;
   validFrom: string;
   validUntil: string;
   status: CertificateStatus;
-  revokedAt?: string;
-  rotatedAt?: string;
+  revokedAt?: string | undefined;
+  rotatedAt?: string | undefined;
 }>;
 
 export type ResolveCertificateInput = Readonly<{
@@ -39,8 +39,8 @@ export type ResolveCertificateInput = Readonly<{
   environment: string;
   label: string;
   actor: string;
-  correlationId?: string;
-  now?: Date;
+  correlationId?: string | undefined;
+  now?: Date | undefined;
 }>;
 
 export type CertificateSecretProvider = Readonly<{
@@ -55,10 +55,10 @@ export type TenantCertificateRepository = Readonly<{
 export type CertificateAccessAuditEvent = Readonly<{
   tenantId: string;
   environment: string;
-  certificateId?: string;
+  certificateId?: string | undefined;
   label: string;
   actor: string;
-  correlationId?: string;
+  correlationId?: string | undefined;
   outcome: 'granted' | 'denied';
   reasonCode: string;
   occurredAt: string;
@@ -222,7 +222,7 @@ function parseCertificateSecret(
 ): {
   privateKeyPem: string;
   publicKeyPem: string;
-  certificatePem?: string;
+  certificatePem?: string | undefined;
 } {
   const text = Buffer.isBuffer(value)
     ? value.toString('utf8')

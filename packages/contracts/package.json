@@ -19,6 +19,10 @@
     "./schemas/v1/*.schema.json": "./schemas/v1/*.schema.json",
     "./examples/v1/requests/*.json": "./examples/v1/requests/*.json"
   },
+  "scripts": {
+    "build": "tsc -b && npm run schemas:generate",
+    "schemas:generate": "node src/schema-generation/write-schemas.mjs"
+  },
   "publishConfig": {
     "access": "restricted",
     "registry": "https://registry.npmjs.org/",

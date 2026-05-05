@@ -283,7 +283,7 @@ function localName(name: string): string {
 
 function decodeXmlEntities(value: string): string {
   return value.replace(
-    /&(?:amp|lt|gt|quot|apos|#[0-9]+|#x[0-9a-f]+);/giu,
+    /&(?:amp|lt|gt|quot|apos|#[0-9]+|#x[0-9a-f]+) | undefined;/giu,
     (entity) => {
       switch (entity) {
         case '&amp;':

@@ -47,7 +47,7 @@ export type SubmissionPublishers = Readonly<{
 
 export type MalformedSubmissionDlqEnvelope = EsocialDlqEnvelope &
   Readonly<{
-    malformed_body?: string;
+    malformed_body?: string | undefined;
   }>;
 
 export function buildSubmissionPublishCommand<TEnvelope extends {
