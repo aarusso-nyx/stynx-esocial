@@ -42,6 +42,18 @@ export type ReplayRequestResult<TRequest extends QueueAdapterRequestEnvelope = Q
     originalRequest: TRequest;
   }>;
 
+export type ReplayClashDecision = Readonly<
+  | {
+      action: 'allow';
+      reason: string;
+    }
+  | {
+      action: 'refuse';
+      reason: string;
+      completedIdempotencyKey: string;
+    }
+>;
+
 export class ReplaySchemaMismatchError extends Error {
   constructor(message: string) {
     super(message);
@@ -141,6 +153,33 @@ export function deriveReplayIdempotencyKey(
   return `esocial:v1:replay:${createHash('sha256')
     .update(`${originalIdempotencyKey}:${replayRequestId}`)
     .digest('hex')}`;
+}
+
+export function decideReplayClash(input: Readonly<{
+  originalIdempotencyKey: string;
+  completedIdempotencyKeys: readonly string[];
+  force?: boolean | undefined;
+}>): ReplayClashDecision {
+  if (input.force) {
+    return {
+      action: 'allow',
+      reason: 'force=true bypassed completed idempotency-key clash protection.',
+    };
+  }
+  const completed = input.completedIdempotencyKeys.find(
+    (value) => value === input.originalIdempotencyKey,
+  );
+  if (completed) {
+    return {
+      action: 'refuse',
+      reason: 'Original idempotency key has a completed run; replay requires force=true.',
+      completedIdempotencyKey: completed,
+    };
+  }
+  return {
+    action: 'allow',
+    reason: 'No completed run uses the original idempotency key.',
+  };
 }
 
 export function assertReplayCompatible<TRequest extends QueueAdapterRequestEnvelope>(

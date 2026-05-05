@@ -1,0 +1,17 @@
+{
+  "eventClass": "S-1010",
+  "tenantId": "00000000-0000-0000-0000-000000000100",
+  "sourceEventId": "source-s1010-round0",
+  "sourceEntityId": "00000000-0000-4000-8000-000000000010",
+  "employerCnpj": "12345678000199",
+  "validityStart": "2026-01",
+  "rubricCode": "BASE",
+  "rubricTableId": "SGP",
+  "description": "Rubrica base",
+  "rubricType": "earning",
+  "natureCode": "1000",
+  "socialSecurityIncidence": "00",
+  "incomeTaxIncidence": "9",
+  "fgtsIncidence": "00",
+  "unionContributionIncidence": "11"
+}

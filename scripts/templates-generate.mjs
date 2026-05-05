@@ -3,12 +3,15 @@ import { join } from 'node:path';
 
 const root = new URL('..', import.meta.url).pathname;
 const outDir = join(root, 'infra/cdk/cdk.out');
+const configDir = join(root, 'infra/cdk/config');
 const args = new Set(process.argv.slice(2));
 const checkOnly = args.has('--check');
+const dryRun = args.has('--dry-run');
 const requestedStage = valueAfter('--stage');
 const includeProduction = requestedStage === 'production' ||
   args.has('--include-production') ||
-  process.env.ESOCIAL_CONFIRM_PRODUCTION_TEMPLATE === '1';
+  process.env.ESOCIAL_CONFIRM_PRODUCTION_TEMPLATE === '1' ||
+  process.env.ESOCIAL_PROD_CONFIRM === '1';
 const stages = stageConfigs().filter((stage) =>
   requestedStage
     ? stage.name === requestedStage
@@ -20,14 +23,15 @@ if (requestedStage && stages.length === 0) {
 }
 if (stages.some((stage) => stage.name === 'production') &&
     process.env.ESOCIAL_CONFIRM_PRODUCTION_TEMPLATE !== '1' &&
+    process.env.ESOCIAL_PROD_CONFIRM !== '1' &&
     !args.has('--confirm-production')) {
   throw new Error(
-    'Production template generation requires ESOCIAL_CONFIRM_PRODUCTION_TEMPLATE=1 or --confirm-production.',
+    'Production template generation requires ESOCIAL_PROD_CONFIRM=1, ESOCIAL_CONFIRM_PRODUCTION_TEMPLATE=1, or --confirm-production.',
   );
 }
 
 mkdirSync(outDir, { recursive: true });
-if (!checkOnly) {
+if (!checkOnly && !dryRun) {
   for (const fileName of readdirSync(outDir)) {
     if (/^esocial-.*\.template\.json$/u.test(fileName)) {
       unlinkSync(join(outDir, fileName));
@@ -53,13 +57,15 @@ for (const output of outputs) {
     continue;
   }
 
-  writeFileSync(output.fileName, output.body);
+  if (!dryRun) {
+    writeFileSync(output.fileName, output.body);
+  }
 }
 
 console.log(
-  `[templates:${checkOnly ? 'check' : 'generate'}] ${outputs
+  `[templates:${checkOnly ? 'check' : dryRun ? 'dry-run' : 'generate'}] ${outputs
     .map((output) => output.stage.name)
-    .join(', ')} templates ${checkOnly ? 'verified' : 'written'} in ${outDir}`,
+    .join(', ')} templates ${checkOnly ? 'verified' : dryRun ? 'validated' : 'written'} in ${outDir}`,
 );
 
 function valueAfter(name) {
@@ -69,38 +75,51 @@ function valueAfter(name) {
 }
 
 function stageConfigs() {
-  return [
-    {
-      name: 'qualification',
-      endpointHost: 'esocial-qualification.local',
-      cidrBlock: '10.42.0.0/16',
-      subnetCidrs: ['10.42.1.0/24', '10.42.2.0/24'],
-      retentionDays: 14,
-      alarmThreshold: 1,
-      removalPolicy: 'Delete',
-      production: false,
-    },
-    {
-      name: 'restricted-production',
-      endpointHost: 'esocial-restricted.local',
-      cidrBlock: '10.43.0.0/16',
-      subnetCidrs: ['10.43.1.0/24', '10.43.2.0/24'],
-      retentionDays: 30,
-      alarmThreshold: 1,
-      removalPolicy: 'Retain',
-      production: false,
-    },
-    {
-      name: 'production',
-      endpointHost: 'webservices.esocial.gov.br',
-      cidrBlock: '10.44.0.0/16',
-      subnetCidrs: ['10.44.1.0/24', '10.44.2.0/24'],
-      retentionDays: 365,
-      alarmThreshold: 1,
-      removalPolicy: 'Retain',
-      production: true,
-    },
+  const order = ['qualification', 'restricted-production', 'production'];
+  return order.map((stageName) => {
+    const fileName = join(configDir, `${stageName}.json`);
+    if (!existsSync(fileName)) {
+      throw new Error(`Missing stage config: ${fileName}`);
+    }
+    return validateStageConfig(JSON.parse(readFileSync(fileName, 'utf8')), fileName);
+  });
+}
+
+function validateStageConfig(stage, fileName) {
+  const requiredStrings = [
+    'name',
+    'endpointHostEnv',
+    'endpointHostDefault',
+    'cidrBlock',
+    'removalPolicy',
+    'iamScope',
   ];
+  for (const key of requiredStrings) {
+    if (typeof stage[key] !== 'string' || stage[key].length === 0) {
+      throw new Error(`${fileName} must define string ${key}`);
+    }
+  }
+  if (!Array.isArray(stage.subnetCidrs) || stage.subnetCidrs.length !== 2) {
+    throw new Error(`${fileName} must define exactly two subnetCidrs`);
+  }
+  if (!Number.isInteger(stage.retentionDays) || stage.retentionDays <= 0) {
+    throw new Error(`${fileName} must define positive integer retentionDays`);
+  }
+  if (typeof stage.production !== 'boolean') {
+    throw new Error(`${fileName} must define boolean production`);
+  }
+  if (!stage.alarmThresholds || typeof stage.alarmThresholds !== 'object') {
+    throw new Error(`${fileName} must define alarmThresholds`);
+  }
+  for (const name of ['dlq', 'retry', 'timeout']) {
+    if (!Number.isInteger(stage.alarmThresholds[name]) || stage.alarmThresholds[name] <= 0) {
+      throw new Error(`${fileName} must define positive alarmThresholds.${name}`);
+    }
+  }
+  if (!stage.production && /gov\.br/iu.test(stage.endpointHostDefault)) {
+    throw new Error(`${fileName} must not point non-production stages at gov.br`);
+  }
+  return stage;
 }
 
 function templateFor(stage) {
@@ -116,10 +135,24 @@ function templateFor(stage) {
     'exclusao',
   ];
   const resources = {
-    EsocialKmsKey: {
+    EsocialDatabaseKmsKey: {
       Type: 'AWS::KMS::Key',
       Properties: {
-        Description: `esocial ${stage.name} encryption key`,
+        Description: `esocial ${stage.name} database encryption key`,
+        EnableKeyRotation: true,
+      },
+    },
+    EsocialCertificateKmsKey: {
+      Type: 'AWS::KMS::Key',
+      Properties: {
+        Description: `esocial ${stage.name} certificate secret encryption key`,
+        EnableKeyRotation: true,
+      },
+    },
+    EsocialQueueKmsKey: {
+      Type: 'AWS::KMS::Key',
+      Properties: {
+        Description: `esocial ${stage.name} queue encryption key`,
         EnableKeyRotation: true,
       },
     },
@@ -178,8 +211,14 @@ function templateFor(stage) {
       Type: 'AWS::Events::EventBus',
       Properties: { Name: `esocial-${stage.name}-events` },
     },
-    EsocialDatabaseSecret: secretResource(`esocial/${stage.name}/database`),
-    EsocialCertificateSecret: secretResource(`esocial/${stage.name}/certificate/local-test-placeholder`),
+    EsocialDatabaseSecret: secretResource(
+      `esocial/${stage.name}/database`,
+      'EsocialDatabaseKmsKey',
+    ),
+    EsocialCertificateSecret: secretResource(
+      `esocial/${stage.name}/certificate/local-test-placeholder`,
+      'EsocialCertificateKmsKey',
+    ),
     EsocialDatabase: {
       Type: 'AWS::RDS::DBInstance',
       DeletionPolicy: stage.removalPolicy,
@@ -191,7 +230,7 @@ function templateFor(stage) {
         DBInstanceClass: stage.production ? 'db.t4g.medium' : 'db.t4g.micro',
         AllocatedStorage: stage.production ? '100' : '20',
         StorageEncrypted: true,
-        KmsKeyId: { Ref: 'EsocialKmsKey' },
+        KmsKeyId: { Ref: 'EsocialDatabaseKmsKey' },
         DBSubnetGroupName: { Ref: 'EsocialDatabaseSubnetGroup' },
         VPCSecurityGroups: [{ Ref: 'EsocialDatabaseSecurityGroup' }],
         BackupRetentionPeriod: stage.production ? 35 : 7,
@@ -199,7 +238,14 @@ function templateFor(stage) {
         MasterUserPassword: '{{resolve:secretsmanager:esocial-db:SecretString:password}}',
       },
     },
-    EsocialMigrationProjectRole: serviceRoleResource(stage, 'migration-project', 'codebuild.amazonaws.com'),
+    EsocialMigrationProjectLogGroup: {
+      Type: 'AWS::Logs::LogGroup',
+      Properties: {
+        LogGroupName: `/aws/codebuild/esocial-${stage.name}-migrations`,
+        RetentionInDays: stage.retentionDays,
+      },
+    },
+    EsocialMigrationProjectRole: migrationRoleResource(stage),
     EsocialMigrationProject: {
       Type: 'AWS::CodeBuild::Project',
       Properties: {
@@ -228,11 +274,11 @@ function templateFor(stage) {
     ReplayQueue: fifoQueue(`sgp.esocial.replay.${stage.name}.fifo`, 'SubmitDlq'),
     SubmitDlq: fifoQueue(`sgp.esocial.submit.dlq.${stage.name}.fifo`),
     ReturnDlq: fifoQueue(`sgp.esocial.return.dlq.${stage.name}.fifo`),
-    EsocialLambdaRole: serviceRoleResource(stage, 'lambda', 'lambda.amazonaws.com'),
   };
 
   for (const serviceName of serviceNames) {
     const id = logicalId(serviceName);
+    resources[`${id}Role`] = lambdaRoleResource(stage, serviceName);
     resources[`${id}LogGroup`] = {
       Type: 'AWS::Logs::LogGroup',
       Properties: {
@@ -246,14 +292,15 @@ function templateFor(stage) {
         FunctionName: `esocial-${stage.name}-${serviceName}`,
         Runtime: 'nodejs22.x',
         Handler: 'dist/handler.handler',
-        Role: { 'Fn::GetAtt': ['EsocialLambdaRole', 'Arn'] },
+        Role: { 'Fn::GetAtt': [`${id}Role`, 'Arn'] },
         Timeout: serviceName === 'submission' || serviceName === 'retorno' ? 60 : 30,
         MemorySize: serviceName === 'submission' || serviceName === 'retorno' ? 512 : 256,
         Environment: {
           Variables: {
             ESOCIAL_STAGE: stage.name,
             ESOCIAL_SCHEMA: 'esocial',
-            ESOCIAL_ENDPOINT_HOST: stage.endpointHost,
+            ESOCIAL_ENDPOINT_HOST: { Ref: 'EsocialEndpointHost' },
+            ESOCIAL_ENDPOINT_HOST_ENV: stage.endpointHostEnv,
             ESOCIAL_EVENT_BUS_NAME: { Ref: 'EsocialEventsBus' },
             ESOCIAL_SPOOL_QUEUE_URL: { Ref: 'SpoolQueue' },
             ESOCIAL_DLQ_QUEUE_URL: { Ref: serviceName === 'retorno' ? 'ReturnDlq' : 'SubmitDlq' },
@@ -303,9 +350,9 @@ function templateFor(stage) {
       },
     },
   };
-  resources.DlqAlarm = alarmResource(stage, 'esocial.dlq', stage.alarmThreshold);
-  resources.RetryAlarm = alarmResource(stage, 'esocial.retry', 25);
-  resources.TimeoutAlarm = alarmResource(stage, 'esocial.timeout', 5);
+  resources.DlqAlarm = alarmResource(stage, 'esocial.dlq', stage.alarmThresholds.dlq);
+  resources.RetryAlarm = alarmResource(stage, 'esocial.retry', stage.alarmThresholds.retry);
+  resources.TimeoutAlarm = alarmResource(stage, 'esocial.timeout', stage.alarmThresholds.timeout);
   resources.ObservabilityDashboard = {
     Type: 'AWS::CloudWatch::Dashboard',
     Properties: {
@@ -347,11 +394,18 @@ function templateFor(stage) {
       boundary: {
         schema: 'esocial',
         noSgpDatabaseAccess: true,
-        endpointHost: stage.endpointHost,
+        endpointHostParameter: 'EsocialEndpointHost',
+        endpointHostEnv: stage.endpointHostEnv,
+        iamScope: stage.iamScope,
       },
       lambdaServices: serviceNames,
     },
     Parameters: {
+      EsocialEndpointHost: {
+        Type: 'String',
+        Default: stage.endpointHostDefault,
+        Description: `eSocial endpoint host. Operators may override through ${stage.endpointHostEnv}.`,
+      },
       EsocialDatabaseUrlSecretArn: {
         Type: 'String',
         Description: 'Secrets Manager ARN for the esocial database URL.',
@@ -392,7 +446,7 @@ function fifoQueue(queueName, deadLetterLogicalId) {
     QueueName: queueName,
     FifoQueue: true,
     ContentBasedDeduplication: false,
-    KmsMasterKeyId: { Ref: 'EsocialKmsKey' },
+    KmsMasterKeyId: { Ref: 'EsocialQueueKmsKey' },
   };
   if (deadLetterLogicalId) {
     properties.RedrivePolicy = {
@@ -418,7 +472,76 @@ function eventSource(functionLogicalId, queueLogicalId) {
   };
 }
 
-function serviceRoleResource(stage, name, principal) {
+function lambdaRoleResource(stage, serviceName) {
+  return serviceRoleResource(stage, serviceName, 'lambda.amazonaws.com', [
+    {
+      Effect: 'Allow',
+      Action: [
+        'logs:CreateLogStream',
+        'logs:PutLogEvents',
+      ],
+      Resource: logGroupArn(`/aws/lambda/esocial-${stage.name}-${serviceName}`),
+    },
+    {
+      Effect: 'Allow',
+      Action: [
+        'sqs:SendMessage',
+        'sqs:ReceiveMessage',
+        'sqs:DeleteMessage',
+        'sqs:GetQueueAttributes',
+      ],
+      Resource: queueArns([
+        'SubmitRequestQueue',
+        'SubmitResponseQueue',
+        'SpoolQueue',
+        'RetryQueue',
+        'ReplayQueue',
+        'SubmitDlq',
+        'ReturnDlq',
+      ]),
+    },
+    {
+      Effect: 'Allow',
+      Action: 'events:PutEvents',
+      Resource: { 'Fn::GetAtt': ['EsocialEventsBus', 'Arn'] },
+    },
+    {
+      Effect: 'Allow',
+      Action: 'secretsmanager:GetSecretValue',
+      Resource: secretArns(),
+    },
+    {
+      Effect: 'Allow',
+      Action: ['kms:Decrypt', 'kms:GenerateDataKey'],
+      Resource: kmsKeyArns(),
+    },
+  ]);
+}
+
+function migrationRoleResource(stage) {
+  return serviceRoleResource(stage, 'migration-project', 'codebuild.amazonaws.com', [
+    {
+      Effect: 'Allow',
+      Action: [
+        'logs:CreateLogStream',
+        'logs:PutLogEvents',
+      ],
+      Resource: logGroupArn(`/aws/codebuild/esocial-${stage.name}-migrations`),
+    },
+    {
+      Effect: 'Allow',
+      Action: 'secretsmanager:GetSecretValue',
+      Resource: { 'Fn::GetAtt': ['EsocialDatabaseSecret', 'Arn'] },
+    },
+    {
+      Effect: 'Allow',
+      Action: ['kms:Decrypt', 'kms:GenerateDataKey'],
+      Resource: { 'Fn::GetAtt': ['EsocialDatabaseKmsKey', 'Arn'] },
+    },
+  ]);
+}
+
+function serviceRoleResource(stage, name, principal, statements) {
   return {
     Type: 'AWS::IAM::Role',
     Properties: {
@@ -438,23 +561,7 @@ function serviceRoleResource(stage, name, principal) {
           PolicyName: `esocial-${stage.name}-${name}-runtime`,
           PolicyDocument: {
             Version: '2012-10-17',
-            Statement: [
-              {
-                Effect: 'Allow',
-                Action: [
-                  'logs:CreateLogStream',
-                  'logs:PutLogEvents',
-                  'sqs:SendMessage',
-                  'sqs:ReceiveMessage',
-                  'sqs:DeleteMessage',
-                  'events:PutEvents',
-                  'secretsmanager:GetSecretValue',
-                  'kms:Decrypt',
-                  'cloudwatch:PutMetricData',
-                ],
-                Resource: '*',
-              },
-            ],
+            Statement: statements,
           },
         },
       ],
@@ -462,14 +569,39 @@ function serviceRoleResource(stage, name, principal) {
   };
 }
 
-function secretResource(name) {
+function secretResource(name, keyLogicalId) {
   return {
     Type: 'AWS::SecretsManager::Secret',
     Properties: {
       Name: name,
-      KmsKeyId: { Ref: 'EsocialKmsKey' },
+      KmsKeyId: { Ref: keyLogicalId },
       Description: `${name} reference placeholder; secret value is provisioned outside git.`,
     },
+  };
+}
+
+function queueArns(queueLogicalIds) {
+  return queueLogicalIds.map((queueLogicalId) => ({ 'Fn::GetAtt': [queueLogicalId, 'Arn'] }));
+}
+
+function secretArns() {
+  return [
+    { 'Fn::GetAtt': ['EsocialDatabaseSecret', 'Arn'] },
+    { 'Fn::GetAtt': ['EsocialCertificateSecret', 'Arn'] },
+  ];
+}
+
+function kmsKeyArns() {
+  return [
+    { 'Fn::GetAtt': ['EsocialDatabaseKmsKey', 'Arn'] },
+    { 'Fn::GetAtt': ['EsocialCertificateKmsKey', 'Arn'] },
+    { 'Fn::GetAtt': ['EsocialQueueKmsKey', 'Arn'] },
+  ];
+}
+
+function logGroupArn(logGroupName) {
+  return {
+    'Fn::Sub': `arn:\${AWS::Partition}:logs:\${AWS::Region}:\${AWS::AccountId}:log-group:${logGroupName}:*`,
   };
 }
 

@@ -1,0 +1,20 @@
+{
+  "command": "npm run integration:localstack",
+  "harness": "scripts/integration-localstack.mjs",
+  "timeline": [
+    "apply migrations to a temporary PostgreSQL database",
+    "enqueue one DTO submit envelope to the local request queue",
+    "invoke compiled submission handler",
+    "persist esocial.event_record with tenant-scoped status",
+    "publish response queue message",
+    "publish spool update",
+    "publish audit event",
+    "assert response=1, spool=1, audit=1 and status row exists"
+  ],
+  "real_services": false,
+  "localstack_surface": [
+    "SQS-compatible queues",
+    "EventBridge-compatible audit bus",
+    "Secrets Manager-compatible certificate reference"
+  ]
+}

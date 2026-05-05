@@ -6,6 +6,8 @@
     "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
   },
   "references": [
+    { "path": "../../packages/contracts" },
+    { "path": "../../packages/domain" },
     { "path": "../shared" }
   ],
   "include": ["src/**/*.ts"],

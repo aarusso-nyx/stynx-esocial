@@ -1,0 +1,26 @@
+{
+  "before": {
+    "submission_batch": 0,
+    "event_record": 0,
+    "event_status_history": 0,
+    "audit_event_log": 0,
+    "event_retry_schedule": 0,
+    "dlq_item": 0
+  },
+  "after_single_submission": {
+    "submission_batch": 1,
+    "event_record": 1,
+    "event_status_history": ">= 1",
+    "audit_event_log": ">= 1",
+    "event_retry_schedule": "0 unless retryable fault injected",
+    "dlq_item": "0 unless terminal fault injected"
+  },
+  "idempotency": {
+    "duplicate_ingress": "same tenant/environment/event/source/payload hash yields one regulatory submission",
+    "proofs": [
+      "tests/db/database.test.mjs",
+      "tests/integration/submission-postgres.test.mjs",
+      "tests/integration/retry/retry-dlq-replay.test.mjs"
+    ]
+  }
+}

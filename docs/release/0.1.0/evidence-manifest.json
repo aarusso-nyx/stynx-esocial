@@ -1,0 +1,76 @@
+{
+  "version": "0.1.0",
+  "contract_package": "@esocial/contracts@1.0.0",
+  "generated_at": "2026-05-05T00:00:00.000Z",
+  "commands": [
+    "npm ci",
+    "npm run build",
+    "npm run lint",
+    "npm test",
+    "npm run test:db",
+    "npm run test:integration",
+    "npm run integration:localstack",
+    "npm run templates:check",
+    "npm run sbom -- --out docs/release/0.1.0/sbom/contracts-active-services.cdx.json"
+  ],
+  "round0_event_families": [
+    "S-1000",
+    "S-1010",
+    "S-1200",
+    "S-1299",
+    "S-2200"
+  ],
+  "return_families": [
+    "S-5001",
+    "S-5002",
+    "S-5011",
+    "S-5012",
+    "S-5013"
+  ],
+  "restricted_production": {
+    "status": "deferred",
+    "owner": "release owner",
+    "review_date": "2026-06-05",
+    "reason": "Round 0 ships deterministic SOAP transport only. Real-service tests need explicit owner authorization."
+  },
+  "ci": {
+    "workflow": ".github/workflows/ci.yml",
+    "release_workflow": ".github/workflows/release.yml",
+    "status_url": "https://github.com/aarusso-nyx/stynx-esocial/actions/workflows/ci.yml",
+    "closing_pr_url": "pending-until-pushed"
+  },
+  "artifacts": [
+    "input-dtos/s1000.dto.json",
+    "input-dtos/s1010.dto.json",
+    "input-dtos/s1200.dto.json",
+    "input-dtos/s1299.dto.json",
+    "input-dtos/s2200.dto.json",
+    "generated-xml/s1000.xml",
+    "generated-xml/s1010.xml",
+    "generated-xml/s1200.xml",
+    "generated-xml/s1299.xml",
+    "generated-xml/s2200.xml",
+    "signed-payload/hashes.json",
+    "soap/soap-stub-transcript.json",
+    "status/published-samples.json",
+    "database/db-state-diff.json",
+    "localstack/timeline.json",
+    "ci/workflows.md",
+    "ci/coverage.md",
+    "sbom/contracts-active-services.cdx.json"
+  ],
+  "contract_artifacts": {
+    "schemas": [
+      "packages/contracts/schemas/v1/request.schema.json",
+      "packages/contracts/schemas/v1/response.schema.json",
+      "packages/contracts/schemas/v1/spool.schema.json",
+      "packages/contracts/schemas/v1/audit.schema.json",
+      "packages/contracts/schemas/v1/retry.schema.json",
+      "packages/contracts/schemas/v1/dlq.schema.json",
+      "packages/contracts/schemas/v1/replay.schema.json"
+    ],
+    "request_examples": 40,
+    "status_values": 12,
+    "error_categories": 11
+  }
+}

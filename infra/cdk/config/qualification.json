@@ -1,0 +1,16 @@
+{
+  "name": "qualification",
+  "endpointHostEnv": "ESOCIAL_QUALIFICATION_ENDPOINT_HOST",
+  "endpointHostDefault": "esocial-qualification.local",
+  "cidrBlock": "10.42.0.0/16",
+  "subnetCidrs": ["10.42.1.0/24", "10.42.2.0/24"],
+  "retentionDays": 14,
+  "alarmThresholds": {
+    "dlq": 1,
+    "retry": 25,
+    "timeout": 5
+  },
+  "removalPolicy": "Delete",
+  "production": false,
+  "iamScope": "stage-owned-resources"
+}

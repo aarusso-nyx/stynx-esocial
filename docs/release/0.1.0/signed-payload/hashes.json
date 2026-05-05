@@ -1,0 +1,36 @@
+{
+  "algorithm": "sha256",
+  "note": "Signed hashes are deterministic fixture hashes. No private key or certificate material is stored in this bundle.",
+  "events": [
+    {
+      "event_class": "S-1000",
+      "xml_file": "generated-xml/s1000.xml",
+      "xml_sha256": "5ddd45a139e2642dd0a58e1acd335d43e02ff46a3ca40db0790b44551a371c89",
+      "signed_payload_sha256": "8a88cc901221550189b9feb86f0839d0861c338510480dd2d79998e6836f8dbc"
+    },
+    {
+      "event_class": "S-1010",
+      "xml_file": "generated-xml/s1010.xml",
+      "xml_sha256": "066f44b41ff82110cffe2d699e77f1db1fff0a8d7e8d23adac32e79079c4b2e3",
+      "signed_payload_sha256": "790718b5cf6e86b9475a88977dfcca3a0a11bdbf38cdc559ce75189de61b36e0"
+    },
+    {
+      "event_class": "S-1200",
+      "xml_file": "generated-xml/s1200.xml",
+      "xml_sha256": "0a60913b7c9c441aadf745aee01fba9978d0a47ac53b77c30fed1e500260df8a",
+      "signed_payload_sha256": "f3063a57da99f8e48de7f967f2b5c452eb64ee5488626c0d225e78c09eb6fa18"
+    },
+    {
+      "event_class": "S-1299",
+      "xml_file": "generated-xml/s1299.xml",
+      "xml_sha256": "175f510a7cc2bb5e540ca4e79a3a01e58ff723e98ec569da1f9599191888b3dd",
+      "signed_payload_sha256": "9b396b9475a2ef5188e8b2b183d684d08c982c517a244c511876d8892a34354c"
+    },
+    {
+      "event_class": "S-2200",
+      "xml_file": "generated-xml/s2200.xml",
+      "xml_sha256": "c7cc4bb38ee36bace10430ca433aa6338d4267d66bc17632045e1ccd1837a43a",
+      "signed_payload_sha256": "0349557826a16857a4d03648d9461fe52e5f84acf32775bb7e73ed78cc46eb4c"
+    }
+  ]
+}

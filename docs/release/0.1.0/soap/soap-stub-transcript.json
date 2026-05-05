@@ -1,0 +1,25 @@
+{
+  "transport": "deterministic-soap-stub",
+  "environment": "qualification",
+  "endpoint_host": "esocial-qualification.local",
+  "network_policy": {
+    "non_production_gov_br_allowed": false,
+    "test": "tests/soap/soap-sandbox.test.mjs"
+  },
+  "operations": [
+    {
+      "operation": "submit",
+      "request_hash_field": "soap_request_sha256",
+      "response_hash_field": "soap_response_sha256",
+      "status": "accepted",
+      "protocol_number": "LOCAL-STUB-PROTOCOL"
+    },
+    {
+      "operation": "return-query",
+      "request_hash_field": "soap_request_sha256",
+      "response_hash_field": "soap_response_sha256",
+      "status": "processed",
+      "receipt_number": "LOCAL-STUB-RECEIPT"
+    }
+  ]
+}

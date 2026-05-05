@@ -18,7 +18,9 @@ service internals, SQL files, handlers, or domain modules into SGP.
 ## Request DTOs
 
 For every event class listed in `docs/events.md`, SGP sends a v1 request
-envelope to `sgp.esocial.submit.request`.
+envelope to `sgp.esocial.submit.request`. Round 0 implements the five families
+below end to end; the other exported event classes remain typed Round 1 pending
+DTOs with `round1Pending: true`.
 
 Required SGP-sourced fields:
 
@@ -32,11 +34,24 @@ Required SGP-sourced fields:
 | `source.employee_id` | Employee identifier for worker-scoped events. |
 | `source.source_entity_id` or `source_entity_ids` | Opaque SGP source identifiers for tables, benefits, exclusions, and grouped events. |
 | `payload_hash` | SHA-256 hash of the normalized payload. |
-| `payload` | `EsocialRelayRequestPayload` with batch id, event ids, endpoint, event class, and signed-envelope metadata. |
+| `payload` | One of the `EsocialSourceDto` variants. SGP sends DTO fields only, never XML or signed material. |
 
 Use `buildEsocialIdempotencyKey()` from `@esocial/contracts` before enqueueing.
 The same tenant, environment, event class, source identity, competence, and
 payload hash must produce the same key.
+
+Round 0 DTO map:
+
+| Event | SGP builder inputs | Evidence fixture |
+| --- | --- | --- |
+| `S-1000` | Employer CNPJ, validity start, legal name, tax classification, optional cooperation/construction/payroll-exemption indicators. | `docs/release/0.1.0/input-dtos/s1000.dto.json` |
+| `S-1010` | Employer CNPJ, validity start, rubric code/table id, description, type, nature, incidence codes, optional ceiling data. | `docs/release/0.1.0/input-dtos/s1010.dto.json` |
+| `S-1200` | Employer CNPJ, competence, payroll run id, worker remuneration entries, rubrics, lotation and establishment references. | `docs/release/0.1.0/input-dtos/s1200.dto.json` |
+| `S-1299` | Employer CNPJ, competence, payroll run id, accepted periodic event counts, pending periodic event list, closure metadata. | `docs/release/0.1.0/input-dtos/s1299.dto.json` |
+| `S-2200` | Employer CNPJ, employee id, CPF, registration, admission date, category, contract and personal source identifiers. | `docs/release/0.1.0/input-dtos/s2200.dto.json` |
+
+SGP must not populate XML, SOAP endpoint URL, `signedEnvelope`, certificate
+reference, or official response fields. Those are eSocial-owned runtime fields.
 
 ## Status Consumer
 
@@ -52,6 +67,17 @@ Rules:
   flags from `response_payload`.
 - Do not query the eSocial database to fill missing SGP fields. If a field is
   missing from the spool envelope, the contract must be fixed.
+
+Canonical status examples are retained in
+`docs/release/0.1.0/status/published-samples.json`. SGP behavior by status:
+
+| Status | SGP projection behavior |
+| --- | --- |
+| `received`, `queued`, `processing`, `submitted` | Keep the projection pending and display the last known stage. |
+| `accepted`, `processed` | Store protocol/receipt and mark the projection successful. |
+| `rejected`, `validation_failed`, `failed` | Store official code or canonical error category and surface remediation text. |
+| `retry_scheduled`, `replayed` | Keep the original projection and append retry/replay metadata. |
+| `dlq`, `operator_action_required` | Block local completion and link to the eSocial operator incident. |
 
 ## Error Handling
 
@@ -70,8 +96,9 @@ SGP displays business-readable status, but eSocial owns remediation.
 
 Automatic:
 
-- eSocial schedules retry for retryable transport, timeout, and internal
-  failures within the documented budget.
+- eSocial schedules retry for retryable transport, timeout, and authentication
+  failures within the documented budget. In Round 0, only `transport`,
+  `timeout`, and `authentication` have a non-zero default budget.
 - eSocial publishes retry, DLQ, audit, and replay evidence.
 
 Operator-driven:

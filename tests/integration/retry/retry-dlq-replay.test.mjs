@@ -10,16 +10,53 @@ import {
   buildRetryScheduleCommand,
   buildStructuredLogEntry,
   buildTerminalDlqPayload,
+  classifyRetryFailureDetail,
   contextFromEnvelope,
   decideCircuitBreakerState,
   decideRetry,
   deriveReplayIdempotencyKey,
   listDlqMessages,
+  pollRetrySchedule,
   recordCircuitBreakerOutcome,
+  recordCircuitBreakerOutcomeWithAudit,
   withTraceSpan,
 } from '../../../packages/domain/dist/index.js';
+import { createDlqReplayHandler } from '../../../services/http-gateway/dist/dlq/replay.js';
 
 const now = new Date('2026-05-05T12:00:00.000Z');
+
+test('retry classifier assigns C1 categories, retryability, and budgets', () => {
+  const cases = [
+    [
+      transportError('ESOCIAL_SOAP_503', 'HTTP 503'),
+      { category: 'transport', retryable: true, budget: 5 },
+    ],
+    [
+      transportError('ESOCIAL_TIMEOUT', 'timeout'),
+      { category: 'timeout', retryable: true, budget: 5 },
+    ],
+    [
+      { category: 'schema', code: 'ESOCIAL_SCHEMA_INVALID', message: 'schema', retryable: false },
+      { category: 'schema', retryable: false, budget: 0 },
+    ],
+    [
+      { category: 'regulatory', code: 'ESOCIAL_REG_301', message: 'rejected', retryable: false },
+      { category: 'regulatory', retryable: false, budget: 0 },
+    ],
+    [
+      { category: 'authentication', code: 'ESOCIAL_CERTIFICATE_EXPIRED', message: 'expired' },
+      { category: 'authentication', retryable: true, budget: 1 },
+    ],
+    [
+      { category: 'internal', code: 'ESOCIAL_INTERNAL', message: 'bug', retryable: true },
+      { category: 'internal', retryable: false, budget: 0 },
+    ],
+  ];
+
+  for (const [error, expected] of cases) {
+    assert.deepEqual(classifyRetryFailureDetail(error), expected);
+  }
+});
 
 test('transient transport failure schedules retry and the replayed attempt produces exactly one accepted submission', () => {
   const request = requestEnvelope();
@@ -73,6 +110,111 @@ test('transient transport failure schedules retry and the replayed attempt produ
     requestId: request['request-id'],
     attempt: 2,
   });
+});
+
+test('retry poller republishes due schedules and persistent transport failures move to DLQ after budget', async () => {
+  const transient = retryRecord({
+    suffix: 'poll-transient',
+    retryScheduleId: 'retry-transient',
+    attemptCount: 1,
+    budgetRemaining: 2,
+  });
+  const exhausted = retryRecord({
+    suffix: 'poll-exhausted',
+    retryScheduleId: 'retry-exhausted',
+    attemptCount: 5,
+    maxAttempts: 5,
+    budgetRemaining: 0,
+  });
+  const repository = recordingRetryRepository([transient, exhausted]);
+  const published = [];
+
+  const result = await pollRetrySchedule({
+    repository,
+    now,
+    publisher: {
+      async publish(request) {
+        published.push(request);
+      },
+    },
+  });
+
+  assert.deepEqual(result, {
+    claimed: 2,
+    dispatched: 1,
+    deferred: 0,
+    dlq: 1,
+  });
+  assert.equal(published.length, 1);
+  assert.equal(published[0].attempt, 2);
+  assert.equal(repository.dispatched[0].retryScheduleId, 'retry-transient');
+  assert.equal(repository.dlq[0].retryScheduleId, 'retry-exhausted');
+  assert.equal(repository.dlq[0].dlq.final_attempt, 5);
+  assert.equal(repository.dlq[0].dlqItem.status, 'OPEN');
+  assert.equal(repository.dlq[0].dlqItem.replayHint.eligible, true);
+});
+
+test('circuit breaker opens, half-open probes close, and open circuits defer without consuming attempts', async () => {
+  const request = requestEnvelope('circuit');
+  const firstFailure = recordCircuitBreakerOutcomeWithAudit({
+    now,
+    outcome: 'failure',
+    errorCode: 'ESOCIAL_SOAP_503',
+    snapshot: circuitSnapshot(request, {
+      state: 'CLOSED',
+      failureCount: 2,
+    }),
+  });
+  assert.equal(firstFailure.snapshot.state, 'OPEN');
+  assert.equal(firstFailure.audit.toState, 'OPEN');
+
+  const closed = recordCircuitBreakerOutcomeWithAudit({
+    now,
+    outcome: 'success',
+    snapshot: {
+      ...firstFailure.snapshot,
+      state: 'HALF_OPEN',
+      halfOpenedAt: now.toISOString(),
+    },
+  });
+  assert.equal(closed.snapshot.state, 'CLOSED');
+  assert.equal(closed.audit.toState, 'CLOSED');
+
+  const due = retryRecord({
+    suffix: 'circuit-deferred',
+    retryScheduleId: 'retry-circuit',
+    attemptCount: 2,
+    budgetRemaining: 3,
+  });
+  const repository = recordingRetryRepository([due]);
+  const result = await pollRetrySchedule({
+    repository,
+    now,
+    publisher: {
+      async publish() {
+        throw new Error('open circuit must not publish');
+      },
+    },
+    circuitGate: {
+      async shouldDefer() {
+        return {
+          defer: true,
+          nextAttemptAt: '2026-05-05T12:15:00.000Z',
+          reason: 'Circuit is open; deferred with elongated backoff.',
+        };
+      },
+    },
+  });
+
+  assert.deepEqual(result, {
+    claimed: 1,
+    dispatched: 0,
+    deferred: 1,
+    dlq: 0,
+  });
+  assert.equal(repository.deferred[0].retryScheduleId, 'retry-circuit');
+  assert.equal(repository.deferred[0].reason, 'Circuit is open; deferred with elongated backoff.');
+  assert.equal(repository.dispatched.length, 0);
 });
 
 test('terminal failure produces DLQ payload and no accepted regulatory submission', () => {
@@ -164,6 +306,71 @@ test('operator replay derives a fresh request and audit evidence from DLQ payloa
   assert.equal(replay.auditEvent.after.replay_reason, 'official endpoint recovered');
 });
 
+test('HTTP DLQ replay endpoint enforces IAM and idempotency clash rule before publishing replay', async () => {
+  const request = requestEnvelope('http-replay');
+  const dlq = buildTerminalDlqPayload({
+    request,
+    errors: [transportError('ESOCIAL_TIMEOUT', 'Timed out before definitive return.')],
+    occurredAt: now.toISOString(),
+    lastClassification: 'timeout',
+  });
+  const published = [];
+  const audits = [];
+  const marked = [];
+  const handler = createDlqReplayHandler({
+    now: () => now,
+    uuid: fixedUuid([
+      '00000000-0000-4000-8000-000000000851',
+      '00000000-0000-4000-8000-000000000852',
+    ]),
+    requestPublisher: {
+      async publish(command) {
+        published.push(command);
+      },
+    },
+    repository: {
+      async load() {
+        return dlq;
+      },
+      async completedIdempotencyKeys() {
+        return [request['idempotency-key']];
+      },
+      async appendReplayAudit(input) {
+        audits.push(input);
+      },
+      async markReplayRequested(input) {
+        marked.push(input);
+      },
+    },
+  });
+
+  const forbidden = await handler({
+    httpMethod: 'POST',
+    path: '/dlq/dlq-http/replay',
+  });
+  assert.equal(forbidden.statusCode, 403);
+
+  const clashing = await handler(replayEvent({
+    force: false,
+    reason: 'endpoint recovered',
+  }));
+  assert.equal(clashing.statusCode, 409);
+  assert.equal(published.length, 0);
+
+  const accepted = await handler(replayEvent({
+    force: true,
+    reason: 'endpoint recovered',
+  }));
+  assert.equal(accepted.statusCode, 202);
+  const body = JSON.parse(accepted.body);
+  assert.equal(body.status, 'replay_requested');
+  assert.equal(body.requestId, '00000000-0000-4000-8000-000000000851');
+  assert.equal(published[0].envelope.attempt, 1);
+  assert.equal(published[0].envelope['idempotency-key'], body.idempotencyKey);
+  assert.equal(audits[0].auditEvent.action, 'dlq.replay.requested');
+  assert.equal(marked[0].replayRequestId, body.requestId);
+});
+
 test('observability helpers emit stable log fields, metrics, traces, and circuit decisions', async () => {
   const request = requestEnvelope('observability');
   const context = contextFromEnvelope(request, {
@@ -180,7 +387,7 @@ test('observability helpers emit stable log fields, metrics, traces, and circuit
     now,
   });
   for (const field of ESOCIAL_LOG_FIELD_NAMES) {
-    assert.equal(typeof log[field], 'string', field);
+    assert.equal(Object.hasOwn(log, field), true, field);
   }
 
   const metric = buildMetricPayload({
@@ -274,6 +481,87 @@ function requestEnvelope(suffix = 'transient') {
         pkcs7Sha256: `sha256:signed-${suffix}`,
       },
     },
+  };
+}
+
+function transportError(code, message) {
+  return {
+    category: 'transport',
+    code,
+    message,
+    retryable: true,
+    occurred_at: now.toISOString(),
+  };
+}
+
+function retryRecord(input) {
+  const request = requestEnvelope(input.suffix);
+  return {
+    retryScheduleId: input.retryScheduleId,
+    tenantId: request.tenant_id,
+    eventRecordId: `00000000-0000-4000-8000-${input.suffix === 'poll-exhausted' ? '000000000862' : '000000000861'}`,
+    batchId: request.payload.batchId,
+    environment: request.environment,
+    eventClass: request.event_class,
+    attemptCount: input.attemptCount,
+    maxAttempts: input.maxAttempts ?? 5,
+    budgetRemaining: input.budgetRemaining,
+    nextAttemptAt: now.toISOString(),
+    lastClassification: 'transport',
+    lastErrorCode: 'ESOCIAL_SOAP_503',
+    lastErrorMessage: 'Sandbox SOAP transport unavailable.',
+    originalEnvelope: request,
+  };
+}
+
+function recordingRetryRepository(records) {
+  return {
+    dispatched: [],
+    deferred: [],
+    dlq: [],
+    async claimDue() {
+      return records;
+    },
+    async markDispatched(input) {
+      this.dispatched.push(input);
+    },
+    async defer(input) {
+      this.deferred.push(input);
+    },
+    async moveToDlq(input) {
+      this.dlq.push(input);
+    },
+  };
+}
+
+function circuitSnapshot(request, overrides = {}) {
+  return {
+    tenantId: request.tenant_id,
+    environment: request.environment,
+    endpointName: 'qualification-submit',
+    state: 'CLOSED',
+    failureCount: 0,
+    successCount: 0,
+    ...overrides,
+  };
+}
+
+function replayEvent(input) {
+  return {
+    httpMethod: 'POST',
+    path: '/dlq/dlq-http/replay',
+    pathParameters: {
+      id: 'dlq-http',
+    },
+    queryStringParameters: input.force ? { force: 'true' } : {},
+    requestContext: {
+      identity: {
+        userArn: 'arn:aws:iam::123456789012:role/esocial-operator',
+      },
+    },
+    body: JSON.stringify({
+      reason: input.reason,
+    }),
   };
 }
 

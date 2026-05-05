@@ -1,0 +1,124 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit:
+    name: unit
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      - name: Coverage
+        run: npm run coverage
+
+      - name: Dependency Audit
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: SBOM
+        run: npm run sbom -- --out sbom/contracts-active-services.cdx.json
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: contracts-active-services-sbom
+          path: sbom/contracts-active-services.cdx.json
+          if-no-files-found: error
+
+  integration:
+    name: integration
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    needs: unit
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: esocial_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d esocial_ci"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      localstack:
+        image: localstack/localstack:3.8
+        env:
+          SERVICES: sqs,events,secretsmanager,kms,logs
+          AWS_DEFAULT_REGION: us-east-1
+        ports:
+          - 4566:4566
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/esocial_ci
+      ESOCIAL_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/esocial_ci
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: us-east-1
+      LOCALSTACK_ENDPOINT: http://localhost:4566
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Migrate
+        run: ESOCIAL_MIGRATE_RESET=1 npm run migrate:dev
+
+      - name: Database Tests
+        run: npm run test:db
+
+      - name: Integration Tests
+        run: npm run test:integration
+
+      - name: LocalStack Harness
+        run: npm run integration:localstack
+
+      - name: Template Check
+        run: npm run templates:check
+
+      - name: Production Template Guard
+        run: ESOCIAL_PROD_CONFIRM=1 node scripts/templates-generate.mjs --stage production --dry-run

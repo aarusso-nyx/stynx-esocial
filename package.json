@@ -18,7 +18,8 @@
     "coverage": "npm run build --silent && vitest run --coverage && node --test --experimental-test-coverage services/retorno/__tests__/*.test.mjs tests/contract/*.test.mjs tests/certificado/*.test.mjs tests/golden/*.test.mjs tests/handler/*.test.mjs tests/pki/*.test.mjs tests/returns/*.test.mjs tests/xml/*.test.mjs",
     "templates:generate": "node scripts/templates-generate.mjs",
     "templates:check": "node scripts/templates-generate.mjs --check",
-    "integration:localstack": "npm run build --silent && node tests/integration/localstack/harness.mjs",
+    "sbom": "node scripts/sbom.mjs",
+    "integration:localstack": "npm run build --silent && node scripts/integration-localstack.mjs",
     "migrate:dev": "node scripts/migrate-dev.mjs",
     "test:db": "node scripts/test-db.mjs",
     "test:integration": "npm run build --silent && npm run templates:check --silent && node --test tests/integration/*.test.mjs tests/integration/localstack/*.test.mjs tests/integration/retry/*.test.mjs tests/soap/*.test.mjs"

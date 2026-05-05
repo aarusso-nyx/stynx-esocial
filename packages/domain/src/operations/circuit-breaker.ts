@@ -28,6 +28,25 @@ export type CircuitBreakerDecision = Readonly<{
   nextCheckAt?: string | undefined;
 }>;
 
+export type CircuitBreakerAuditCommand = Readonly<{
+  tenantId: string;
+  environment: string;
+  endpointName: string;
+  endpointUrl?: string | undefined;
+  fromState: CircuitBreakerState;
+  toState: CircuitBreakerState;
+  reason: string;
+  occurredAt: string;
+  failureCount: number;
+  successCount: number;
+  errorCode?: string | undefined;
+}>;
+
+export type CircuitBreakerOutcomeResult = Readonly<{
+  snapshot: EndpointCircuitSnapshot;
+  audit?: CircuitBreakerAuditCommand | undefined;
+}>;
+
 export const DEFAULT_CIRCUIT_BREAKER_POLICY: CircuitBreakerPolicy = {
   failureThreshold: 3,
   halfOpenSuccessThreshold: 1,
@@ -121,6 +140,53 @@ export function recordCircuitBreakerOutcome(input: Readonly<{
   };
 }
 
+export function recordCircuitBreakerOutcomeWithAudit(input: Readonly<{
+  snapshot: EndpointCircuitSnapshot;
+  outcome: 'success' | 'failure';
+  now: Date;
+  reason?: string | undefined;
+  errorCode?: string | undefined;
+  policy?: Partial<CircuitBreakerPolicy> | undefined;
+}>): CircuitBreakerOutcomeResult {
+  const next = recordCircuitBreakerOutcome(input);
+  if (next.state === input.snapshot.state) {
+    return { snapshot: next };
+  }
+
+  return {
+    snapshot: next,
+    audit: buildCircuitBreakerAuditCommand({
+      from: input.snapshot,
+      to: next,
+      reason: input.reason ?? defaultTransitionReason(input.snapshot.state, next.state),
+      occurredAt: input.now.toISOString(),
+      errorCode: input.errorCode,
+    }),
+  };
+}
+
+export function buildCircuitBreakerAuditCommand(input: Readonly<{
+  from: EndpointCircuitSnapshot;
+  to: EndpointCircuitSnapshot;
+  reason: string;
+  occurredAt: string;
+  errorCode?: string | undefined;
+}>): CircuitBreakerAuditCommand {
+  return {
+    tenantId: input.to.tenantId,
+    environment: input.to.environment,
+    endpointName: input.to.endpointName,
+    endpointUrl: input.to.endpointUrl,
+    fromState: input.from.state,
+    toState: input.to.state,
+    reason: input.reason,
+    occurredAt: input.occurredAt,
+    failureCount: input.to.failureCount,
+    successCount: input.to.successCount,
+    errorCode: input.errorCode ?? input.to.lastErrorCode,
+  };
+}
+
 function normalizeCircuitPolicy(
   policy?: Partial<CircuitBreakerPolicy>,
 ): CircuitBreakerPolicy {
@@ -128,4 +194,15 @@ function normalizeCircuitPolicy(
     ...DEFAULT_CIRCUIT_BREAKER_POLICY,
     ...policy,
   };
+}
+
+function defaultTransitionReason(
+  from: CircuitBreakerState,
+  to: CircuitBreakerState,
+): string {
+  if (from === 'CLOSED' && to === 'OPEN') return 'failure threshold reached';
+  if (from === 'OPEN' && to === 'HALF_OPEN') return 'cooldown elapsed';
+  if (from === 'HALF_OPEN' && to === 'CLOSED') return 'half-open probe succeeded';
+  if (from === 'HALF_OPEN' && to === 'OPEN') return 'half-open probe failed';
+  return `${from} -> ${to}`;
 }

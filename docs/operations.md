@@ -1,8 +1,11 @@
 # Operations
 
-This is a Phase 3 stub for local database execution. Phase 8 owns the full
-runbook set for replay, DLQ triage, certificate rotation, sandbox outage,
-official rejection handling, tenant incidents, and audit extraction.
+This document describes the implemented Round 0 operating surface. Round 0 is a
+deterministic qualification-style runtime: it uses local PostgreSQL, local
+queue/event harnesses, deterministic SOAP stubs, sandbox certificate material in
+tests, and generated CloudFormation review templates. Real eSocial endpoints,
+real certificates, and restricted-production evidence are deferred to Round 2
+under explicit owner authorization.
 
 ## Local PostgreSQL
 
@@ -61,8 +64,8 @@ with membership in `esocial_worker`.
 
 ## Deployment Templates
 
-The repository currently uses a deterministic CloudFormation template generator,
-not AWS CDK synthesis. The command surface is named accordingly:
+Round 0 still uses a deterministic CloudFormation template generator, not AWS
+CDK synthesis. The command surface remains named accordingly:
 
 ```bash
 npm run templates:generate
@@ -79,16 +82,51 @@ two stage templates by default:
 | `restricted-production` | `esocial-restricted.local` | No `gov.br` URL. |
 | `production` | `webservices.esocial.gov.br` | Requires explicit operator confirmation. |
 
+Stage configuration is data-driven under `infra/cdk/config/`:
+
+| Stage | Config | Endpoint host indirection |
+| --- | --- | --- |
+| `qualification` | `infra/cdk/config/qualification.json` | `ESOCIAL_QUALIFICATION_ENDPOINT_HOST` |
+| `restricted-production` | `infra/cdk/config/restricted-production.json` | `ESOCIAL_RESTRICTED_PRODUCTION_ENDPOINT_HOST` |
+| `production` | `infra/cdk/config/production.json` | `ESOCIAL_PRODUCTION_ENDPOINT_HOST` |
+
 Production template generation is intentionally blocked unless the operator sets
-`ESOCIAL_CONFIRM_PRODUCTION_TEMPLATE=1` or passes `--confirm-production`.
+`ESOCIAL_PROD_CONFIRM=1`, sets the legacy
+`ESOCIAL_CONFIRM_PRODUCTION_TEMPLATE=1`, or passes `--confirm-production`.
 
 The generated templates include the current deployment surface: private VPC
 subnets, service and database security groups, RDS PostgreSQL with the `esocial`
-database name, Secrets Manager placeholders, KMS encryption, FIFO request,
-response, spool, retry, replay, and DLQ queues, EventBridge audit bus, nine
-Lambda functions (`submission`, `retorno`, `certificado`, `http-gateway`,
-`tabelas`, `trabalhador`, `folha`, `fechamento`, `exclusao`), event source
-mappings, a CodeBuild migration hook, CloudWatch alarms, and a dashboard.
+database name, Secrets Manager placeholders, separate KMS keys for database,
+certificate secret, and queue encryption, FIFO request, response, spool, retry,
+replay, and DLQ queues, EventBridge audit bus, nine Lambda functions
+(`submission`, `retorno`, `certificado`, `http-gateway`, `tabelas`,
+`trabalhador`, `folha`, `fechamento`, `exclusao`), one scoped IAM role per
+Lambda, event source mappings, a CodeBuild migration hook, CloudWatch alarms,
+and a dashboard. Template tests assert there are no `Resource: "*"` grants or
+IAM action wildcards in generated role policies.
+
+## CI And Branch Protection
+
+GitHub workflow definitions:
+
+```bash
+.github/workflows/ci.yml
+.github/workflows/release.yml
+.github/dependabot.yml
+```
+
+Required branch-protection checks for `main` are configured out-of-band in
+GitHub and must include:
+
+| Check | Required command surface |
+| --- | --- |
+| `unit` | `npm ci`, `npm run build`, `npm run lint`, `npm test`, `npm run coverage`, `npm audit --omit=dev --audit-level=high`, `npm run sbom`. |
+| `integration` | `npm run migrate:dev`, `npm run test:db`, `npm run test:integration`, `npm run integration:localstack`, `npm run templates:check`, production template dry-run with `ESOCIAL_PROD_CONFIRM=1`. |
+
+Repository policy also requires signed commits for protected branches. The
+release workflow publishes `@esocial/contracts` only with `NODE_AUTH_TOKEN`
+provided by GitHub secrets and attaches `sbom/contracts-active-services.cdx.json`
+to the GitHub Release.
 
 Local infrastructure evidence:
 
@@ -96,11 +134,13 @@ Local infrastructure evidence:
 npm run integration:localstack
 ```
 
-This command runs the compiled submission handler through a local
-LocalStack-compatible queue/event harness and a real temporary PostgreSQL
-database. It sends a submit envelope through the request queue, verifies response
-queue, spool queue, and audit bus outputs, and checks the persisted
-`esocial.event_record` status.
+This command runs `scripts/integration-localstack.mjs`, which delegates to the
+compiled submission handler through a local LocalStack-compatible queue/event
+harness and a real temporary PostgreSQL database. It sends a submit envelope
+through the request queue, verifies response queue, spool queue, and audit bus
+outputs, and checks the persisted `esocial.event_record` status. It remains an
+honest deterministic harness in Round 0; it does not deploy real CDK stacks or
+call live AWS services.
 
 ## Return Reconciliation
 
@@ -172,12 +212,12 @@ Retry budget by classification:
 | --- | ---: |
 | `transport` | 5 |
 | `timeout` | 5 |
-| `internal` | 3 |
+| `internal` | 0 |
 | `authentication` | 1 |
-| `validation` | 1 |
-| `schema` | 1 |
-| `xml_build` | 1 |
-| `signing` | 1 |
+| `validation` | 0 |
+| `schema` | 0 |
+| `xml_build` | 0 |
+| `signing` | 0 |
 | `malformed` | 0 |
 | `regulatory` | 0 |
 | `configuration` | 0 |
@@ -223,53 +263,80 @@ topic and `replay.auditEvent` to the audit topic in one operational transaction.
 
 ## Observability
 
-Structured logs use `buildStructuredLogEntry()` or `createStructuredLogger()`.
-Every major stage should include these stable fields when known:
+Structured logs use the shared Pino factory in
+`packages/domain/src/observability/logger.ts`. Every line carries the same log
+dictionary, with unknown values emitted as `null` instead of omitting the field:
 
-```text
-requestId
-correlationId
-tenantId
-eventClass
-batchId
-protocol
-receipt
-idempotencyKey
-```
+| Field | Meaning |
+| --- | --- |
+| `requestId` | SGP contract request id or SQS record id before JSON validation. |
+| `correlationId` | Cross-service correlation id propagated from the request envelope. |
+| `tenantId` | Opaque tenant identifier from the request envelope. |
+| `eventClass` | eSocial event class such as `S-1299` or `S-5001`. |
+| `batchId` | eSocial submission batch id when persistence has assigned it. |
+| `protocol` | eSocial protocol number when returned by SOAP or return parsing. |
+| `receipt` | eSocial receipt number when returned by processing. |
+| `idempotencyKey` | Contract idempotency key. |
+| `attempt` | SQS record index or envelope attempt number. |
+| `stage` | Handler stage: `ingress`, `ingress-validation`, `idempotency-lookup`, `build`, `xsd`, `sign`, `submit`, `parse-return`, or `publish`. |
 
-Example stage log:
+Redaction is mandatory before a log line is written:
 
-```json
-{"timestamp":"2026-05-05T12:00:00.000Z","level":"info","service":"submission","stage":"submit.accepted","message":"Submission accepted by sandbox.","requestId":"request-1","correlationId":"correlation-1","tenantId":"00000000-0000-4000-8000-000000000820","eventClass":"S-1299","batchId":"00000000-0000-4000-8000-000000000841","protocol":"1.2.202605.000000000000000001","receipt":"1.1.0000000000000000001","idempotencyKey":"idem-1"}
-```
+| Data class | Policy |
+| --- | --- |
+| XML payloads | Replace with `[REDACTED_XML_PAYLOAD]`. |
+| Certificate fingerprints | Keep only the last 8 characters. |
+| Certificate/private key material | Replace with `[REDACTED_CERTIFICATE_MATERIAL]`. |
+| CPF/CNPJ | Mask middle digits. |
+| Salary/remuneration fields | Replace with `[REDACTED_SALARY]`. |
 
 Metric helpers emit CloudWatch EMF-compatible JSON via `buildMetricPayload()` or
 `createMetricEmitter()`. Stable metric names:
 
-| Metric | Unit |
-| --- | --- |
-| `esocial.accepted` | Count |
-| `esocial.rejected` | Count |
-| `esocial.retry` | Count |
-| `esocial.dlq` | Count |
-| `esocial.timeout` | Count |
-| `esocial.soap_latency_ms` | Milliseconds |
-| `esocial.queue_age_ms` | Milliseconds |
-| `esocial.parser_failures` | Count |
+| Metric | Kind | Unit |
+| --- | --- | --- |
+| `esocial.accepted` | Counter | Count |
+| `esocial.rejected` | Counter | Count |
+| `esocial.retry` | Counter | Count |
+| `esocial.dlq` | Counter | Count |
+| `esocial.timeout` | Counter | Count |
+| `esocial.validation_failed` | Counter | Count |
+| `esocial.parser_failures` | Counter | Count |
+| `esocial.circuit_open_events` | Counter | Count |
+| `esocial.soap_latency_ms` | Histogram | Milliseconds |
+| `esocial.xsd_latency_ms` | Histogram | Milliseconds |
+| `esocial.sign_latency_ms` | Histogram | Milliseconds |
+| `esocial.queue_age_ms` | Histogram | Milliseconds |
 
-Trace spans use `withTraceSpan()` around message handling, XML build, XSD,
-signing, SOAP, parsing, persistence, and publication. The helper records service,
-span name, start/end timestamps, duration, status, and the same correlation
-fields as logs.
+Trace spans use `withTraceSpan()` around handler work and named stages:
+`handler`, `ingress`, `ingress-validation`, `idempotency-lookup`, `build`,
+`xsd`, `sign`, `soap`, `submit`, `parse-return`, `persist`, and `publish`.
+The helper annotates OpenTelemetry spans with the same correlation fields and
+propagates the correlation id through baggage.
 
 ## Incident Runbooks
 
-DLQ triage:
+Replay from DLQ to request topic:
+
+1. Filter terminal payloads with `listDlqMessages()` and confirm
+   `replay_hint.eligible` is true.
+2. Call `buildReplayRequestFromDlq({ dlq, replayedBy, replayReason })`.
+3. Publish `replay.request` to `sgp.esocial.submit.request`.
+4. Publish `replay.auditEvent` to `sgp.esocial.audit`.
+5. Confirm the new request has a fresh request id, correlation id, and
+   idempotency key. Do not mutate the old SGP source record to replay.
+
+DLQ triage decision tree:
 
 1. Load DLQ payloads from the operator queue adapter.
 2. Filter with `listDlqMessages()` by tenant, event class, and classification.
 3. Inspect `errors`, `attempt_history`, `hashes`, and `replay_hint`.
-4. If replay is allowed, call `buildReplayRequestFromDlq()` and publish the
+4. For `transport` or `timeout`, check the sandbox outage runbook before replay.
+5. For `regulatory`, replay only after a business-data correction produced a new
+   DTO or the official rejection is proven transient by the release owner.
+6. For `schema`, `xml_build`, `signing`, `configuration`, or `authentication`,
+   open an eSocial operator incident; SGP should not repair these locally.
+7. If replay is allowed, call `buildReplayRequestFromDlq()` and publish the
    returned request/audit pair.
 
 Sandbox outage:
@@ -289,19 +356,24 @@ Official rejection investigation:
 
 Certificate rotation:
 
-1. Insert the new `esocial.tenant_certificate` metadata row with status
-   `ACTIVE`, a new secret reference, and fingerprint.
-2. Mark the old row `ROTATING`, then `REVOKED` after all in-flight batches
+1. Store the new A1 certificate secret in Secrets Manager. Never commit the
+   certificate, private key, `.pfx`, `.p12`, `.pem`, `.key`, or `.crt`.
+2. Insert the new `esocial.tenant_certificate` metadata row with status
+   `ACTIVE`, a new secret reference, validity window, and fingerprint.
+3. Mark the old row `ROTATING`, then `REVOKED` after all in-flight batches
    settle.
-3. Verify access through `CertificateCustodyService.resolveCertificate()`;
+4. Invalidate any process-local certificate cache before the next submission.
+5. Verify access through `CertificateCustodyService.resolveCertificate()`;
    every access appends audit metadata through the configured repository.
 
 Tenant incident scope-down:
 
-1. Use tenant-scoped SQL with `SET app.current_tenant_id = '<tenant uuid>'` for
+1. Pause request publishing for the affected tenant only.
+2. Use tenant-scoped SQL with `SET app.current_tenant_id = '<tenant uuid>'` for
    app-role reads.
-2. For worker-role incident views, filter all operational SQL by `tenant_id`.
-3. Do not query or mutate any SGP schema from eSocial remediation.
+3. For worker-role incident views, filter all operational SQL by `tenant_id`.
+4. Move only that tenant's open DLQ and retry items to incident review.
+5. Do not query or mutate any SGP schema from eSocial remediation.
 
 Audit evidence extraction:
 

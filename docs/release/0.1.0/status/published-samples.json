@@ -1,0 +1,47 @@
+{
+  "topics": {
+    "response": "sgp.esocial.submit.response",
+    "spool": "sgp.esocial.spool.update",
+    "audit": "sgp.esocial.audit",
+    "retry": "sgp.esocial.retry",
+    "dlq": "sgp.esocial.dlq",
+    "replay": "sgp.esocial.replay"
+  },
+  "samples": [
+    {
+      "family": "response",
+      "status": "accepted",
+      "event_class": "S-1299",
+      "classification": null,
+      "protocol_number": "LOCAL-STUB-PROTOCOL",
+      "receipt_number": "LOCAL-STUB-RECEIPT"
+    },
+    {
+      "family": "spool",
+      "status_transition": {
+        "from": "submitted",
+        "to": "accepted"
+      },
+      "event_class": "S-1299",
+      "idempotency_key": "qualification:S-1299:fixture"
+    },
+    {
+      "family": "audit",
+      "event_type": "submission.accepted",
+      "event_class": "S-1299",
+      "payload_hash_present": true
+    },
+    {
+      "family": "retry",
+      "status": "scheduled",
+      "classification": "transport",
+      "budget": 5
+    },
+    {
+      "family": "dlq",
+      "status": "terminal",
+      "classification": "regulatory",
+      "replay_allowed": false
+    }
+  ]
+}

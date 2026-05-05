@@ -5,6 +5,9 @@
     "outDir": "dist",
     "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
   },
+  "references": [
+    { "path": "../../packages/domain" }
+  ],
   "include": ["src/**/*.ts"],
   "exclude": ["dist", "node_modules"]
 }

@@ -16,7 +16,9 @@
     "boundary": {
       "schema": "esocial",
       "noSgpDatabaseAccess": true,
-      "endpointHost": "esocial-qualification.local"
+      "endpointHostParameter": "EsocialEndpointHost",
+      "endpointHostEnv": "ESOCIAL_QUALIFICATION_ENDPOINT_HOST",
+      "iamScope": "stage-owned-resources"
     },
     "lambdaServices": [
       "submission",
@@ -31,6 +33,11 @@
     ]
   },
   "Parameters": {
+    "EsocialEndpointHost": {
+      "Type": "String",
+      "Default": "esocial-qualification.local",
+      "Description": "eSocial endpoint host. Operators may override through ESOCIAL_QUALIFICATION_ENDPOINT_HOST."
+    },
     "EsocialDatabaseUrlSecretArn": {
       "Type": "String",
       "Description": "Secrets Manager ARN for the esocial database URL."
@@ -41,10 +48,24 @@
     }
   },
   "Resources": {
-    "EsocialKmsKey": {
+    "EsocialDatabaseKmsKey": {
       "Type": "AWS::KMS::Key",
       "Properties": {
-        "Description": "esocial qualification encryption key",
+        "Description": "esocial qualification database encryption key",
+        "EnableKeyRotation": true
+      }
+    },
+    "EsocialCertificateKmsKey": {
+      "Type": "AWS::KMS::Key",
+      "Properties": {
+        "Description": "esocial qualification certificate secret encryption key",
+        "EnableKeyRotation": true
+      }
+    },
+    "EsocialQueueKmsKey": {
+      "Type": "AWS::KMS::Key",
+      "Properties": {
+        "Description": "esocial qualification queue encryption key",
         "EnableKeyRotation": true
       }
     },
@@ -171,7 +192,7 @@
       "Properties": {
         "Name": "esocial/qualification/database",
         "KmsKeyId": {
-          "Ref": "EsocialKmsKey"
+          "Ref": "EsocialDatabaseKmsKey"
         },
         "Description": "esocial/qualification/database reference placeholder; secret value is provisioned outside git."
       }
@@ -181,7 +202,7 @@
       "Properties": {
         "Name": "esocial/qualification/certificate/local-test-placeholder",
         "KmsKeyId": {
-          "Ref": "EsocialKmsKey"
+          "Ref": "EsocialCertificateKmsKey"
         },
         "Description": "esocial/qualification/certificate/local-test-placeholder reference placeholder; secret value is provisioned outside git."
       }
@@ -198,7 +219,7 @@
         "AllocatedStorage": "20",
         "StorageEncrypted": true,
         "KmsKeyId": {
-          "Ref": "EsocialKmsKey"
+          "Ref": "EsocialDatabaseKmsKey"
         },
         "DBSubnetGroupName": {
           "Ref": "EsocialDatabaseSubnetGroup"
@@ -211,6 +232,13 @@
         "BackupRetentionPeriod": 7,
         "MasterUsername": "{{resolve:secretsmanager:esocial-db:SecretString:username}}",
         "MasterUserPassword": "{{resolve:secretsmanager:esocial-db:SecretString:password}}"
+      }
+    },
+    "EsocialMigrationProjectLogGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": "/aws/codebuild/esocial-qualification-migrations",
+        "RetentionInDays": 14
       }
     },
     "EsocialMigrationProjectRole": {
@@ -239,16 +267,34 @@
                   "Effect": "Allow",
                   "Action": [
                     "logs:CreateLogStream",
-                    "logs:PutLogEvents",
-                    "sqs:SendMessage",
-                    "sqs:ReceiveMessage",
-                    "sqs:DeleteMessage",
-                    "events:PutEvents",
-                    "secretsmanager:GetSecretValue",
-                    "kms:Decrypt",
-                    "cloudwatch:PutMetricData"
+                    "logs:PutLogEvents"
                   ],
-                  "Resource": "*"
+                  "Resource": {
+                    "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/codebuild/esocial-qualification-migrations:*"
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": "secretsmanager:GetSecretValue",
+                  "Resource": {
+                    "Fn::GetAtt": [
+                      "EsocialDatabaseSecret",
+                      "Arn"
+                    ]
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "kms:Decrypt",
+                    "kms:GenerateDataKey"
+                  ],
+                  "Resource": {
+                    "Fn::GetAtt": [
+                      "EsocialDatabaseKmsKey",
+                      "Arn"
+                    ]
+                  }
                 }
               ]
             }
@@ -297,7 +343,7 @@
         "FifoQueue": true,
         "ContentBasedDeduplication": false,
         "KmsMasterKeyId": {
-          "Ref": "EsocialKmsKey"
+          "Ref": "EsocialQueueKmsKey"
         },
         "RedrivePolicy": {
           "deadLetterTargetArn": {
@@ -317,7 +363,7 @@
         "FifoQueue": true,
         "ContentBasedDeduplication": false,
         "KmsMasterKeyId": {
-          "Ref": "EsocialKmsKey"
+          "Ref": "EsocialQueueKmsKey"
         }
       }
     },
@@ -328,7 +374,7 @@
         "FifoQueue": true,
         "ContentBasedDeduplication": false,
         "KmsMasterKeyId": {
-          "Ref": "EsocialKmsKey"
+          "Ref": "EsocialQueueKmsKey"
         }
       }
     },
@@ -339,7 +385,7 @@
         "FifoQueue": true,
         "ContentBasedDeduplication": false,
         "KmsMasterKeyId": {
-          "Ref": "EsocialKmsKey"
+          "Ref": "EsocialQueueKmsKey"
         },
         "RedrivePolicy": {
           "deadLetterTargetArn": {
@@ -359,7 +405,7 @@
         "FifoQueue": true,
         "ContentBasedDeduplication": false,
         "KmsMasterKeyId": {
-          "Ref": "EsocialKmsKey"
+          "Ref": "EsocialQueueKmsKey"
         },
         "RedrivePolicy": {
           "deadLetterTargetArn": {
@@ -379,7 +425,7 @@
         "FifoQueue": true,
         "ContentBasedDeduplication": false,
         "KmsMasterKeyId": {
-          "Ref": "EsocialKmsKey"
+          "Ref": "EsocialQueueKmsKey"
         }
       }
     },
@@ -390,14 +436,14 @@
         "FifoQueue": true,
         "ContentBasedDeduplication": false,
         "KmsMasterKeyId": {
-          "Ref": "EsocialKmsKey"
+          "Ref": "EsocialQueueKmsKey"
         }
       }
     },
-    "EsocialLambdaRole": {
+    "SubmissionRole": {
       "Type": "AWS::IAM::Role",
       "Properties": {
-        "RoleName": "esocial-qualification-lambda-role",
+        "RoleName": "esocial-qualification-submission-role",
         "AssumeRolePolicyDocument": {
           "Version": "2012-10-17",
           "Statement": [
@@ -412,7 +458,7 @@
         },
         "Policies": [
           {
-            "PolicyName": "esocial-qualification-lambda-runtime",
+            "PolicyName": "esocial-qualification-submission-runtime",
             "PolicyDocument": {
               "Version": "2012-10-17",
               "Statement": [
@@ -420,16 +466,119 @@
                   "Effect": "Allow",
                   "Action": [
                     "logs:CreateLogStream",
-                    "logs:PutLogEvents",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/esocial-qualification-submission:*"
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
                     "sqs:SendMessage",
                     "sqs:ReceiveMessage",
                     "sqs:DeleteMessage",
-                    "events:PutEvents",
-                    "secretsmanager:GetSecretValue",
-                    "kms:Decrypt",
-                    "cloudwatch:PutMetricData"
+                    "sqs:GetQueueAttributes"
                   ],
-                  "Resource": "*"
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitRequestQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitResponseQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SpoolQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "RetryQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "ReplayQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitDlq",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "ReturnDlq",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": "events:PutEvents",
+                  "Resource": {
+                    "Fn::GetAtt": [
+                      "EsocialEventsBus",
+                      "Arn"
+                    ]
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": "secretsmanager:GetSecretValue",
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialDatabaseSecret",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialCertificateSecret",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "kms:Decrypt",
+                    "kms:GenerateDataKey"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialDatabaseKmsKey",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialCertificateKmsKey",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialQueueKmsKey",
+                        "Arn"
+                      ]
+                    }
+                  ]
                 }
               ]
             }
@@ -452,7 +601,7 @@
         "Handler": "dist/handler.handler",
         "Role": {
           "Fn::GetAtt": [
-            "EsocialLambdaRole",
+            "SubmissionRole",
             "Arn"
           ]
         },
@@ -462,7 +611,10 @@
           "Variables": {
             "ESOCIAL_STAGE": "qualification",
             "ESOCIAL_SCHEMA": "esocial",
-            "ESOCIAL_ENDPOINT_HOST": "esocial-qualification.local",
+            "ESOCIAL_ENDPOINT_HOST": {
+              "Ref": "EsocialEndpointHost"
+            },
+            "ESOCIAL_ENDPOINT_HOST_ENV": "ESOCIAL_QUALIFICATION_ENDPOINT_HOST",
             "ESOCIAL_EVENT_BUS_NAME": {
               "Ref": "EsocialEventsBus"
             },
@@ -494,6 +646,152 @@
         }
       }
     },
+    "RetornoRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": "esocial-qualification-retorno-role",
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "esocial-qualification-retorno-runtime",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/esocial-qualification-retorno:*"
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:SendMessage",
+                    "sqs:ReceiveMessage",
+                    "sqs:DeleteMessage",
+                    "sqs:GetQueueAttributes"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitRequestQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitResponseQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SpoolQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "RetryQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "ReplayQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitDlq",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "ReturnDlq",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": "events:PutEvents",
+                  "Resource": {
+                    "Fn::GetAtt": [
+                      "EsocialEventsBus",
+                      "Arn"
+                    ]
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": "secretsmanager:GetSecretValue",
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialDatabaseSecret",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialCertificateSecret",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "kms:Decrypt",
+                    "kms:GenerateDataKey"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialDatabaseKmsKey",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialCertificateKmsKey",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialQueueKmsKey",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
     "RetornoLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
@@ -509,7 +807,7 @@
         "Handler": "dist/handler.handler",
         "Role": {
           "Fn::GetAtt": [
-            "EsocialLambdaRole",
+            "RetornoRole",
             "Arn"
           ]
         },
@@ -519,7 +817,10 @@
           "Variables": {
             "ESOCIAL_STAGE": "qualification",
             "ESOCIAL_SCHEMA": "esocial",
-            "ESOCIAL_ENDPOINT_HOST": "esocial-qualification.local",
+            "ESOCIAL_ENDPOINT_HOST": {
+              "Ref": "EsocialEndpointHost"
+            },
+            "ESOCIAL_ENDPOINT_HOST_ENV": "ESOCIAL_QUALIFICATION_ENDPOINT_HOST",
             "ESOCIAL_EVENT_BUS_NAME": {
               "Ref": "EsocialEventsBus"
             },
@@ -551,6 +852,152 @@
         }
       }
     },
+    "CertificadoRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": "esocial-qualification-certificado-role",
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "esocial-qualification-certificado-runtime",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/esocial-qualification-certificado:*"
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:SendMessage",
+                    "sqs:ReceiveMessage",
+                    "sqs:DeleteMessage",
+                    "sqs:GetQueueAttributes"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitRequestQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitResponseQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SpoolQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "RetryQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "ReplayQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitDlq",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "ReturnDlq",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": "events:PutEvents",
+                  "Resource": {
+                    "Fn::GetAtt": [
+                      "EsocialEventsBus",
+                      "Arn"
+                    ]
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": "secretsmanager:GetSecretValue",
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialDatabaseSecret",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialCertificateSecret",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "kms:Decrypt",
+                    "kms:GenerateDataKey"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialDatabaseKmsKey",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialCertificateKmsKey",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialQueueKmsKey",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
     "CertificadoLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
@@ -566,7 +1013,7 @@
         "Handler": "dist/handler.handler",
         "Role": {
           "Fn::GetAtt": [
-            "EsocialLambdaRole",
+            "CertificadoRole",
             "Arn"
           ]
         },
@@ -576,7 +1023,10 @@
           "Variables": {
             "ESOCIAL_STAGE": "qualification",
             "ESOCIAL_SCHEMA": "esocial",
-            "ESOCIAL_ENDPOINT_HOST": "esocial-qualification.local",
+            "ESOCIAL_ENDPOINT_HOST": {
+              "Ref": "EsocialEndpointHost"
+            },
+            "ESOCIAL_ENDPOINT_HOST_ENV": "ESOCIAL_QUALIFICATION_ENDPOINT_HOST",
             "ESOCIAL_EVENT_BUS_NAME": {
               "Ref": "EsocialEventsBus"
             },
@@ -608,6 +1058,152 @@
         }
       }
     },
+    "HttpGatewayRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": "esocial-qualification-http-gateway-role",
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "esocial-qualification-http-gateway-runtime",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/esocial-qualification-http-gateway:*"
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:SendMessage",
+                    "sqs:ReceiveMessage",
+                    "sqs:DeleteMessage",
+                    "sqs:GetQueueAttributes"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitRequestQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitResponseQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SpoolQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "RetryQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "ReplayQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitDlq",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "ReturnDlq",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": "events:PutEvents",
+                  "Resource": {
+                    "Fn::GetAtt": [
+                      "EsocialEventsBus",
+                      "Arn"
+                    ]
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": "secretsmanager:GetSecretValue",
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialDatabaseSecret",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialCertificateSecret",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "kms:Decrypt",
+                    "kms:GenerateDataKey"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialDatabaseKmsKey",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialCertificateKmsKey",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialQueueKmsKey",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
     "HttpGatewayLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
@@ -623,7 +1219,7 @@
         "Handler": "dist/handler.handler",
         "Role": {
           "Fn::GetAtt": [
-            "EsocialLambdaRole",
+            "HttpGatewayRole",
             "Arn"
           ]
         },
@@ -633,7 +1229,10 @@
           "Variables": {
             "ESOCIAL_STAGE": "qualification",
             "ESOCIAL_SCHEMA": "esocial",
-            "ESOCIAL_ENDPOINT_HOST": "esocial-qualification.local",
+            "ESOCIAL_ENDPOINT_HOST": {
+              "Ref": "EsocialEndpointHost"
+            },
+            "ESOCIAL_ENDPOINT_HOST_ENV": "ESOCIAL_QUALIFICATION_ENDPOINT_HOST",
             "ESOCIAL_EVENT_BUS_NAME": {
               "Ref": "EsocialEventsBus"
             },
@@ -665,6 +1264,152 @@
         }
       }
     },
+    "TabelasRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": "esocial-qualification-tabelas-role",
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "esocial-qualification-tabelas-runtime",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/esocial-qualification-tabelas:*"
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:SendMessage",
+                    "sqs:ReceiveMessage",
+                    "sqs:DeleteMessage",
+                    "sqs:GetQueueAttributes"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitRequestQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitResponseQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SpoolQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "RetryQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "ReplayQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitDlq",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "ReturnDlq",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": "events:PutEvents",
+                  "Resource": {
+                    "Fn::GetAtt": [
+                      "EsocialEventsBus",
+                      "Arn"
+                    ]
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": "secretsmanager:GetSecretValue",
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialDatabaseSecret",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialCertificateSecret",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "kms:Decrypt",
+                    "kms:GenerateDataKey"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialDatabaseKmsKey",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialCertificateKmsKey",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialQueueKmsKey",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
     "TabelasLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
@@ -680,7 +1425,7 @@
         "Handler": "dist/handler.handler",
         "Role": {
           "Fn::GetAtt": [
-            "EsocialLambdaRole",
+            "TabelasRole",
             "Arn"
           ]
         },
@@ -690,7 +1435,10 @@
           "Variables": {
             "ESOCIAL_STAGE": "qualification",
             "ESOCIAL_SCHEMA": "esocial",
-            "ESOCIAL_ENDPOINT_HOST": "esocial-qualification.local",
+            "ESOCIAL_ENDPOINT_HOST": {
+              "Ref": "EsocialEndpointHost"
+            },
+            "ESOCIAL_ENDPOINT_HOST_ENV": "ESOCIAL_QUALIFICATION_ENDPOINT_HOST",
             "ESOCIAL_EVENT_BUS_NAME": {
               "Ref": "EsocialEventsBus"
             },
@@ -722,6 +1470,152 @@
         }
       }
     },
+    "TrabalhadorRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": "esocial-qualification-trabalhador-role",
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "esocial-qualification-trabalhador-runtime",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/esocial-qualification-trabalhador:*"
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:SendMessage",
+                    "sqs:ReceiveMessage",
+                    "sqs:DeleteMessage",
+                    "sqs:GetQueueAttributes"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitRequestQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitResponseQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SpoolQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "RetryQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "ReplayQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitDlq",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "ReturnDlq",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": "events:PutEvents",
+                  "Resource": {
+                    "Fn::GetAtt": [
+                      "EsocialEventsBus",
+                      "Arn"
+                    ]
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": "secretsmanager:GetSecretValue",
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialDatabaseSecret",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialCertificateSecret",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "kms:Decrypt",
+                    "kms:GenerateDataKey"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialDatabaseKmsKey",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialCertificateKmsKey",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialQueueKmsKey",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
     "TrabalhadorLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
@@ -737,7 +1631,7 @@
         "Handler": "dist/handler.handler",
         "Role": {
           "Fn::GetAtt": [
-            "EsocialLambdaRole",
+            "TrabalhadorRole",
             "Arn"
           ]
         },
@@ -747,7 +1641,10 @@
           "Variables": {
             "ESOCIAL_STAGE": "qualification",
             "ESOCIAL_SCHEMA": "esocial",
-            "ESOCIAL_ENDPOINT_HOST": "esocial-qualification.local",
+            "ESOCIAL_ENDPOINT_HOST": {
+              "Ref": "EsocialEndpointHost"
+            },
+            "ESOCIAL_ENDPOINT_HOST_ENV": "ESOCIAL_QUALIFICATION_ENDPOINT_HOST",
             "ESOCIAL_EVENT_BUS_NAME": {
               "Ref": "EsocialEventsBus"
             },
@@ -779,6 +1676,152 @@
         }
       }
     },
+    "FolhaRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": "esocial-qualification-folha-role",
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "esocial-qualification-folha-runtime",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/esocial-qualification-folha:*"
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:SendMessage",
+                    "sqs:ReceiveMessage",
+                    "sqs:DeleteMessage",
+                    "sqs:GetQueueAttributes"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitRequestQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitResponseQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SpoolQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "RetryQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "ReplayQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitDlq",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "ReturnDlq",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": "events:PutEvents",
+                  "Resource": {
+                    "Fn::GetAtt": [
+                      "EsocialEventsBus",
+                      "Arn"
+                    ]
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": "secretsmanager:GetSecretValue",
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialDatabaseSecret",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialCertificateSecret",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "kms:Decrypt",
+                    "kms:GenerateDataKey"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialDatabaseKmsKey",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialCertificateKmsKey",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialQueueKmsKey",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
     "FolhaLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
@@ -794,7 +1837,7 @@
         "Handler": "dist/handler.handler",
         "Role": {
           "Fn::GetAtt": [
-            "EsocialLambdaRole",
+            "FolhaRole",
             "Arn"
           ]
         },
@@ -804,7 +1847,10 @@
           "Variables": {
             "ESOCIAL_STAGE": "qualification",
             "ESOCIAL_SCHEMA": "esocial",
-            "ESOCIAL_ENDPOINT_HOST": "esocial-qualification.local",
+            "ESOCIAL_ENDPOINT_HOST": {
+              "Ref": "EsocialEndpointHost"
+            },
+            "ESOCIAL_ENDPOINT_HOST_ENV": "ESOCIAL_QUALIFICATION_ENDPOINT_HOST",
             "ESOCIAL_EVENT_BUS_NAME": {
               "Ref": "EsocialEventsBus"
             },
@@ -836,6 +1882,152 @@
         }
       }
     },
+    "FechamentoRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": "esocial-qualification-fechamento-role",
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "esocial-qualification-fechamento-runtime",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/esocial-qualification-fechamento:*"
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:SendMessage",
+                    "sqs:ReceiveMessage",
+                    "sqs:DeleteMessage",
+                    "sqs:GetQueueAttributes"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitRequestQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitResponseQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SpoolQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "RetryQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "ReplayQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitDlq",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "ReturnDlq",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": "events:PutEvents",
+                  "Resource": {
+                    "Fn::GetAtt": [
+                      "EsocialEventsBus",
+                      "Arn"
+                    ]
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": "secretsmanager:GetSecretValue",
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialDatabaseSecret",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialCertificateSecret",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "kms:Decrypt",
+                    "kms:GenerateDataKey"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialDatabaseKmsKey",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialCertificateKmsKey",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialQueueKmsKey",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
     "FechamentoLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
@@ -851,7 +2043,7 @@
         "Handler": "dist/handler.handler",
         "Role": {
           "Fn::GetAtt": [
-            "EsocialLambdaRole",
+            "FechamentoRole",
             "Arn"
           ]
         },
@@ -861,7 +2053,10 @@
           "Variables": {
             "ESOCIAL_STAGE": "qualification",
             "ESOCIAL_SCHEMA": "esocial",
-            "ESOCIAL_ENDPOINT_HOST": "esocial-qualification.local",
+            "ESOCIAL_ENDPOINT_HOST": {
+              "Ref": "EsocialEndpointHost"
+            },
+            "ESOCIAL_ENDPOINT_HOST_ENV": "ESOCIAL_QUALIFICATION_ENDPOINT_HOST",
             "ESOCIAL_EVENT_BUS_NAME": {
               "Ref": "EsocialEventsBus"
             },
@@ -893,6 +2088,152 @@
         }
       }
     },
+    "ExclusaoRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "RoleName": "esocial-qualification-exclusao-role",
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "Policies": [
+          {
+            "PolicyName": "esocial-qualification-exclusao-runtime",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/esocial-qualification-exclusao:*"
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "sqs:SendMessage",
+                    "sqs:ReceiveMessage",
+                    "sqs:DeleteMessage",
+                    "sqs:GetQueueAttributes"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitRequestQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitResponseQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SpoolQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "RetryQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "ReplayQueue",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "SubmitDlq",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "ReturnDlq",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": "events:PutEvents",
+                  "Resource": {
+                    "Fn::GetAtt": [
+                      "EsocialEventsBus",
+                      "Arn"
+                    ]
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": "secretsmanager:GetSecretValue",
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialDatabaseSecret",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialCertificateSecret",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "kms:Decrypt",
+                    "kms:GenerateDataKey"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialDatabaseKmsKey",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialCertificateKmsKey",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::GetAtt": [
+                        "EsocialQueueKmsKey",
+                        "Arn"
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
     "ExclusaoLogGroup": {
       "Type": "AWS::Logs::LogGroup",
       "Properties": {
@@ -908,7 +2249,7 @@
         "Handler": "dist/handler.handler",
         "Role": {
           "Fn::GetAtt": [
-            "EsocialLambdaRole",
+            "ExclusaoRole",
             "Arn"
           ]
         },
@@ -918,7 +2259,10 @@
           "Variables": {
             "ESOCIAL_STAGE": "qualification",
             "ESOCIAL_SCHEMA": "esocial",
-            "ESOCIAL_ENDPOINT_HOST": "esocial-qualification.local",
+            "ESOCIAL_ENDPOINT_HOST": {
+              "Ref": "EsocialEndpointHost"
+            },
+            "ESOCIAL_ENDPOINT_HOST_ENV": "ESOCIAL_QUALIFICATION_ENDPOINT_HOST",
             "ESOCIAL_EVENT_BUS_NAME": {
               "Ref": "EsocialEventsBus"
             },
