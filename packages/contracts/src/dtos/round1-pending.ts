@@ -1,6 +1,7 @@
 import type { EsocialRelayEventClass } from '../kinds.js';
 
 import type { EsocialSourceDtoBase } from './common.js';
+import type { EsocialPromotedPeriodicDtoEventClass } from './periodic.js';
 import type { EsocialPromotedTableDtoEventClass } from './tables.js';
 
 export const ESOCIAL_ROUND0_DTO_EVENT_CLASSES = [
@@ -16,7 +17,9 @@ export type EsocialRound0DtoEventClass =
 
 export type EsocialRound1PendingEventClass = Exclude<
   EsocialRelayEventClass,
-  EsocialRound0DtoEventClass | EsocialPromotedTableDtoEventClass
+  | EsocialRound0DtoEventClass
+  | EsocialPromotedTableDtoEventClass
+  | EsocialPromotedPeriodicDtoEventClass
 >;
 
 export type EsocialRound1PendingDto<

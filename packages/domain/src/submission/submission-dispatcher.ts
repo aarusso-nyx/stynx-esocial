@@ -9,6 +9,10 @@ import type {
   S1050WorkScheduleDto,
   S1070ProcessDto,
   S1200RemunerationDto,
+  S1202RppsRemunerationDto,
+  S1207RppsBenefitPaymentDto,
+  S1210PaymentDto,
+  S1298ReopeningDto,
   S1299ClosureDto,
   S2200AdmissionDto,
 } from '@esocial/contracts';
@@ -21,6 +25,10 @@ import {
   buildS1050,
   buildS1070,
   buildS1200,
+  buildS1202,
+  buildS1207,
+  buildS1210,
+  buildS1298,
   buildS1299,
   buildS2200,
 } from '../builders/index.js';
@@ -101,6 +109,26 @@ const ROUND0_DISPATCHERS: Partial<Record<EsocialRelayEventClass, SubmissionDispa
     'S-1200': (dto, context) =>
       dispatchBuiltXml(
         buildS1200(dto as S1200RemunerationDto, builderContext(context)),
+        context,
+      ),
+    'S-1202': (dto, context) =>
+      dispatchBuiltXml(
+        buildS1202(dto as S1202RppsRemunerationDto, builderContext(context)),
+        context,
+      ),
+    'S-1207': (dto, context) =>
+      dispatchBuiltXml(
+        buildS1207(dto as S1207RppsBenefitPaymentDto, builderContext(context)),
+        context,
+      ),
+    'S-1210': (dto, context) =>
+      dispatchBuiltXml(
+        buildS1210(dto as S1210PaymentDto, builderContext(context)),
+        context,
+      ),
+    'S-1298': (dto, context) =>
+      dispatchBuiltXml(
+        buildS1298(dto as S1298ReopeningDto, builderContext(context)),
         context,
       ),
     'S-1299': (dto, context) =>

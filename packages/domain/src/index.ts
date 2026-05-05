@@ -81,8 +81,13 @@ export {
   buildS1050,
   buildS1070,
   buildS1200,
+  buildS1202,
+  buildS1207,
+  buildS1210,
+  buildS1298,
   buildS1299,
   buildS2200,
+  MissingReceiptReference,
 } from './builders/index.js';
 export {
   ReturnProcessor,
@@ -102,6 +107,14 @@ export {
   buildTableEvents,
   isPromotedTableEventClass,
 } from './xml/builders/tables/index.js';
+export {
+  PERIODIC_EVENT_METADATA,
+  PROMOTED_PERIODIC_EVENT_CLASSES,
+  PeriodicBuilderValidationError,
+  buildPeriodicEvent,
+  buildPeriodicEvents,
+  isPromotedPeriodicEventClass,
+} from './xml/builders/periodic/index.js';
 export {
   InMemoryXsdValidationFailureSink,
   XsdValidationError,
@@ -246,6 +259,31 @@ export type {
   TableSourceEntityKind,
   TableVersionDependency,
 } from './xml/builders/tables/index.js';
+export type {
+  BuiltPeriodicXmlEvent,
+  EsocialPeriodicOperation,
+  PeriodicEventDto,
+  PeriodicEventDtoBase,
+  PeriodicEventMetadata,
+  PeriodicReceiptDependency,
+  PeriodicRubricDto,
+  PeriodicRubricKind,
+  PeriodicSourceEntityKind,
+  PeriodicTableVersionDependency,
+  PromotedPeriodicEventClass,
+  S1200PeriodicDto,
+  S1200WorkerRemunerationDto,
+  S1202PeriodicDto,
+  S1202WorkerRemunerationDto,
+  S1207BenefitPaymentDto,
+  S1207BenefitSourceKind,
+  S1207PeriodicDto,
+  S1210PaymentDto,
+  S1210PeriodicDto,
+  S1298PeriodicDto,
+  S1299PendingPeriodicDto,
+  S1299PeriodicDto,
+} from './xml/builders/periodic/index.js';
 export type {
   PromotedTableXsdValidationInput,
   PromotedTableXsdValidationResult,

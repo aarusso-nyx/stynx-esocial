@@ -11,7 +11,6 @@ import {
   ESocialTotalizerRecord,
   TotalizerParser,
 } from '../parsers/totalizer.parser';
-import { S1298Builder } from './s1298.builder';
 import { S1299Builder, S1299PendingPeriodic } from './s1299.builder';
 import { dateCompetence, monthCompetence } from './s1299.builder';
 import { sha256 } from './s22xx-common';
@@ -59,7 +58,6 @@ export class ES05Service {
     private readonly databaseService: DatabaseService,
     private readonly emitService: ESocialEmitService,
     private readonly s1299Builder: S1299Builder,
-    private readonly s1298Builder: S1298Builder,
     private readonly totalizerParser: TotalizerParser,
   ) {}
 
@@ -120,44 +118,11 @@ export class ES05Service {
   }
 
   async reopen(year: number, month: number): Promise<ES05ReopenResult> {
-    const tenantId = this.currentTenantId();
-    const competence = competenceFromParts(year, month);
-    const record = await this.s1298Builder.build(tenantId, competence);
-    const xmlHash = sha256(record.xml);
-    const event = await this.emitService.emit({
-      tenantId,
-      eventKind: 'S-1298',
-      xml: record.xml,
-      reference: record.reference,
-      competence: record.competence,
-      sourceEntityKind: 'esocial.s1299_emission_state',
-      sourceEntityId: `${tenantId}:${record.competence}`,
-      xmlHash,
-      payload: record.payload,
-    });
-
-    await this.databaseService.query(
-      `
-      UPDATE esocial.s1299_emission_state
-      SET status = 'PENDING'::esocial.s1299_emission_status,
-          recibo = NULL,
-          accepted_at = NULL,
-          emitted_at = NULL,
-          emitted_event_id = NULL,
-          updated_at = now()
-      WHERE tenant_id = $1::uuid
-        AND competence = $2::date
-      `,
-      [tenantId, dateCompetence(record.competence)],
+    void year;
+    void month;
+    throw new UnprocessableEntityException(
+      'S-1298 lifted builder was promoted to the active DTO pipeline.',
     );
-
-    return {
-      competence,
-      xmlHash,
-      emitted: true,
-      event,
-      state: await this.loadState(competence),
-    };
   }
 
   private async loadState(competence: string): Promise<ES05ClosureState> {

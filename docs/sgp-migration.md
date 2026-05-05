@@ -20,8 +20,10 @@ service internals, SQL files, handlers, or domain modules into SGP.
 For every event class listed in `docs/events.md`, SGP sends a v1 request
 envelope to `sgp.esocial.submit.request`. Round 0 implements the five families
 below end to end; Round 1 Batch 1 adds the unblocked table families
-`S-1005`, `S-1020`, `S-1050`, and `S-1070`. The other exported event classes
-remain typed Round 1 pending DTOs with `round1Pending: true`.
+`S-1005`, `S-1020`, `S-1050`, and `S-1070`; Round 1 Batch 2 adds the remaining
+periodic DTO families `S-1202`, `S-1207`, `S-1210`, and `S-1298`. Remaining
+exported event classes stay typed Round 1 pending DTOs with
+`round1Pending: true`.
 
 Required SGP-sourced fields:
 
@@ -52,6 +54,10 @@ Active DTO map:
 | `S-1050` | Employer CNPJ, validity start, opaque schedule source id, schedule code, description, daily hours. | `packages/contracts/examples/v1/requests/S-1050.request.json` |
 | `S-1070` | Employer CNPJ, validity start, opaque process source id, process number, subject, optional process type and matter indicator. | `packages/contracts/examples/v1/requests/S-1070.request.json` |
 | `S-1200` | Employer CNPJ, competence, payroll run id, worker remuneration entries, rubrics, lotation and establishment references. | `docs/release/0.1.0/input-dtos/s1200.dto.json` |
+| `S-1202` | Employer CNPJ, competence, payroll run id, RPPS worker remuneration entries, category, rubrics, and optional establishment evidence. | `packages/contracts/examples/v1/requests/S-1202.request.json` |
+| `S-1207` | Employer CNPJ, competence, payroll run id, opaque S-2410 benefit source id, benefit number, beneficiary CPF, and benefit rubrics. | `packages/contracts/examples/v1/requests/S-1207.request.json` |
+| `S-1210` | Employer CNPJ, competence, payment batch id, confirmed total, payment rows, and accepted S-1200/S-1202/S-1207 receipt references. | `packages/contracts/examples/v1/requests/S-1210.request.json` |
+| `S-1298` | Employer CNPJ, competence, accepted S-1299 closure receipt, and acceptance timestamp for reopening evidence. | `packages/contracts/examples/v1/requests/S-1298.request.json` |
 | `S-1299` | Employer CNPJ, competence, payroll run id, accepted periodic event counts, pending periodic event list, closure metadata. | `docs/release/0.1.0/input-dtos/s1299.dto.json` |
 | `S-2200` | Employer CNPJ, employee id, CPF, registration, admission date, category, contract and personal source identifiers. | `docs/release/0.1.0/input-dtos/s2200.dto.json` |
 

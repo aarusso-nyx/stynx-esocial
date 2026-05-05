@@ -3,7 +3,7 @@
   "family": "request",
   "request-id": "req-request-S-1298",
   "correlation-id": "corr-S-1298",
-  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-1298:source-event-S-1298:source-entity-S-1298:-:2026-05:sha256%3A5d99575a8fdeba7f293235352c33ce25fa36f996bf2dfeb827902ece9f1e168e:-:-",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-1298:source-event-S-1298:source-entity-S-1298:-:2026-05:sha256%3A4112a1a8064d79741d88c46e9d03b52cb06359db87690268d20a6cb1d1ea85be:-:-",
   "created_at": "2026-05-05T12:00:00.000Z",
   "tenant_id": "tenant-a",
   "environment": "QUALIFICATION",
@@ -15,7 +15,7 @@
     "source_system": "SGP"
   },
   "kind": "folha",
-  "payload_hash": "sha256:5d99575a8fdeba7f293235352c33ce25fa36f996bf2dfeb827902ece9f1e168e",
+  "payload_hash": "sha256:4112a1a8064d79741d88c46e9d03b52cb06359db87690268d20a6cb1d1ea85be",
   "attempt": 1,
   "max-attempts": 3,
   "reply-to": "sgp.esocial.submit.response",
@@ -26,7 +26,9 @@
     "sourceEventId": "source-event-S-1298",
     "sourceEntityId": "source-entity-S-1298",
     "environment": "qualification",
-    "round1Pending": true,
-    "deferredReason": "builder_not_promoted_in_round0"
+    "employerCnpj": "12345678000199",
+    "competence": "2026-05",
+    "acceptedClosureReceipt": "1.1.0000000000000001299",
+    "acceptedClosureAt": "2026-05-02T12:30:00.000Z"
   }
 }

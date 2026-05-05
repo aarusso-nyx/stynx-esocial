@@ -1,0 +1,37 @@
+{
+  "eventClass": "S-1207",
+  "tenantId": "00000000-0000-0000-0000-000000001207",
+  "sourceEventId": "source-event-s1207-rpps-benefit",
+  "sourceEntityId": "00000000-0000-4000-8000-000000001207",
+  "environment": "qualification",
+  "employerCnpj": "12345678000199",
+  "competence": "2026-05",
+  "payrollRunId": "00000000-0000-4000-8000-000000001207",
+  "payrollRunStatus": "GENERATED",
+  "benefits": [
+    {
+      "employeeId": "00000000-0000-4000-8000-000000001201",
+      "beneficiaryCpf": "11144477735",
+      "benefitSourceKind": "RETIREMENT",
+      "benefitSourceId": "00000000-0000-4000-8000-000000002413",
+      "benefitNumber": "RET08000000000002413",
+      "activeBenefitCount": 1,
+      "rubrics": [
+        {
+          "rubricCode": "PROV",
+          "rubricTableId": "SGP",
+          "kind": "EARNING",
+          "amount": "5200.00",
+          "quantity": "1.0000"
+        },
+        {
+          "rubricCode": "RPPS",
+          "rubricTableId": "SGP",
+          "kind": "DEDUCTION",
+          "amount": "572.00",
+          "quantity": "1.0000"
+        }
+      ]
+    }
+  ]
+}

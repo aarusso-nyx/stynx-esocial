@@ -386,6 +386,93 @@ function dtoForEvent(eventClass) {
     };
   }
 
+  if (eventClass === 'S-1202') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      competence: '2026-05',
+      payrollRunId: 'payroll-2026-05-rpps',
+      payrollRunStatus: 'GENERATED',
+      workers: [
+        {
+          employeeId: 'rpps-worker-1',
+          cpf: '12345678901',
+          registration: 'RPPS-1',
+          categoryCode: '301',
+          rubrics: [
+            {
+              rubricCode: 'PROV',
+              rubricTableId: 'SGP',
+              amount: '5000.00',
+              quantity: '1.0000',
+              kind: 'EARNING',
+            },
+          ],
+        },
+      ],
+    };
+  }
+
+  if (eventClass === 'S-1207') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      competence: '2026-05',
+      payrollRunId: 'payroll-2026-05-benefits',
+      payrollRunStatus: 'GENERATED',
+      benefits: [
+        {
+          employeeId: 'beneficiary-1',
+          beneficiaryCpf: '12345678901',
+          benefitSourceKind: 'RETIREMENT',
+          benefitSourceId: 'sgp-s2410-benefit-1',
+          benefitNumber: 'RET08000000000000001',
+          activeBenefitCount: 1,
+          rubrics: [
+            {
+              rubricCode: 'BEN',
+              rubricTableId: 'SGP',
+              amount: '3200.00',
+              quantity: '1.0000',
+              kind: 'EARNING',
+            },
+          ],
+        },
+      ],
+    };
+  }
+
+  if (eventClass === 'S-1210') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      competence: '2026-05',
+      paymentBatchId: 'payments-2026-05',
+      paymentBatchStatus: 'PAID',
+      payrollRunId: 'payroll-2026-05',
+      confirmedTotal: '1000.00',
+      payments: [
+        {
+          employeeId: 'employee-1',
+          cpf: '12345678901',
+          amount: '1000.00',
+          paymentDate: '2026-05-25',
+          receiptReference: '1.1.0000000000000001200',
+        },
+      ],
+    };
+  }
+
+  if (eventClass === 'S-1298') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      competence: '2026-05',
+      acceptedClosureReceipt: '1.1.0000000000000001299',
+      acceptedClosureAt: '2026-05-02T12:30:00.000Z',
+    };
+  }
+
   if (eventClass === 'S-2200') {
     return {
       ...common,

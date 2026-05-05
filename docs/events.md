@@ -73,10 +73,10 @@ read payroll, HR, eSocial state, or SGP database tables.
 | Event | Purpose | Production implementation | Status | XML example |
 | --- | --- | --- | --- | --- |
 | S-1200 | Worker remuneration | `builders/s1200/builder.ts` | Promoted in Round 0 Wave B | `templates/golden/builders/s1200-three-workers.golden.xml` |
-| S-1202 | RPPS remuneration | `xml/builders/periodic` | Promoted in Phase 5 | `templates/golden/builders/s1202-rpps-workers.golden.xml` |
-| S-1207 | RPPS benefit payment | `xml/builders/periodic` | Promoted in Phase 5 | `templates/golden/builders/s1207-rpps-benefit.golden.xml` |
-| S-1210 | Labor income payment | `xml/builders/periodic` | Promoted in Phase 5 | `templates/golden/builders/s1210-confirmed-payments.golden.xml` |
-| S-1298 | Reopening periodic events | `xml/builders/periodic` | Promoted in Phase 5 | `templates/golden/builders/s1298.golden.xml` |
+| S-1202 | RPPS remuneration | `builders/s1202/builder.ts` | Promoted in Round 1 Batch 2 | `templates/golden/builders/s1202-rpps-workers.golden.xml` |
+| S-1207 | RPPS benefit payment | `builders/s1207/builder.ts` | Promoted in Round 1 Batch 2 | `templates/golden/builders/s1207-rpps-benefit.golden.xml` |
+| S-1210 | Labor income payment | `builders/s1210/builder.ts` | Promoted in Round 1 Batch 2 | `templates/golden/builders/s1210-confirmed-payments.golden.xml` |
+| S-1298 | Reopening periodic events | `builders/s1298/builder.ts` | Promoted in Round 1 Batch 2 | `templates/golden/builders/s1298.golden.xml` |
 | S-1299 | Periodic closure | `builders/s1299/builder.ts` | Promoted in Round 0 Wave B | `templates/golden/builders/s1299.golden.xml` |
 
 No preferred periodic payroll event is deferred in this batch.
@@ -89,9 +89,9 @@ Common DTO fields for every promoted periodic event:
 | --- | --- | --- |
 | `eventClass` | Yes | One of `S-1200`, `S-1202`, `S-1207`, `S-1210`, `S-1298`, or `S-1299`. |
 | `tenantId` | Yes | Opaque eSocial tenant identifier from the ingress contract. |
-| `sourceEventId` | No | Opaque producer event id used for traceability when present. |
+| `sourceEventId` | Yes | Opaque producer event id used for traceability. |
 | `competence` | Yes | Monthly apuracao period in `YYYY-MM` format. |
-| `employerRegistrationNumber` | Yes | Employer registration number used to fill `ideEmpregador`; the builder does not resolve it. |
+| `employerCnpj` | Yes | Employer registration number used to fill `ideEmpregador`; the builder does not resolve it. |
 | `operation` | No | Currently `original`; rectification/exclusion DTOs remain separate contract work. |
 | `environment` | No | eSocial environment code; defaults to `2` for qualification/sandbox. |
 | `processEmitter` | No | eSocial `procEmi`; defaults to `1`. |
@@ -102,9 +102,9 @@ Event-specific DTO fields:
 | Event | DTO branch | Required event-specific fields |
 | --- | --- | --- |
 | S-1200 | `workers[]` | `payrollRunId`, `payrollRunStatus=GENERATED`; each worker carries `employeeId`, `registration`, `cpf`, `categoryCode`, and `rubrics[]` with `code`, `kind`, and `amount`; optional `tableCode`, `quantity`, `establishmentRegistrationNumber`, `lotationCode`, `ideDmDev`, `eventId`. |
-| S-1202 | `workers[]` | `payrollRunId`, `payrollRunStatus=GENERATED`; each RPPS worker carries `employeeId`, `registration`, `cpf`, `categoryCode`, and `rubrics[]`; optional `tableCode`, `quantity`, `establishmentRegistrationNumber`, `ideDmDev`, `eventId`. |
-| S-1207 | `benefits[]` | `payrollRunId`, `payrollRunStatus=GENERATED`; each benefit carries `employeeId`, `beneficiaryCpf`, `benefitSourceKind`, `benefitSourceId`, `benefitNumber`, `activeBenefitCount=1`, and `rubrics[]`; optional `establishmentRegistrationNumber`, `ideDmDev`, `eventId`. |
-| S-1210 | `payments[]` | `paymentBatchId`, `paymentBatchStatus=PAID`, `confirmedTotal`; each payment carries `employeeId`, `cpf`, `amount`, and `paymentDate`; optional `payrollRunId`, `ideDmDev`, `eventId`. |
+| S-1202 | `workers[]` | `payrollRunId`, `payrollRunStatus=GENERATED`; each RPPS worker carries `employeeId`, `registration`, `cpf`, `categoryCode`, and `rubrics[]` with `rubricCode`, `kind`, and `amount`; optional `rubricTableId`, `quantity`, `establishmentRegistrationNumber`, `ideDmDev`, `eventId`. |
+| S-1207 | `benefits[]` | `payrollRunId`, `payrollRunStatus=GENERATED`; each benefit carries `employeeId`, `beneficiaryCpf`, `benefitSourceKind`, opaque S-2410 `benefitSourceId`, `benefitNumber`, `activeBenefitCount=1`, and `rubrics[]`; optional `establishmentRegistrationNumber`, `ideDmDev`, `eventId`. |
+| S-1210 | `payments[]` | `paymentBatchId`, `paymentBatchStatus=PAID`, `confirmedTotal`; each payment carries `employeeId`, `cpf`, `amount`, `paymentDate`, and accepted remuneration `receiptReference`; optional `payrollRunId`, `ideDmDev`, `eventId`. |
 | S-1298 | Reopening closure evidence | `acceptedClosureReceipt`, `acceptedClosureAt`; optional `sourceEntityId`, `eventId`. The builder fails before XML if the accepted S-1299 receipt is absent. |
 | S-1299 | Closure acceptance summary | `pendingPeriodicEvents[]`, `acceptedEventCounts.remuneration`, `acceptedEventCounts.payments`; `pendingPeriodicEvents` must be empty before XML is built; optional `sourceEntityId`, `eventId`. |
 
@@ -155,6 +155,10 @@ submission, and status persistence are owned by the adjacent Wave B workers.
 | S-1050 | `S1050WorkScheduleDto` | `packages/domain/src/builders/s1050/builder.ts` | `evtTabJornada` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabJornada.xsd` | S-1000 |
 | S-1070 | `S1070ProcessDto` | `packages/domain/src/builders/s1070/builder.ts` | `evtTabProcesso` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabProcesso.xsd` | S-1000 |
 | S-1200 | `S1200RemunerationDto` | `packages/domain/src/builders/s1200/builder.ts` | `evtRemun` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtRemun.xsd` | S-1000, S-1005, S-1010, S-1020 |
+| S-1202 | `S1202RppsRemunerationDto` | `packages/domain/src/builders/s1202/builder.ts` | `evtRmnRPPS` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtRmnRPPS.xsd` | S-1000, S-1005, S-1010 |
+| S-1207 | `S1207RppsBenefitPaymentDto` | `packages/domain/src/builders/s1207/builder.ts` | `evtBenPrRP` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtBenPrRP.xsd` | S-1000, S-1010; opaque S-2410 receipt/source id |
+| S-1210 | `S1210PaymentDto` | `packages/domain/src/builders/s1210/builder.ts` | `evtPgtos` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtPgtos.xsd` | S-1000; receipts from S-1200, S-1202, S-1207 |
+| S-1298 | `S1298ReopeningDto` | `packages/domain/src/builders/s1298/builder.ts` | `evtReabreEvPer` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtReabreEvPer.xsd` | S-1000; accepted S-1299 receipt |
 | S-1299 | `S1299ClosureDto` | `packages/domain/src/builders/s1299/builder.ts` | `evtFechaEvPer` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtFechaEvPer.xsd` | S-1000; receipts from S-1200, S-1202, S-1207, S-1210 |
 | S-2200 | `S2200AdmissionDto` | `packages/domain/src/builders/s2200/builder.ts` | `evtAdmissao` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtAdmissao.xsd` | S-1000, S-1030, S-1050 |
 

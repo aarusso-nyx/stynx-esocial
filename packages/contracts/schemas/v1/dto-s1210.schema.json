@@ -42,19 +42,104 @@
         "exclusion"
       ]
     },
-    "round1Pending": {
-      "const": true
+    "employerCnpj": {
+      "type": "string",
+      "minLength": 1
     },
-    "deferredReason": {
-      "const": "builder_not_promoted_in_round0"
+    "competence": {
+      "type": "string",
+      "minLength": 1
+    },
+    "paymentBatchId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "paymentBatchStatus": {
+      "type": "string",
+      "minLength": 1
+    },
+    "payrollRunId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "confirmedTotal": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "number"
+        }
+      ]
+    },
+    "payments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "employeeId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cpf": {
+            "type": "string",
+            "minLength": 1
+          },
+          "amount": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "paymentDate": {
+            "type": "string",
+            "minLength": 1
+          },
+          "receiptReference": {
+            "type": "string",
+            "minLength": 1
+          },
+          "payrollRunId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ideDmDev": {
+            "type": "string",
+            "minLength": 1
+          },
+          "eventId": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "employeeId",
+          "cpf",
+          "amount",
+          "paymentDate",
+          "receiptReference"
+        ]
+      }
     }
   },
   "required": [
     "eventClass",
     "tenantId",
     "sourceEventId",
-    "round1Pending",
-    "deferredReason"
+    "employerCnpj",
+    "competence",
+    "paymentBatchId",
+    "paymentBatchStatus",
+    "confirmedTotal",
+    "payments"
   ],
   "not": {
     "anyOf": [

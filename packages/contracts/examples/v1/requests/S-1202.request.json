@@ -3,7 +3,7 @@
   "family": "request",
   "request-id": "req-request-S-1202",
   "correlation-id": "corr-S-1202",
-  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-1202:source-event-S-1202:source-entity-S-1202:-:2026-05:sha256%3A46faa3009044be42339ac5c46462726c0db5953d35a60ec9b0fe35ac0a00b158:-:-",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-1202:source-event-S-1202:source-entity-S-1202:-:2026-05:sha256%3A9263e0e73e819110f565bd07c01cbf120cdc78f73201cd614c66eb2b8bfeec79:-:-",
   "created_at": "2026-05-05T12:00:00.000Z",
   "tenant_id": "tenant-a",
   "environment": "QUALIFICATION",
@@ -15,7 +15,7 @@
     "source_system": "SGP"
   },
   "kind": "folha",
-  "payload_hash": "sha256:46faa3009044be42339ac5c46462726c0db5953d35a60ec9b0fe35ac0a00b158",
+  "payload_hash": "sha256:9263e0e73e819110f565bd07c01cbf120cdc78f73201cd614c66eb2b8bfeec79",
   "attempt": 1,
   "max-attempts": 3,
   "reply-to": "sgp.esocial.submit.response",
@@ -26,7 +26,26 @@
     "sourceEventId": "source-event-S-1202",
     "sourceEntityId": "source-entity-S-1202",
     "environment": "qualification",
-    "round1Pending": true,
-    "deferredReason": "builder_not_promoted_in_round0"
+    "employerCnpj": "12345678000199",
+    "competence": "2026-05",
+    "payrollRunId": "payroll-2026-05-rpps",
+    "payrollRunStatus": "GENERATED",
+    "workers": [
+      {
+        "employeeId": "rpps-worker-1",
+        "cpf": "12345678901",
+        "registration": "RPPS-1",
+        "categoryCode": "301",
+        "rubrics": [
+          {
+            "rubricCode": "PROV",
+            "rubricTableId": "SGP",
+            "amount": "5000.00",
+            "quantity": "1.0000",
+            "kind": "EARNING"
+          }
+        ]
+      }
+    ]
   }
 }

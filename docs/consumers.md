@@ -103,10 +103,14 @@ Active DTOs are implemented for:
 | `S-1050` | Work schedule table | `tenantId`, `sourceEventId`, `sourceEntityId`, `employerCnpj`, `validityStart`, `workScheduleCode`, `description`, `dailyHours` |
 | `S-1070` | Administrative/judicial process table | `tenantId`, `sourceEventId`, `sourceEntityId`, `employerCnpj`, `validityStart`, `processNumber`, `subject` |
 | `S-1200` | Worker remuneration | `tenantId`, `sourceEventId`, `employerCnpj`, `competence`, `payrollRunId`, `workers[]` |
+| `S-1202` | RPPS worker remuneration | `tenantId`, `sourceEventId`, `employerCnpj`, `competence`, `payrollRunId`, `workers[]` |
+| `S-1207` | RPPS benefit payment | `tenantId`, `sourceEventId`, `employerCnpj`, `competence`, `payrollRunId`, opaque S-2410 benefit identifiers, `benefits[]` |
+| `S-1210` | Labor income payment | `tenantId`, `sourceEventId`, `employerCnpj`, `competence`, `paymentBatchId`, accepted remuneration receipt references, `payments[]` |
+| `S-1298` | Periodic reopening | `tenantId`, `sourceEventId`, `employerCnpj`, `competence`, accepted S-1299 closure receipt and timestamp |
 | `S-1299` | Periodic closure | `tenantId`, `sourceEventId`, `employerCnpj`, `competence`, `payrollRunId`, accepted/pending event summary |
 | `S-2200` | Admission/initial worker registration | `tenantId`, `sourceEventId`, `employerCnpj`, `employeeId`, `cpf`, `admissionDate`, registration/contract fields |
 
-All other exported event classes have `Round1Pending` DTO stubs so the v1 type
+Remaining exported event classes have `Round1Pending` DTO stubs so the v1 type
 surface covers the full 40-class taxonomy without pretending their builders
 landed. Stub payloads carry `round1Pending: true` and
 `deferredReason: "builder_not_promoted_in_round0"`. The table exceptions still

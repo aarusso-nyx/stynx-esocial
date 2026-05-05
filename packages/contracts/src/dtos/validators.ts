@@ -2,6 +2,10 @@ import { ESOCIAL_RELAY_EVENT_CLASSES } from '../kinds.js';
 import type { EsocialRelayEventClass } from '../kinds.js';
 
 import type { EsocialDtoEnvironment } from './common.js';
+import {
+  ESOCIAL_PROMOTED_PERIODIC_DTO_EVENT_CLASSES,
+} from './periodic.js';
+import type { EsocialPromotedPeriodicDto } from './periodic.js';
 import type { EsocialRound0RequestDto } from './round0.js';
 import { ESOCIAL_ROUND0_DTO_EVENT_CLASSES } from './round1-pending.js';
 import type { EsocialRound1PendingDto } from './round1-pending.js';
@@ -13,6 +17,7 @@ import type { EsocialPromotedTableDto } from './tables.js';
 export type EsocialSgpRequestDto =
   | EsocialRound0RequestDto
   | EsocialPromotedTableDto
+  | EsocialPromotedPeriodicDto
   | EsocialRound1PendingDto;
 
 export type EsocialRelayRequestPayload =
@@ -68,6 +73,13 @@ export function validateEsocialSgpRequestDto(
   ) {
     validatePromotedTableDto(candidate, candidate.eventClass, errors);
   } else if (
+    includesString(
+      ESOCIAL_PROMOTED_PERIODIC_DTO_EVENT_CLASSES,
+      candidate.eventClass,
+    )
+  ) {
+    validatePromotedPeriodicDto(candidate, candidate.eventClass, errors);
+  } else if (
     includesString(ESOCIAL_RELAY_EVENT_CLASSES, candidate.eventClass) &&
     candidate.round1Pending !== true
   ) {
@@ -76,6 +88,52 @@ export function validateEsocialSgpRequestDto(
 
   if (errors.length > 0) return { ok: false, errors };
   return { ok: true, dto: candidate as EsocialSgpRequestDto };
+}
+
+function validatePromotedPeriodicDto(
+  candidate: Record<string, unknown>,
+  eventClass: EsocialRelayEventClass,
+  errors: string[],
+): void {
+  requireStrings(candidate, errors, ['employerCnpj', 'competence']);
+
+  if (eventClass === 'S-1202') {
+    requireStrings(candidate, errors, ['payrollRunId', 'payrollRunStatus']);
+    requireArray(candidate, errors, 'workers');
+    requireNestedArrays(candidate, errors, 'workers', 'rubrics');
+  }
+
+  if (eventClass === 'S-1207') {
+    requireStrings(candidate, errors, ['payrollRunId', 'payrollRunStatus']);
+    requireArray(candidate, errors, 'benefits');
+    requireNestedStrings(candidate, errors, 'benefits', [
+      'benefitSourceId',
+      'benefitNumber',
+      'beneficiaryCpf',
+    ]);
+    requireNestedArrays(candidate, errors, 'benefits', 'rubrics');
+  }
+
+  if (eventClass === 'S-1210') {
+    requireStrings(candidate, errors, ['paymentBatchId', 'paymentBatchStatus']);
+    if (candidate.confirmedTotal === undefined || candidate.confirmedTotal === '') {
+      errors.push('confirmedTotal is required.');
+    }
+    requireArray(candidate, errors, 'payments');
+    requireNestedStrings(candidate, errors, 'payments', [
+      'employeeId',
+      'cpf',
+      'paymentDate',
+      'receiptReference',
+    ]);
+  }
+
+  if (eventClass === 'S-1298') {
+    requireStrings(candidate, errors, [
+      'acceptedClosureReceipt',
+      'acceptedClosureAt',
+    ]);
+  }
 }
 
 export function parseEsocialSgpRequestDto(
@@ -204,6 +262,46 @@ function requireArray(
   key: string,
 ): void {
   if (!Array.isArray(candidate[key])) errors.push(`${key} must be an array.`);
+}
+
+function requireNestedStrings(
+  candidate: Record<string, unknown>,
+  errors: string[],
+  arrayKey: string,
+  keys: readonly string[],
+): void {
+  const value = candidate[arrayKey];
+  if (!Array.isArray(value)) return;
+  value.forEach((entry, index) => {
+    if (!isRecord(entry)) {
+      errors.push(`${arrayKey}[${index}] must be an object.`);
+      return;
+    }
+    for (const key of keys) {
+      if (!isNonEmptyString(entry[key])) {
+        errors.push(`${arrayKey}[${index}].${key} is required.`);
+      }
+    }
+  });
+}
+
+function requireNestedArrays(
+  candidate: Record<string, unknown>,
+  errors: string[],
+  arrayKey: string,
+  nestedKey: string,
+): void {
+  const value = candidate[arrayKey];
+  if (!Array.isArray(value)) return;
+  value.forEach((entry, index) => {
+    if (!isRecord(entry)) {
+      errors.push(`${arrayKey}[${index}] must be an object.`);
+      return;
+    }
+    if (!Array.isArray(entry[nestedKey])) {
+      errors.push(`${arrayKey}[${index}].${nestedKey} must be an array.`);
+    }
+  });
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

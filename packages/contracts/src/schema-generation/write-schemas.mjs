@@ -18,6 +18,10 @@ const promotedDtoEvents = new Set([
   'S-1050',
   'S-1070',
   'S-1200',
+  'S-1202',
+  'S-1207',
+  'S-1210',
+  'S-1298',
   'S-1299',
   'S-2200',
 ]);
@@ -416,6 +420,128 @@ function activeDtoSchema(eventClass) {
         responsibleCpf: nonEmptyString(),
       },
     },
+    'S-1202': {
+      required: [
+        'employerCnpj',
+        'competence',
+        'payrollRunId',
+        'payrollRunStatus',
+        'workers',
+      ],
+      properties: {
+        employerCnpj: nonEmptyString(),
+        competence: nonEmptyString(),
+        payrollRunId: nonEmptyString(),
+        payrollRunStatus: nonEmptyString(),
+        workers: {
+          type: 'array',
+          minItems: 1,
+          items: workerRemunerationSchema(false),
+        },
+      },
+    },
+    'S-1207': {
+      required: [
+        'employerCnpj',
+        'competence',
+        'payrollRunId',
+        'payrollRunStatus',
+        'benefits',
+      ],
+      properties: {
+        employerCnpj: nonEmptyString(),
+        competence: nonEmptyString(),
+        payrollRunId: nonEmptyString(),
+        payrollRunStatus: nonEmptyString(),
+        benefits: {
+          type: 'array',
+          minItems: 1,
+          items: {
+            type: 'object',
+            additionalProperties: false,
+            properties: {
+              employeeId: nonEmptyString(),
+              beneficiaryCpf: nonEmptyString(),
+              benefitSourceKind: { enum: ['RETIREMENT', 'PENSION'] },
+              benefitSourceId: nonEmptyString(),
+              benefitNumber: nonEmptyString(),
+              activeBenefitCount: integer(0),
+              establishmentRegistrationNumber: nonEmptyString(),
+              ideDmDev: nonEmptyString(),
+              eventId: nonEmptyString(),
+              rubrics: periodicRubricsArraySchema(),
+            },
+            required: [
+              'employeeId',
+              'beneficiaryCpf',
+              'benefitSourceKind',
+              'benefitSourceId',
+              'benefitNumber',
+              'activeBenefitCount',
+              'rubrics',
+            ],
+          },
+        },
+      },
+    },
+    'S-1210': {
+      required: [
+        'employerCnpj',
+        'competence',
+        'paymentBatchId',
+        'paymentBatchStatus',
+        'confirmedTotal',
+        'payments',
+      ],
+      properties: {
+        employerCnpj: nonEmptyString(),
+        competence: nonEmptyString(),
+        paymentBatchId: nonEmptyString(),
+        paymentBatchStatus: nonEmptyString(),
+        payrollRunId: nonEmptyString(),
+        confirmedTotal: periodicMoneySchema(),
+        payments: {
+          type: 'array',
+          minItems: 1,
+          items: {
+            type: 'object',
+            additionalProperties: false,
+            properties: {
+              employeeId: nonEmptyString(),
+              cpf: nonEmptyString(),
+              amount: periodicMoneySchema(),
+              paymentDate: nonEmptyString(),
+              receiptReference: nonEmptyString(),
+              payrollRunId: nonEmptyString(),
+              ideDmDev: nonEmptyString(),
+              eventId: nonEmptyString(),
+            },
+            required: [
+              'employeeId',
+              'cpf',
+              'amount',
+              'paymentDate',
+              'receiptReference',
+            ],
+          },
+        },
+      },
+    },
+    'S-1298': {
+      required: [
+        'employerCnpj',
+        'competence',
+        'acceptedClosureReceipt',
+        'acceptedClosureAt',
+      ],
+      properties: {
+        employerCnpj: nonEmptyString(),
+        competence: nonEmptyString(),
+        acceptedClosureReceipt: nonEmptyString(),
+        acceptedClosureAt: nonEmptyString(),
+        eventId: nonEmptyString(),
+      },
+    },
     'S-2200': {
       required: [
         'employerCnpj',
@@ -641,6 +767,93 @@ function dtoExample(eventClass) {
     };
   }
 
+  if (eventClass === 'S-1202') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      competence: '2026-05',
+      payrollRunId: 'payroll-2026-05-rpps',
+      payrollRunStatus: 'GENERATED',
+      workers: [
+        {
+          employeeId: 'rpps-worker-1',
+          cpf: '12345678901',
+          registration: 'RPPS-1',
+          categoryCode: '301',
+          rubrics: [
+            {
+              rubricCode: 'PROV',
+              rubricTableId: 'SGP',
+              amount: '5000.00',
+              quantity: '1.0000',
+              kind: 'EARNING',
+            },
+          ],
+        },
+      ],
+    };
+  }
+
+  if (eventClass === 'S-1207') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      competence: '2026-05',
+      payrollRunId: 'payroll-2026-05-benefits',
+      payrollRunStatus: 'GENERATED',
+      benefits: [
+        {
+          employeeId: 'beneficiary-1',
+          beneficiaryCpf: '12345678901',
+          benefitSourceKind: 'RETIREMENT',
+          benefitSourceId: 'sgp-s2410-benefit-1',
+          benefitNumber: 'RET08000000000000001',
+          activeBenefitCount: 1,
+          rubrics: [
+            {
+              rubricCode: 'BEN',
+              rubricTableId: 'SGP',
+              amount: '3200.00',
+              quantity: '1.0000',
+              kind: 'EARNING',
+            },
+          ],
+        },
+      ],
+    };
+  }
+
+  if (eventClass === 'S-1210') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      competence: '2026-05',
+      paymentBatchId: 'payments-2026-05',
+      paymentBatchStatus: 'PAID',
+      payrollRunId: 'payroll-2026-05',
+      confirmedTotal: '1000.00',
+      payments: [
+        {
+          employeeId: 'employee-1',
+          cpf: '12345678901',
+          amount: '1000.00',
+          paymentDate: '2026-05-25',
+          receiptReference: '1.1.0000000000000001200',
+        },
+      ],
+    };
+  }
+
+  if (eventClass === 'S-1298') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      competence: '2026-05',
+      acceptedClosureReceipt: '1.1.0000000000000001299',
+      acceptedClosureAt: '2026-05-02T12:30:00.000Z',
+    };
+  }
+
   if (eventClass === 'S-2200') {
     return {
       ...common,
@@ -715,6 +928,50 @@ function errorsArray() {
       },
       required: ['category', 'code', 'message'],
     },
+  };
+}
+
+function workerRemunerationSchema(includeLotation) {
+  return {
+    type: 'object',
+    additionalProperties: false,
+    properties: {
+      employeeId: nonEmptyString(),
+      cpf: nonEmptyString(),
+      registration: nonEmptyString(),
+      categoryCode: nonEmptyString(),
+      establishmentRegistrationNumber: nonEmptyString(),
+      lotationCode: includeLotation ? nonEmptyString() : undefined,
+      ideDmDev: nonEmptyString(),
+      eventId: nonEmptyString(),
+      rubrics: periodicRubricsArraySchema(),
+    },
+    required: ['employeeId', 'cpf', 'registration', 'categoryCode', 'rubrics'],
+  };
+}
+
+function periodicRubricsArraySchema() {
+  return {
+    type: 'array',
+    minItems: 1,
+    items: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        rubricCode: nonEmptyString(),
+        rubricTableId: nonEmptyString(),
+        amount: periodicMoneySchema(),
+        quantity: periodicMoneySchema(),
+        kind: { enum: ['EARNING', 'DEDUCTION', 'INFORMATION', 'BASE'] },
+      },
+      required: ['rubricCode', 'amount', 'kind'],
+    },
+  };
+}
+
+function periodicMoneySchema() {
+  return {
+    anyOf: [nonEmptyString(), { type: 'number' }],
   };
 }
 

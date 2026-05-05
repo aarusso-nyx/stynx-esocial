@@ -9,8 +9,6 @@ import {
   EmittedESocialEvent,
 } from '../esocial-emit.service';
 import { S1200Builder } from './s1200.builder';
-import { S1202Builder } from './s1202.builder';
-import { S1210Builder } from './s1210.builder';
 import { sha256 } from './s22xx-common';
 
 export interface ES04DispatchResult {
@@ -48,8 +46,6 @@ export class ES04Service {
     private readonly databaseService: DatabaseService,
     private readonly emitService: ESocialEmitService,
     private readonly s1200Builder: S1200Builder,
-    private readonly s1202Builder: S1202Builder,
-    private readonly s1210Builder: S1210Builder,
     private readonly pisPasepService: PisPasepService,
   ) {}
 
@@ -249,198 +245,21 @@ export class ES04Service {
   }
 
   async emitS1210(
-    paymentBatchId: string,
-    input: { employeeId?: string; force?: boolean } = {},
+    _paymentBatchId: string,
+    _input: { employeeId?: string; force?: boolean } = {},
   ): Promise<ES04DispatchResult[]> {
-    const tenantId = this.currentTenantId();
-    const records = await this.s1210Builder.build(
-      tenantId,
-      paymentBatchId,
-      input.employeeId,
+    throw new ConflictException(
+      'S-1210 lifted builder was promoted to the active DTO pipeline.',
     );
-    const results: ES04DispatchResult[] = [];
-
-    for (const record of records) {
-      const xmlHash = sha256(record.xml);
-      const current = await this.databaseService.query<StateRow>(
-        `
-        SELECT payload_hash
-        FROM esocial.s1210_emission_state
-        WHERE tenant_id = $1::uuid
-          AND payment_batch_id = $2::uuid
-          AND employee_id = $3::uuid
-        `,
-        [tenantId, record.paymentBatchId, record.employeeId],
-      );
-      if (current[0]?.payload_hash === xmlHash && !input.force) {
-        results.push({
-          eventKind: 'S-1210',
-          employeeId: record.employeeId,
-          payrollRunId: record.payrollRunId,
-          paymentBatchId: record.paymentBatchId,
-          xmlHash,
-          emitted: false,
-          blockedReason: 'payload_hash_unchanged',
-        });
-        continue;
-      }
-      if (current[0]?.payload_hash === xmlHash && input.force) {
-        throw new ConflictException(
-          'S-1210 reemission is blocked because payload_hash did not change',
-        );
-      }
-
-      const event = await this.emitService.emit({
-        tenantId,
-        eventKind: 'S-1210',
-        xml: record.xml,
-        reference: record.reference,
-        competence: record.competence,
-        sourceEntityKind: 'payroll.payment_remittance_file',
-        sourceEntityId: record.paymentBatchId,
-        payrollRunId: record.payrollRunId ?? undefined,
-        paymentBatchId: record.paymentBatchId,
-        xmlHash,
-        payload: record.payload,
-      });
-
-      await this.databaseService.query(
-        `
-        INSERT INTO esocial.s1210_emission_state (
-          tenant_id,
-          payment_batch_id,
-          employee_id,
-          recibo,
-          payload_hash,
-          emitted_at
-        )
-        VALUES ($1::uuid, $2::uuid, $3::uuid, $4, $5, now())
-        ON CONFLICT (tenant_id, payment_batch_id, employee_id)
-        DO UPDATE
-        SET recibo = EXCLUDED.recibo,
-            payload_hash = EXCLUDED.payload_hash,
-            emitted_at = EXCLUDED.emitted_at,
-            updated_at = now()
-        `,
-        [
-          tenantId,
-          record.paymentBatchId,
-          record.employeeId,
-          event.reference,
-          xmlHash,
-        ],
-      );
-
-      results.push({
-        eventKind: 'S-1210',
-        employeeId: record.employeeId,
-        payrollRunId: record.payrollRunId,
-        paymentBatchId: record.paymentBatchId,
-        xmlHash,
-        emitted: true,
-        event,
-      });
-    }
-
-    return results;
   }
 
   async emitS1202(
-    payrollRunId: string,
-    input: { employeeId?: string; force?: boolean } = {},
+    _payrollRunId: string,
+    _input: { employeeId?: string; force?: boolean } = {},
   ): Promise<ES04DispatchResult[]> {
-    const tenantId = this.currentTenantId();
-    const records = await this.s1202Builder.build(
-      tenantId,
-      payrollRunId,
-      input.employeeId,
+    throw new ConflictException(
+      'S-1202 lifted builder was promoted to the active DTO pipeline.',
     );
-    const results: ES04DispatchResult[] = [];
-
-    for (const record of records) {
-      const xmlHash = sha256(record.xml);
-      const current = await this.databaseService.query<StateRow>(
-        `
-        SELECT payload_hash
-        FROM esocial.s1202_emission_state
-        WHERE tenant_id = $1::uuid
-          AND payroll_run_id = $2::uuid
-          AND employee_id = $3::uuid
-        `,
-        [tenantId, record.payrollRunId, record.employeeId],
-      );
-      if (current[0]?.payload_hash === xmlHash && !input.force) {
-        results.push({
-          eventKind: 'S-1202',
-          employeeId: record.employeeId,
-          payrollRunId: record.payrollRunId,
-          xmlHash,
-          emitted: false,
-          blockedReason: 'payload_hash_unchanged',
-        });
-        continue;
-      }
-      if (current[0]?.payload_hash === xmlHash && input.force) {
-        throw new ConflictException(
-          'S-1202 reemission is blocked because payload_hash did not change',
-        );
-      }
-
-      const event = await this.emitService.emit({
-        tenantId,
-        eventKind: 'S-1202',
-        xml: record.xml,
-        reference: record.reference,
-        competence: record.competence,
-        sourceEntityKind: 'payroll.payroll_run',
-        sourceEntityId: record.payrollRunId,
-        payrollRunId: record.payrollRunId,
-        xmlHash,
-        payload: record.payload,
-      });
-
-      await this.databaseService.query(
-        `
-        INSERT INTO esocial.s1202_emission_state (
-          tenant_id,
-          payroll_run_id,
-          employee_id,
-          recibo,
-          payload_hash,
-          emitted_at
-        )
-        VALUES ($1::uuid, $2::uuid, $3::uuid, $4, $5, now())
-        ON CONFLICT (tenant_id, payroll_run_id, employee_id)
-        DO UPDATE
-        SET recibo = EXCLUDED.recibo,
-            payload_hash = EXCLUDED.payload_hash,
-            emitted_at = EXCLUDED.emitted_at,
-            updated_at = now()
-        `,
-        [
-          tenantId,
-          record.payrollRunId,
-          record.employeeId,
-          event.reference,
-          xmlHash,
-        ],
-      );
-      await this.pisPasepService.recomputeYear(
-        record.employeeId,
-        Number(record.competence.slice(0, 4)),
-      );
-
-      results.push({
-        eventKind: 'S-1202',
-        employeeId: record.employeeId,
-        payrollRunId: record.payrollRunId,
-        xmlHash,
-        emitted: true,
-        event,
-      });
-    }
-
-    return results;
   }
 
   currentTenantId(): string {

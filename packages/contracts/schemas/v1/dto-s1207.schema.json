@@ -42,19 +42,142 @@
         "exclusion"
       ]
     },
-    "round1Pending": {
-      "const": true
+    "employerCnpj": {
+      "type": "string",
+      "minLength": 1
     },
-    "deferredReason": {
-      "const": "builder_not_promoted_in_round0"
+    "competence": {
+      "type": "string",
+      "minLength": 1
+    },
+    "payrollRunId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "payrollRunStatus": {
+      "type": "string",
+      "minLength": 1
+    },
+    "benefits": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "employeeId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "beneficiaryCpf": {
+            "type": "string",
+            "minLength": 1
+          },
+          "benefitSourceKind": {
+            "enum": [
+              "RETIREMENT",
+              "PENSION"
+            ]
+          },
+          "benefitSourceId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "benefitNumber": {
+            "type": "string",
+            "minLength": 1
+          },
+          "activeBenefitCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "establishmentRegistrationNumber": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ideDmDev": {
+            "type": "string",
+            "minLength": 1
+          },
+          "eventId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "rubrics": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "rubricCode": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "rubricTableId": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "amount": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    {
+                      "type": "number"
+                    }
+                  ]
+                },
+                "quantity": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    {
+                      "type": "number"
+                    }
+                  ]
+                },
+                "kind": {
+                  "enum": [
+                    "EARNING",
+                    "DEDUCTION",
+                    "INFORMATION",
+                    "BASE"
+                  ]
+                }
+              },
+              "required": [
+                "rubricCode",
+                "amount",
+                "kind"
+              ]
+            }
+          }
+        },
+        "required": [
+          "employeeId",
+          "beneficiaryCpf",
+          "benefitSourceKind",
+          "benefitSourceId",
+          "benefitNumber",
+          "activeBenefitCount",
+          "rubrics"
+        ]
+      }
     }
   },
   "required": [
     "eventClass",
     "tenantId",
     "sourceEventId",
-    "round1Pending",
-    "deferredReason"
+    "employerCnpj",
+    "competence",
+    "payrollRunId",
+    "payrollRunStatus",
+    "benefits"
   ],
   "not": {
     "anyOf": [

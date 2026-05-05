@@ -9,6 +9,10 @@ export type BuilderMetadata = Readonly<{
     | 'S-1050'
     | 'S-1070'
     | 'S-1200'
+    | 'S-1202'
+    | 'S-1207'
+    | 'S-1210'
+    | 'S-1298'
     | 'S-1299'
     | 'S-2200';
   leiauteVersion: 'S-1.3';
@@ -21,6 +25,10 @@ export type BuilderMetadata = Readonly<{
     | 'evtTabJornada'
     | 'evtTabProcesso'
     | 'evtRemun'
+    | 'evtRmnRPPS'
+    | 'evtBenPrRP'
+    | 'evtPgtos'
+    | 'evtReabreEvPer'
     | 'evtFechaEvPer'
     | 'evtAdmissao';
   namespace: string;
