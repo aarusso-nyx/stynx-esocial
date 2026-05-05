@@ -145,6 +145,37 @@ test('transport factory wires sandbox, restricted client, and TLS guards without
   );
 });
 
+test('SOAP client passes explicit TLS certificate verification to the underlying client', async () => {
+  let capturedInit;
+  const transport = new SoapClientTransport({
+    environment: 'restricted_production',
+    endpoints: {
+      submit: 'https://restricted-esocial.example.test/submit',
+      returnQuery: 'https://restricted-esocial.example.test/return',
+    },
+    allowlistHosts: ['restricted-esocial.example.test'],
+    fetch: async (_url, init) => {
+      capturedInit = init;
+      return {
+        status: 200,
+        async text() {
+          return '<retornoEnvioLoteEventos><status>201</status><protocoloEnvio>PROTO-1</protocoloEnvio></retornoEnvioLoteEventos>';
+        },
+      };
+    },
+  });
+
+  await transport.submit('enviar_lote_eventos', '<eSocial><evt>ok</evt></eSocial>', {
+    tenantId,
+    environment: 'restricted_production',
+    eventClass: 'S-1000',
+    requestXml: '<eSocial><evt>ok</evt></eSocial>',
+    now,
+  });
+
+  assert.equal(capturedInit.rejectUnauthorized, true);
+});
+
 function localCertificate() {
   const { privateKey, publicKey } = generateKeyPairSync('rsa', {
     modulusLength: 2048,

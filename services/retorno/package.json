@@ -8,7 +8,7 @@
   "dependencies": {
     "@aws-sdk/client-eventbridge": "^3.1042.0",
     "@aws-sdk/client-sqs": "^3.1042.0",
-    "@esocial/contracts": "1.0.0",
+    "@esocial/contracts": "1.1.0-rc.0",
     "@esocial/domain": "0.0.0-r6.0",
     "@esocial/service-shared": "0.0.0-r6.0",
     "pg": "^8.20.0"

@@ -121,12 +121,13 @@ GitHub and must include:
 | Check | Required command surface |
 | --- | --- |
 | `unit` | `npm ci`, `npm run build`, `npm run lint`, `npm test`, `npm run coverage`, `npm audit --omit=dev --audit-level=high`, `npm run sbom`. |
-| `integration` | `npm run migrate:dev`, `npm run test:db`, `npm run test:integration`, `npm run integration:localstack`, `npm run templates:check`, production template dry-run with `ESOCIAL_PROD_CONFIRM=1`. |
+| `integration` | `npm run migrate:dev`, `npm run test:db`, `npm run test:integration`, `npm run integration:localstack`, `npm run templates:check`, `npm run cdk:synth:qualification`, `npm run cdk:synth:restricted-production`, `node scripts/assert-cdk-iam-scoped.mjs`. |
 
 Repository policy also requires signed commits for protected branches. The
 release workflow publishes `@esocial/contracts` only with `NODE_AUTH_TOKEN`
-provided by GitHub secrets and attaches `sbom/contracts-active-services.cdx.json`
-to the GitHub Release.
+provided by GitHub secrets, runs `ESOCIAL_PROD_CONFIRM=1 npm run
+cdk:synth:production` plus the IAM-scope assertion first, and attaches
+`sbom/contracts-active-services.cdx.json` to the GitHub Release.
 
 Local infrastructure evidence:
 
@@ -256,10 +257,12 @@ const replay = buildReplayRequestFromDlq({
 });
 ```
 
-The replay helper refuses incompatible schemas, derives a fresh request id,
-correlation id, and idempotency key, and returns an audit event with action
-`dlq.replay.requested`. Operators must publish `replay.request` to the request
-topic and `replay.auditEvent` to the audit topic in one operational transaction.
+The HTTP replay endpoint uses IAM SigV4/API Gateway identity as its auth
+boundary. Unauthenticated `POST /dlq/:id/replay` requests are rejected before
+repository access. Authenticated operators can replay through the configured
+handler, which refuses completed-idempotency clashes unless `?force=true`,
+publishes the derived request, and appends an audit event with action
+`dlq.replay.requested`.
 
 ## Observability
 

@@ -120,5 +120,11 @@ jobs:
       - name: Template Check
         run: npm run templates:check
 
-      - name: Production Template Guard
-        run: ESOCIAL_PROD_CONFIRM=1 node scripts/templates-generate.mjs --stage production --dry-run
+      - name: CDK Synth Qualification
+        run: npm run cdk:synth:qualification
+
+      - name: CDK Synth Restricted Production
+        run: npm run cdk:synth:restricted-production
+
+      - name: CDK IAM Scope Assertion
+        run: node scripts/assert-cdk-iam-scoped.mjs

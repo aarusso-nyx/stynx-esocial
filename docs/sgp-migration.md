@@ -62,6 +62,10 @@ Rules:
 
 - Treat the spool topic as at-least-once delivery.
 - Deduplicate by `idempotency-key`, `message_id`, and `occurred_at`.
+- Build request `idempotency-key` values with
+  `buildEsocialIdempotencyKey()` from `@esocial/contracts`; eSocial rejects
+  mismatched envelope keys as `validation_failed` before creating any database
+  row.
 - Accept only canonical lowercase statuses from `docs/consumers.md`.
 - Mirror protocol, receipt, response code, classification, and operator-action
   flags from `response_payload`.

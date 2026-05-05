@@ -10,6 +10,7 @@ import {
   metricNameForStatus,
   withTraceSpan,
   validateIngressEnvelope,
+  validateIngressIdempotencyKey,
 } from '@esocial/domain';
 import type {
   MetricEmitter,
@@ -81,6 +82,17 @@ export function createSubmissionHandler(
           await processor.publishMalformedToDlq(validation);
           metrics.emit(ESOCIAL_METRIC_NAMES.dlq, 1, context);
           logStage(logger, 'publish', 'Malformed submission published to DLQ.', context);
+          continue;
+        }
+
+        const keyValidation = validateIngressIdempotencyKey(validation.envelope);
+        if (!keyValidation.ok) {
+          await processor.publishIngressValidationFailure(
+            validation.envelope,
+            keyValidation.error,
+          );
+          metrics.emit(ESOCIAL_METRIC_NAMES.validationFailed, 1, context);
+          logStage(logger, 'publish', 'Submission idempotency-key validation failed.', context);
           continue;
         }
 

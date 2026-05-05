@@ -6,7 +6,15 @@
   "main": "./dist/esocial-stack.js",
   "types": "./dist/esocial-stack.d.ts",
   "scripts": {
+    "cdk": "cdk",
     "templates:generate": "node ../../scripts/templates-generate.mjs",
     "templates:check": "node ../../scripts/templates-generate.mjs --check"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.252.0",
+    "constructs": "^10.6.0"
+  },
+  "devDependencies": {
+    "aws-cdk": "^2.1120.0"
   }
 }

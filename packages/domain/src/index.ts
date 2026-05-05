@@ -42,6 +42,7 @@ export {
   RetryableSubmissionError,
   TerminalSubmissionError,
   validateIngressEnvelope,
+  validateIngressIdempotencyKey,
 } from './submission/submission-processor.js';
 export {
   SUBMISSION_DISPATCHERS,

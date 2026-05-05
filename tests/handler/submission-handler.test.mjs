@@ -133,19 +133,49 @@ test('malformed JSON and unsupported version are terminal DLQ messages with no D
     ...submissionEnvelope(),
     version: 'v2',
   };
+  const missingVersion = submissionEnvelope();
+  delete missingVersion.version;
 
   const result = await handler({
     Records: [
       { messageId: 'msg-malformed', body: '{bad-json' },
       { messageId: 'msg-wrong-version', body: JSON.stringify(wrongVersion) },
+      { messageId: 'msg-missing-version', body: JSON.stringify(missingVersion) },
     ],
   });
 
   assert.deepEqual(result, { batchItemFailures: [] });
   assert.equal(repository.records.length, 0);
-  assert.equal(published.dlq.length, 2);
+  assert.equal(published.dlq.length, 3);
   assert.equal(published.dlq[0].envelope.errors[0].code, 'ESOCIAL_MALFORMED_JSON');
   assert.equal(published.dlq[1].envelope.errors[0].code, 'ESOCIAL_UNSUPPORTED_VERSION');
+  assert.equal(published.dlq[2].envelope.errors[0].code, 'ESOCIAL_UNSUPPORTED_VERSION');
+});
+
+test('ingress idempotency-key mismatch publishes validation failure without DB write', async () => {
+  const repository = new InMemorySubmissionRepository();
+  const published = createRecordingPublishers();
+  const handler = createSubmissionHandler({
+    repository,
+    publishers: published.publishers,
+    now: () => fixedNow,
+  });
+  const envelope = submissionEnvelope({
+    'idempotency-key': 'esocial:v1:request:mismatched-key',
+  });
+
+  const result = await handler(sqsEvent(envelope, 'msg-idempotency-mismatch'));
+
+  assert.deepEqual(result, { batchItemFailures: [] });
+  assert.equal(repository.records.length, 0);
+  assert.equal(published.dlq.length, 0);
+  assert.equal(published.response.length, 1);
+  assert.equal(published.response[0].envelope.status, 'validation_failed');
+  assert.equal(published.response[0].envelope.errors[0].code, 'ESOCIAL_IDEMPOTENCY_KEY_MISMATCH');
+  assert.equal(published.spool.length, 1);
+  assert.equal(published.spool[0].envelope.status_transition.to, 'validation_failed');
+  assert.equal(published.audit.length, 1);
+  assert.equal(published.audit[0].envelope.action, 'submit.ingress_validation_failed');
 });
 
 test('contract-level payload validation is persisted as validation_failed and audited', async () => {

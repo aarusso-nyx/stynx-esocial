@@ -18,6 +18,17 @@ export function createHttpGatewayHandler(
     }
 
     if (isDlqReplay(event)) {
+      if (!hasIamActor(event)) {
+        return {
+          statusCode: 403,
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: JSON.stringify({
+            error: 'iam_sigv4_required',
+          }),
+        };
+      }
       return {
         statusCode: 501,
         headers: {
@@ -40,4 +51,12 @@ export async function handler(event: { Records?: unknown[] } & HttpGatewayEvent)
 function isDlqReplay(event: HttpGatewayEvent): boolean {
   return event.httpMethod === 'POST' &&
     /^\/dlq\/[^/]+\/replay$/u.test(event.path ?? '');
+}
+
+function hasIamActor(event: HttpGatewayEvent): boolean {
+  return Boolean(
+    event.requestContext?.identity?.userArn ??
+    event.requestContext?.identity?.caller ??
+    event.requestContext?.authorizer,
+  );
 }

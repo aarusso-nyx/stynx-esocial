@@ -6,7 +6,7 @@
   "main": "./dist/handler.js",
   "types": "./dist/handler.d.ts",
   "dependencies": {
-    "@esocial/contracts": "1.0.0",
+    "@esocial/contracts": "1.1.0-rc.0",
     "@esocial/domain": "0.0.0-r6.0",
     "@esocial/service-shared": "0.0.0-r6.0"
   }

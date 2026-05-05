@@ -3,6 +3,7 @@ import {
   ESOCIAL_CONTRACT_VERSION,
   ESOCIAL_ENVIRONMENTS,
   ESOCIAL_RELAY_EVENT_CLASSES,
+  buildEsocialIdempotencyKey,
   validateEsocialSgpRequestDto,
 } from '@esocial/contracts';
 import type {
@@ -96,6 +97,16 @@ export type SubmissionIngressValidationResult =
       error: EsocialContractError;
       candidate?: Record<string, unknown> | undefined;
       rawBody?: string | undefined;
+    }>;
+
+export type SubmissionIngressKeyValidationResult =
+  | Readonly<{
+      ok: true;
+    }>
+  | Readonly<{
+      ok: false;
+      error: EsocialContractError;
+      expectedKey: string;
     }>;
 
 export type SubmissionProcessorOptions = Readonly<{
@@ -204,6 +215,81 @@ export class SubmissionProcessor {
     );
     await this.publishers.dlq.publish(
       buildSubmissionPublishCommand('dlq', envelope, `${envelope['request-id']}:dlq`),
+    );
+  }
+
+  async publishIngressValidationFailure(
+    request: SubmissionRequestEnvelope,
+    error: EsocialContractError,
+  ): Promise<void> {
+    const occurredAt = this.now().toISOString();
+    const response: QueueAdapterResponseEnvelope<EsocialClass> = {
+      version: 'v1',
+      family: 'response',
+      'request-id': request['request-id'],
+      'correlation-id': request['correlation-id'],
+      'idempotency-key': request['idempotency-key'],
+      created_at: occurredAt,
+      tenant_id: request.tenant_id,
+      environment: request.environment,
+      event_class: request.event_class,
+      source: request.source,
+      kind: request.kind,
+      status: 'validation_failed',
+      attempt: request.attempt,
+      processed_at: occurredAt,
+      errors: [error],
+    };
+    const spoolUpdate: SpoolUpdateEnvelope = {
+      version: 'v1',
+      family: 'spool',
+      'request-id': request['request-id'],
+      'correlation-id': request['correlation-id'],
+      'idempotency-key': request['idempotency-key'],
+      created_at: occurredAt,
+      message_id: request['request-id'],
+      tenant_id: request.tenant_id,
+      environment: request.environment,
+      event_class: request.event_class,
+      source: request.source,
+      kind: request.kind,
+      status_transition: {
+        from: 'pending',
+        to: 'validation_failed',
+      },
+      errors: [error],
+      occurred_at: occurredAt,
+    };
+    const auditEvent: AuditEventEnvelope = {
+      version: 'v1',
+      family: 'audit',
+      'request-id': request['request-id'],
+      'correlation-id': request['correlation-id'],
+      'idempotency-key': request['idempotency-key'],
+      created_at: occurredAt,
+      tenant_id: request.tenant_id,
+      environment: request.environment,
+      event_class: request.event_class,
+      source: request.source,
+      actor_id: 'system:esocial-submission',
+      action: 'submit.ingress_validation_failed',
+      status: 'validation_failed',
+      target: {
+        type: 'esocial.ingress',
+        id: request['request-id'],
+      },
+      errors: [error],
+      occurred_at: occurredAt,
+    };
+
+    await this.publishers.response.publish(
+      buildSubmissionPublishCommand('response', response, `${occurredAt}:ingress-validation-response`),
+    );
+    await this.publishers.spool.publish(
+      buildSubmissionPublishCommand('spool', spoolUpdate, `${occurredAt}:ingress-validation-spool`),
+    );
+    await this.publishers.audit.publish(
+      buildSubmissionPublishCommand('audit', auditEvent, `${occurredAt}:ingress-validation-audit`),
     );
   }
 
@@ -381,6 +467,37 @@ export function validateIngressEnvelope(
   return {
     ok: true,
     envelope: candidate as SubmissionRequestEnvelope,
+  };
+}
+
+export function validateIngressIdempotencyKey(
+  request: SubmissionRequestEnvelope,
+): SubmissionIngressKeyValidationResult {
+  const payload: Record<string, unknown> = isRecord(request.payload) ? request.payload : {};
+  const source: Record<string, unknown> = isRecord(request.source) ? request.source : {};
+  const expected = buildEsocialIdempotencyKey({
+    family: 'request',
+    tenant_id: request.tenant_id,
+    environment: request.environment,
+    event_class: request.event_class,
+    source_event_id: stringValue(source.source_event_id),
+    source_entity_id: stringValue(source.source_entity_id),
+    source_entity_ids: stringArray(source.source_entity_ids),
+    competence: stringValue(payload.competence),
+    payload_hash: request.payload_hash,
+  });
+
+  if (request['idempotency-key'] === expected.value) {
+    return { ok: true };
+  }
+
+  return {
+    ok: false,
+    expectedKey: expected.value,
+    error: validationError(
+      'ESOCIAL_IDEMPOTENCY_KEY_MISMATCH',
+      'idempotency-key must match buildEsocialIdempotencyKey for the request envelope.',
+    ),
   };
 }
 
@@ -663,6 +780,16 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function isNonEmptyString(value: unknown): value is string {
   return typeof value === 'string' && value.trim().length > 0;
+}
+
+function stringValue(value: unknown): string | undefined {
+  return isNonEmptyString(value) ? value : undefined;
+}
+
+function stringArray(value: unknown): readonly string[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  const strings = value.filter((item): item is string => isNonEmptyString(item));
+  return strings.length > 0 ? strings : undefined;
 }
 
 function includesString<TValue extends string>(

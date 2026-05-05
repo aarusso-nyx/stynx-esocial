@@ -221,6 +221,13 @@ The key input includes:
 - Rectification marker when the operation rectifies a prior event.
 - Exclusion marker when the operation excludes a prior event.
 
+The submitted envelope's `idempotency-key` must exactly equal the helper output
+for the envelope family, tenant, environment, event class, source identifiers,
+competence, and payload hash. The submission handler enforces this before
+database persistence; a mismatch is published as `validation_failed` on the
+response, spool, and audit surfaces and does not create an `esocial` database
+row.
+
 The same payload hash for the same tenant/source/event/environment/family must
 not create duplicate regulatory submissions unless a deliberate replay,
 rectification, or exclusion operation changes the marker fields.

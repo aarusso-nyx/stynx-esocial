@@ -50,6 +50,12 @@ jobs:
       - name: Coverage
         run: npm run coverage
 
+      - name: CDK Synth Production
+        run: ESOCIAL_PROD_CONFIRM=1 npm run cdk:synth:production
+
+      - name: CDK IAM Scope Assertion
+        run: node scripts/assert-cdk-iam-scoped.mjs
+
       - name: Audit
         run: npm audit --omit=dev --audit-level=high
 

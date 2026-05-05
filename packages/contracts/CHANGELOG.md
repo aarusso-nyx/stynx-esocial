@@ -1,5 +1,12 @@
 # @esocial/contracts
 
+## 1.1.0-rc.0
+
+- Tightens ingress behavior: submitted request envelopes must carry an
+  `idempotency-key` that exactly matches `buildEsocialIdempotencyKey()` for the
+  envelope fields and payload hash. Mismatches are rejected as
+  `validation_failed` before persistence.
+
 ## 1.0.0
 
 Initial production-target v1 transport contract.

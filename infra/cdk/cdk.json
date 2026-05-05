@@ -1,5 +1,5 @@
 {
-  "app": "node ../../scripts/templates-generate.mjs",
+  "app": "tsx src/app.ts",
   "context": {
     "service": "esocial"
   }

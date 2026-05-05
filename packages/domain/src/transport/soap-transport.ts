@@ -109,6 +109,7 @@ type FetchLike = (
     headers: Record<string, string>;
     body: string;
     signal?: AbortSignal | undefined;
+    rejectUnauthorized: true;
   },
 ) => Promise<{
   status: number;
@@ -293,6 +294,7 @@ export class SoapClientTransport implements SoapTransport {
         },
         body: input.soapRequest,
         signal: controller.signal,
+        rejectUnauthorized: true,
       });
       const rawResponse = await response.text();
       const result = {
