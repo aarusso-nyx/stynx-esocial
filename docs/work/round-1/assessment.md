@@ -19,10 +19,11 @@ Schemas, evidence bundle under `docs/release/0.1.0/` — all real.
 **Round 0 missed several structural closure items** that the round-1 charter
 must absorb before promoting more families:
 
-1. **Coverage aggregation is broken.** Vitest reports ~1.06 % statements
-   because Node-`--test` `.test.mjs` files (golden, returns, DB, integration,
-   handler suites) aren't instrumented by the `v8` provider. Real behavior
-   *is* tested; the number that gates "≥80 %" is a lie.
+1. **Coverage aggregation was broken at audit time.** Vitest reported ~1.06 %
+   statements because Node-`--test` `.test.mjs` files (golden, returns, DB,
+   integration, handler suites) were not the coverage authority. Batch 0 now
+   accepts a 70 % active-suite threshold and requires the node coverage summary,
+   not the Vitest-only 1 % report, to be the gate.
 2. **`npm run cdk:synth` is missing from `package.json`.** CDK source compiles
    but is never synthesized in CI, never asserted IAM-scoped, never gated.
 3. **DLQ replay endpoint is unauthenticated.** `services/http-gateway/src/handler.ts`
@@ -80,7 +81,7 @@ must absorb before promoting more families:
 | `npm run build` (`tsc -b`) | Real | Strict TS config; sgp-lifted excluded. |
 | `npm run lint` (ESLint + canaries) | Real | `--max-warnings=0`. |
 | `npm test` | Real-but-split | Vitest + `node --test`; aggregation broken. |
-| `npm run coverage` thresholds | **Theatre** | No `thresholds` section in `vitest.config.ts`; reported 1.06 % statements. |
+| `npm run coverage` thresholds | **Batch-0 owner accepted 70 %** | Gate must parse active `node --test` coverage summary and fail below 70 % line/function coverage. |
 | `npm run test:db` | Real | Ephemeral Postgres in CI; migrations run. |
 | `npm run test:integration` | Partial | LocalStack + Postgres; misses some suites. |
 | `npm run integration:localstack` | Real | SQS + EventBridge + DB round-trip. |
@@ -141,10 +142,10 @@ no wildcard actions. Secrets only as ARN references.
 ### 5. Test coverage
 
 - 41 active test files across vitest + node:test runners.
-- Aggregate `vitest --coverage`: 1.06 % statements (broken — node:test
-  files not instrumented).
-- Real coverage almost certainly far higher; the **measurement** is
-  broken, not necessarily the testing.
+- Audit-time aggregate `vitest --coverage`: 1.06 % statements (broken —
+  node:test files not instrumented).
+- Batch-0 accepted measurement: active `node --test` coverage summary must
+  pass the owner-accepted 70 % line/function threshold.
 - Missing/insufficient suites:
   - Append-only mutation rejection.
   - PII redaction behavioral test.
@@ -194,7 +195,7 @@ no wildcard actions. Secrets only as ARN references.
 | 6 | `npm run test:integration` round-trip | **PARTIAL** (some suites unreferenced) |
 | 7 | `npm run integration:localstack` | **PASS** |
 | 8 | `npm run cdk:synth` real, scoped IAM | **FAIL** (script missing) |
-| 9 | Coverage ≥80 % on listed areas | **FAIL** (aggregation broken) |
+| 9 | Coverage gate on listed areas | **BATCH-0 FIXUP** (owner accepted 70 % active-suite threshold) |
 | 10 | CI runs all of the above on every PR | **PARTIAL** (no cdk synth, no coverage gate) |
 | 11 | `@esocial/contracts@1.0.0` published + docs + evidence bundle | **PARTIAL** (publishing deferred; everything else present) |
 

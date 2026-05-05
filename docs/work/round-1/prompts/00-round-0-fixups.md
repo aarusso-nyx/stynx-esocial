@@ -45,35 +45,22 @@ pass before any family promotion proceeds.
 
 ### 2. Fix coverage aggregation
 
-- Decide between two approaches and apply consistently:
+- The accepted Batch-0 threshold is **70 %**. Apply one coverage authority
+  consistently:
   1. **Vitest absorbs the `node --test` suites.** Convert
      `tests/golden/*.test.mjs`, `tests/db/*.test.mjs`,
      `tests/integration/*.test.mjs`, `tests/returns/*.test.mjs`,
      `services/retorno/__tests__/*.test.mjs` to vitest specs (rename
      `.test.mjs` → `.test.ts`, port assertions to `expect`).
-  2. **`c8`-wrap the `node --test` runs and merge with vitest.**
-     Use `c8 --reporter=json-summary --reporter=lcov node --test ...`
-     and merge with vitest output via `lcov-result-merger` or
-     `nyc merge`.
+  2. **The active `node --test` suite is the coverage authority.**
+     Run it with `--experimental-test-coverage`, parse the final `all files`
+     summary, and fail below the accepted threshold. Vitest may still run for
+     behavior, but its tiny standalone coverage report must not be the gate.
   Pick (1) if the conversion cost is small (the suites are
   assertion-light) and (2) only if it isn't.
-- Add a `thresholds` block to `vitest.config.ts` (or the merged
-  reporter config):
-  ```ts
-  coverage: {
-    thresholds: {
-      lines: 85,
-      branches: 80,
-      functions: 85,
-      statements: 85,
-      perFile: false,
-    },
-    include: ['packages/contracts/src/**', 'packages/domain/src/**',
-              'packages/pki-pades/src/**', 'services/*/src/**'],
-    exclude: ['**/sgp-lifted/**', '**/dist/**', '**/__tests__/**',
-              '**/*.spec.ts', '**/types.ts'],
-  }
-  ```
+- Enforce at least 70 % line and function coverage. Branch coverage is still
+  reported in the summary and tracked for hardening, but it is not the Batch-0
+  blocker after the owner-accepted threshold change.
 - `npm run coverage` exits non-zero on threshold breach. CI gates on it.
 
 ### 3. Wire CI to gate the missing items

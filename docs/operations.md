@@ -123,6 +123,12 @@ GitHub and must include:
 | `unit` | `npm ci`, `npm run build`, `npm run lint`, `npm test`, `npm run coverage`, `npm audit --omit=dev --audit-level=high`, `npm run sbom`. |
 | `integration` | `npm run migrate:dev`, `npm run test:db`, `npm run test:integration`, `npm run integration:localstack`, `npm run templates:check`, `npm run cdk:synth:qualification`, `npm run cdk:synth:restricted-production`, `node scripts/assert-cdk-iam-scoped.mjs`. |
 
+`npm run coverage` uses `scripts/coverage-check.mjs` as the single Batch-0
+coverage authority. It runs the active `node --test` suite with built-in
+coverage, parses the final `all files` summary, and fails below 70 % line or
+function coverage. Branch coverage is reported in the same summary and remains
+a hardening target.
+
 Repository policy also requires signed commits for protected branches. The
 release workflow publishes `@esocial/contracts` only with `NODE_AUTH_TOKEN`
 provided by GitHub secrets, runs `ESOCIAL_PROD_CONFIRM=1 npm run

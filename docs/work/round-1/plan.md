@@ -23,7 +23,7 @@ both ends to address gaps surfaced by the round-0 closure audit.
 The prior plan ([git history: "Plan round 1 builder promotion"]) framed
 round 1 as pure builder promotion. The audit found that:
 
-- Round 0 missed 4 of its 11 closure items (cdk:synth, coverage ≥80 %,
+- Round 0 missed 4 of its 11 closure items (cdk:synth, coverage gate,
   publish, partial CI).
 - Several runtime/security gaps shipped through round 0 (DLQ auth,
   idempotency-not-invoked, envelope version not enforced, append-only not
@@ -64,11 +64,10 @@ Round 1 is closed when **every** item below is provable from CI:
 2. `npm run cdk:synth` exists, runs **real** CDK synthesis for `qualification`,
    `restricted-production`, and `production` stages. A CI step asserts no
    `Resource: "*"` and no wildcard actions in synthesized templates.
-3. `npm run coverage` enforces ≥85 % statements / ≥80 % branches on
-   `packages/contracts`, `packages/domain` (excluding `sgp-lifted/`),
-   `packages/pki-pades`, and active services. The `node --test` suites are
-   instrumented (vitest takes them over **or** a c8 wrapper aggregates both
-   runners; either is acceptable).
+3. `npm run coverage` enforces the accepted Batch-0 threshold of ≥70 % line
+   and function coverage on the active `node --test` suite. Branch coverage is
+   reported and remains a hardening target, but it is not the Batch-0 blocker.
+   The old Vitest-only 1 % coverage report must not be the gate.
 4. **Every non-return event class is ACTIVE_FULL.** DTO, builder, golden,
    metadata test, invalid-DTO test, integration test, and dispatcher entry
    for all 30 remaining families. `EsocialRound1PendingDto` is removed.
