@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Reinf xmlns="urn:br:gov:rfb:reinf:sgp:r2000" layoutVersion="2.1.2" technicalNote="NT 01/2026">
+  <evtAqProd Id="IDR2055RETRO20260320260100000001" eventCode="R2055">
+    <ideEvento>
+      <perApur>2026-03</perApur>
+      <tpAmb>2</tpAmb>
+      <procEmi>1</procEmi>
+      <verProc>SGP-0.0.1</verProc>
+      <indRetif>2</indRetif>
+      <nrRecibo>1-55-0000-2026-01-0000000001</nrRecibo>
+    </ideEvento>
+    <ideContri>
+      <tpInsc>1</tpInsc>
+      <nrInsc>12345678000190</nrInsc>
+    </ideContri>
+    <infoAquisProd>
+      <ideEstabAdquir>
+        <tpInscAdq>1</tpInscAdq>
+        <nrInscAdq>12345678000190</nrInscAdq>
+        <tpInscProd>2</tpInscProd>
+        <nrInscProd>12345678901</nrInscProd>
+        <nomeProd>Produtor Rural Exemplo</nomeProd>
+        <indOpcCP>N</indOpcCP>
+        <detAquis sourceRunId="00000000-0000-4000-8000-000000002055">
+          <indAquis>1</indAquis>
+          <vlrBruto>12000.00</vlrBruto>
+          <vlrCPDescPR>158.40</vlrCPDescPR>
+          <vlrRatDescPR>12.00</vlrRatDescPR>
+          <vlrSenarDesc>24.00</vlrSenarDesc>
+          <vlrAdicDescPR>6.00</vlrAdicDescPR>
+          <infoProcJud>
+            <nrProc>5000001-55.2026.4.03.6100</nrProc>
+            <vlrCPSusp>10.00</vlrCPSusp>
+            <vlrRatSusp>1.00</vlrRatSusp>
+            <vlrSenarSusp>2.00</vlrSenarSusp>
+          </infoProcJud>
+          <infoAjusteRetroativo>
+            <perRef>2026-01</perRef>
+            <nrReciboOrig>1-55-0000-2026-01-0000000001</nrReciboOrig>
+            <descAjuste>Competence 2026-01 rural acquisition adjusted after producer document correction</descAjuste>
+          </infoAjusteRetroativo>
+        </detAquis>
+      </ideEstabAdquir>
+    </infoAquisProd>
+  </evtAqProd>
+</Reinf>

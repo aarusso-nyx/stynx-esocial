@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtIrrf/v_S_01_03_00">
+  <evtIrrf Id="ID5012000000000000000000000000000001">
+    <ideEvento>
+      <perApur>2026-01</perApur>
+    </ideEvento>
+    <ideEmpregador>
+      <tpInsc>1</tpInsc>
+      <nrInsc>12345678000199</nrInsc>
+    </ideEmpregador>
+    <infoIRRF>
+      <nrRecArqBase>1.1.0000000000000001299</nrRecArqBase>
+      <indExistInfo>1</indExistInfo>
+      <infoCRMen>
+        <CRMen>056107</CRMen>
+        <vrCRMen>4200.00</vrCRMen>
+      </infoCRMen>
+    </infoIRRF>
+  </evtIrrf>
+</eSocial>

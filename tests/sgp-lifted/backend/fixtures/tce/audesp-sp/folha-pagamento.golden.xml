@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AudespFolha adapter="audesp-sp" layout="AUDESP-FOLHA" versao="0.0.1">
+  <Cabecalho>
+    <OrgaoCodigo>3550308</OrgaoCodigo>
+    <CompetenciaAno>2026</CompetenciaAno>
+    <CompetenciaMes>04</CompetenciaMes>
+    <TipoRemessa>FOLHA_PAGAMENTO</TipoRemessa>
+    <GeradoEm>2026-05-02T00:00:00.000Z</GeradoEm>
+  </Cabecalho>
+  <Servidores>
+    <Servidor>
+      <Matricula>MAT-001</Matricula>
+      <Cpf>11122233344</Cpf>
+      <Cargo>Analista</Cargo>
+      <Proventos>3000.00</Proventos>
+      <Descontos>330.00</Descontos>
+      <Liquido>2670.00</Liquido>
+    </Servidor>
+    <Servidor>
+      <Matricula>MAT-002</Matricula>
+      <Cpf>22233344405</Cpf>
+      <Cargo>Professor</Cargo>
+      <Proventos>4200.00</Proventos>
+      <Descontos>245.50</Descontos>
+      <Liquido>3954.50</Liquido>
+    </Servidor>
+  </Servidores>
+</AudespFolha>

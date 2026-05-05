@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtTabEstab/v_S_01_03_00">
+  <evtTabEstab Id="ID9172027725231267344205267634002097">
+    <ideEvento><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+    <infoEstab>
+      <inclusao>
+        <ideEstab><tpInsc>1</tpInsc><nrInsc>12345678000199</nrInsc><iniValid>2026-01</iniValid></ideEstab>
+        <dadosEstab><cnaePrep>8411600</cnaePrep></dadosEstab>
+      </inclusao>
+    </infoEstab>
+  </evtTabEstab>
+</eSocial>

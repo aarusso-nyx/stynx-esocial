@@ -1,0 +1,68 @@
+{
+  "sourceStatus": "CALLER_SELECTED_LRF_STRUCTURE",
+  "layoutEdition": "LRF-RGF-CORE-V01",
+  "legalSourceUrl": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp101.htm",
+  "generatedAt": "2026-05-04T10:10:00.000Z",
+  "targetState": "SP",
+  "entity": {
+    "tenantId": "00000000-0000-0000-0000-000000004417",
+    "ibgeCode": "3550308",
+    "name": "Sample City SP",
+    "cnpj": "12345678000190",
+    "power": "EXECUTIVE",
+    "sphere": "MUNICIPAL"
+  },
+  "responsible": {
+    "name": "Sample Fiscal Officer",
+    "role": "Municipal Finance Secretary",
+    "registration": "CRC-SP-000001"
+  },
+  "period": {
+    "fiscalYear": 2026,
+    "periodKind": "QUADRIMESTER",
+    "periodNumber": 1,
+    "startsOn": "2026-01-01",
+    "endsOn": "2026-04-30",
+    "legalDeadline": "2026-05-30"
+  },
+  "sourceLedger": {
+    "closureId": "ledger-sp-rgf-2026-quad-01",
+    "closedAt": "2026-05-03T23:00:00.000Z",
+    "sourceHash": "sha256:sp-rgf-ledger-2026-quad-01",
+    "accountingSystem": "sgp-fiscal-ledger",
+    "payrollRunIds": [
+      "00000000-0000-4000-8000-000000004403",
+      "00000000-0000-4000-8000-000000004407"
+    ]
+  },
+  "publicationEvidence": {
+    "transparencyUrl": "https://transparency.example.test/sp/rgf/2026/1",
+    "publishedAt": "2026-05-04T12:10:00.000Z",
+    "evidenceHash": "sha256:sp-rgf-publication-2026-quad-01"
+  },
+  "personnelLimit": {
+    "netCurrentRevenue": "6000000.00",
+    "personnelExpenseTotal": "2900000.00",
+    "legalLimitPercentage": "54.0000",
+    "prudentialLimitPercentage": "51.3000",
+    "alertLimitPercentage": "48.6000"
+  },
+  "lines": [
+    {
+      "annex": "Annex 1",
+      "table": "Personnel Expense",
+      "lineCode": "DTP",
+      "label": "Total personnel expenditure",
+      "amount": "2900000.00",
+      "sourceLedgerRef": "payroll.personnel_expense.total"
+    },
+    {
+      "annex": "Annex 1",
+      "table": "Personnel Expense",
+      "lineCode": "RCL",
+      "label": "Net current revenue",
+      "amount": "6000000.00",
+      "sourceLedgerRef": "fiscal.net_current_revenue"
+    }
+  ]
+}

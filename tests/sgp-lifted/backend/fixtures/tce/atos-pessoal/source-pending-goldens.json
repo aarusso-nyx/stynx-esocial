@@ -1,0 +1,23 @@
+{
+  "MG": {
+    "stateCode": "MG",
+    "layoutCode": "TCE-MG-ATOS-PESSOAL-SOURCE-PENDING",
+    "layoutVersion": "0.0.1",
+    "sourceStatus": "UNVERIFIED_LAYOUT",
+    "officialConformance": false
+  },
+  "RJ": {
+    "stateCode": "RJ",
+    "layoutCode": "TCE-RJ-ATOS-PESSOAL-SOURCE-PENDING",
+    "layoutVersion": "0.0.1",
+    "sourceStatus": "UNVERIFIED_LAYOUT",
+    "officialConformance": false
+  },
+  "SP": {
+    "stateCode": "SP",
+    "layoutCode": "TCE-SP-ATOS-PESSOAL-SOURCE-PENDING",
+    "layoutVersion": "0.0.1",
+    "sourceStatus": "UNVERIFIED_LAYOUT",
+    "officialConformance": false
+  }
+}

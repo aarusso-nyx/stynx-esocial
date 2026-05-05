@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtDeslig/v_S_01_03_00">
+  <evtDeslig Id="ID8405194240512845059341695255392223">
+    <ideEvento><indRetif>1</indRetif><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+    <ideVinculo><cpfTrab>11122233344</cpfTrab><matricula>MAT-2200</matricula></ideVinculo>
+    <infoDeslig>
+      <mtvDeslig>02</mtvDeslig>
+      <dtDeslig>2026-04-15</dtDeslig>
+      <indPagtoAPI>S</indPagtoAPI>
+      <dtProjFimAPI>2026-05-15</dtProjFimAPI>
+      <verbasResc>
+        <dmDev>
+          <ideDmDev>RESC202604</ideDmDev>
+          <infoPerApur>
+            <ideEstabLot>
+              <tpInsc>1</tpInsc>
+              <nrInsc>12345678000199</nrInsc>
+              <codLotacao>LOT01</codLotacao>
+              <detVerbas><codRubr>RESC_AVISO_PREVIO</codRubr><ideTabRubr>SGP</ideTabRubr><qtdRubr>30.00</qtdRubr><vrRubr>3000.00</vrRubr><indApurIR>0</indApurIR></detVerbas>
+              <detVerbas><codRubr>RESC_SALDO</codRubr><ideTabRubr>SGP</ideTabRubr><qtdRubr>15.00</qtdRubr><vrRubr>1500.00</vrRubr><indApurIR>0</indApurIR></detVerbas>
+            </ideEstabLot>
+          </infoPerApur>
+        </dmDev>
+      </verbasResc>
+    </infoDeslig>
+  </evtDeslig>
+</eSocial>

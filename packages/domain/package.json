@@ -1,0 +1,9 @@
+{
+  "name": "@stynx/esocial-domain",
+  "version": "0.0.0-r6.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}

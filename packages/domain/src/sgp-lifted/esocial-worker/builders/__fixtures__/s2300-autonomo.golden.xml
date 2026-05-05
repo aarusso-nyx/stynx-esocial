@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtTSVInicio/v_S_01_03_00">
+  <evtTSVInicio Id="ID4310745259573140970256725656429898">
+    <ideEvento><indRetif>1</indRetif><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+    <trabalhador>
+      <cpfTrab>33366699916</cpfTrab>
+      <nmTrab>Carla Autonoma</nmTrab>
+      <sexo>F</sexo>
+      <racaCor>1</racaCor>
+      <estCiv>1</estCiv>
+      <grauInstr>09</grauInstr>
+      
+      <nascimento><dtNascto>1995-01-02</dtNascto><paisNascto>105</paisNascto><paisNac>105</paisNac></nascimento>
+      <endereco><brasil><tpLograd>R</tpLograd><dscLograd>Rua Central</dscLograd><nrLograd>100</nrLograd><bairro>Centro</bairro><cep>70000000</cep><codMunic>5300108</codMunic><uf>DF</uf></brasil></endereco>
+      
+      <contato><fonePrinc>61999998888</fonePrinc><emailPrinc>autonomo@example.test</emailPrinc></contato>
+    </trabalhador>
+    <infoTSVInicio>
+      <cadIni>N</cadIni>
+      <matricula>TSV-AUT-01</matricula>
+      <codCateg>701</codCateg>
+      <dtInicio>2026-02-10</dtInicio>
+      <infoComplementares><cargoFuncao><nmCargo>Prestadora Autonoma</nmCargo></cargoFuncao><remuneracao><vrSalFx>2800.00</vrSalFx><undSalFixo>5</undSalFixo></remuneracao></infoComplementares>
+    </infoTSVInicio>
+  </evtTSVInicio>
+</eSocial>

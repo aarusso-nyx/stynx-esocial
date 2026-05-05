@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "tenantId": "00000000-0000-4000-8000-000000000001",
+      "competence": "2026-04-01",
+      "employeePublicId": "pub-0001",
+      "fullName": "Ana Silva",
+      "registrationNumber": "MAT-001",
+      "positionName": "Analista",
+      "organizationalUnit": "Administracao",
+      "grossTotal": "1000.00",
+      "deductionsTotal": "100.00",
+      "netTotal": "900.00",
+      "snapshotTakenAt": "2026-05-02 00:00:00+00"
+    },
+    {
+      "tenantId": "00000000-0000-4000-8000-000000000001",
+      "competence": "2026-04-01",
+      "employeePublicId": "pub-0002",
+      "fullName": "Bruno Costa",
+      "registrationNumber": "MAT-002",
+      "positionName": "Professor",
+      "organizationalUnit": "Educacao",
+      "grossTotal": "4200.00",
+      "deductionsTotal": "245.50",
+      "netTotal": "3954.50",
+      "snapshotTakenAt": "2026-05-02 00:00:00+00"
+    }
+  ],
+  "page": 1,
+  "pageSize": 20,
+  "total": 2,
+  "totalPages": 1
+}

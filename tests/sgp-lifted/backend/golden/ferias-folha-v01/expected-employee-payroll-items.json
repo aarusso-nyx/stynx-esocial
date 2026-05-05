@@ -1,0 +1,67 @@
+[
+  {
+    "vectorId": "statutory-20-days-abono",
+    "employeeRegistration": "GOLDEN-FERIAS-ABONO",
+    "code": "VACATION_SALARY",
+    "kind": "EARNING",
+    "source": "CALCULATED",
+    "competenceYear": 2026,
+    "competenceMonth": 7,
+    "quantity": "20.0000",
+    "referenceValue": "6000.00",
+    "amount": "4000.00",
+    "notes": "vacation_record_id=<fixture>; amount=4000.00"
+  },
+  {
+    "vectorId": "statutory-20-days-abono",
+    "employeeRegistration": "GOLDEN-FERIAS-ABONO",
+    "code": "VACATION_ONE_THIRD",
+    "kind": "EARNING",
+    "source": "CALCULATED",
+    "competenceYear": 2026,
+    "competenceMonth": 7,
+    "quantity": "1.0000",
+    "referenceValue": "4000.00",
+    "amount": "1333.33",
+    "notes": "vacation_record_id=<fixture>; amount=1333.33"
+  },
+  {
+    "vectorId": "statutory-20-days-abono",
+    "employeeRegistration": "GOLDEN-FERIAS-ABONO",
+    "code": "VACATION_PECUNIARY_BONUS",
+    "kind": "EARNING",
+    "source": "CALCULATED",
+    "competenceYear": 2026,
+    "competenceMonth": 7,
+    "quantity": "10.0000",
+    "referenceValue": "6000.00",
+    "amount": "2000.00",
+    "notes": "vacation_record_id=<fixture>; amount=2000.00"
+  },
+  {
+    "vectorId": "statutory-20-days-abono",
+    "employeeRegistration": "GOLDEN-FERIAS-ABONO",
+    "code": "RPPS",
+    "kind": "DEDUCTION",
+    "source": "CALCULATED",
+    "competenceYear": 2026,
+    "competenceMonth": 7,
+    "quantity": "1.0000",
+    "referenceValue": "6000.00",
+    "amount": "649.60",
+    "notes": "vacation_record_id=<fixture>; amount=649.60"
+  },
+  {
+    "vectorId": "statutory-20-days-abono",
+    "employeeRegistration": "GOLDEN-FERIAS-ABONO",
+    "code": "IRRF_VACATION",
+    "kind": "DEDUCTION",
+    "source": "CALCULATED",
+    "competenceYear": 2026,
+    "competenceMonth": 7,
+    "quantity": "1.0000",
+    "referenceValue": "6683.73",
+    "amount": "942.03",
+    "notes": "vacation_record_id=<fixture>; amount=942.03"
+  }
+]

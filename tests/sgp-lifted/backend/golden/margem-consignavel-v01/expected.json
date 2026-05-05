@@ -1,0 +1,47 @@
+{
+  "caseId": "lei-14509-2022-three-bucket-margin",
+  "employeeId": "00000000-0000-4000-8000-000000004404",
+  "competence": "2026-05",
+  "legalAnchor": "Lei 14.509/2022",
+  "legalBuckets": {
+    "general": {
+      "percent": "0.350000",
+      "cap": "3500.00",
+      "used": "2000.00",
+      "available": "1500.00"
+    },
+    "creditCard": {
+      "percent": "0.050000",
+      "cap": "500.00",
+      "used": "300.00",
+      "available": "200.00"
+    },
+    "benefitCard": {
+      "percent": "0.050000",
+      "cap": "500.00",
+      "used": "125.50",
+      "available": "374.50"
+    }
+  },
+  "total": {
+    "percent": "0.450000",
+    "cap": "4500.00",
+    "used": "2425.50",
+    "available": "2074.50",
+    "usedPlusAvailable": "4500.00"
+  },
+  "margin": {
+    "employeeId": "00000000-0000-4000-8000-000000004404",
+    "competence": "2026-05",
+    "netBase": "10000.00",
+    "availableGeneral": "1500.00",
+    "availableCreditCard": "200.00",
+    "availableBenefitCard": "374.50",
+    "usedGeneral": "2000.00",
+    "usedCreditCard": "300.00",
+    "usedBenefitCard": "125.50",
+    "generalPercent": "0.350000",
+    "creditCardPercent": "0.050000",
+    "benefitCardPercent": "0.050000"
+  }
+}

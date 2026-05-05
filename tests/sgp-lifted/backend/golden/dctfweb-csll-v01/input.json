@@ -1,0 +1,19 @@
+{
+  "tenantId": "00000000-0000-0000-0000-00000000f510",
+  "competence": "2026-05-01",
+  "kind": "ORIGINAL",
+  "originalDeclarationId": null,
+  "items": [
+    {
+      "sourceEvent": "MIT",
+      "sourceRunId": "00000000-0000-4000-8000-000000005101",
+      "debitCode": "CSLL-ADICIONAL",
+      "baseAmount": "100000.00",
+      "amount": "9000.00",
+      "csllAdicionalAmount": "1500.00",
+      "mitStatus": "INCLUDED",
+      "mitDebitId": "MIT-csll-adicional-r4-10",
+      "cnpjFilial": "12345678000199"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "eventId": "IDR2055RETRO20260320260100000001",
+  "reportingCompetence": "2026-03",
+  "kind": "RETIFICADORA",
+  "originalReceiptNumber": "1-55-0000-2026-01-0000000001",
+  "environment": "2",
+  "emissionProcess": "1",
+  "processVersion": "SGP-0.0.1",
+  "contributor": {
+    "registrationType": "1",
+    "registrationNumber": "12345678000190"
+  },
+  "acquiringEstablishment": {
+    "registrationType": "1",
+    "registrationNumber": "12345678000190",
+    "producer": {
+      "registrationType": "2",
+      "registrationNumber": "12345678901",
+      "name": "Produtor Rural Exemplo",
+      "ruralProducerOption": "N"
+    }
+  },
+  "acquisitions": [
+    {
+      "sourceRunId": "00000000-0000-4000-8000-000000002055",
+      "acquisitionIndicator": "1",
+      "grossAmount": "12000.00",
+      "principalWithheldAmount": "158.40",
+      "gilratWithheldAmount": "12.00",
+      "senarWithheldAmount": "24.00",
+      "additionalWithheldAmount": "6.00",
+      "judicialProcess": {
+        "processNumber": "5000001-55.2026.4.03.6100",
+        "suspendedPrincipalAmount": "10.00",
+        "suspendedGilratAmount": "1.00",
+        "suspendedSenarAmount": "2.00"
+      },
+      "retroactiveAdjustment": {
+        "referenceCompetence": "2026-01",
+        "originalReceiptNumber": "1-55-0000-2026-01-0000000001",
+        "reason": "Competence 2026-01 rural acquisition adjusted after producer document correction"
+      }
+    }
+  ]
+}

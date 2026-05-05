@@ -1,0 +1,17 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": "../..",
+  "moduleDirectories": ["node_modules", "<rootDir>/backend/node_modules"],
+  "setupFiles": ["<rootDir>/tests/backend/test-env.js"],
+  "testEnvironment": "node",
+  "testPathIgnorePatterns": ["<rootDir>/tests/scripts/fixtures/"],
+  "testRegex": "(backend/src/.*\\.spec\\.ts|tests/backend/.*\\.spec\\.ts|tests/scripts/.*\\.spec\\.ts)$",
+  "transform": {
+    "^.+\\.ts$": [
+      "<rootDir>/backend/node_modules/ts-jest",
+      {
+        "tsconfig": "<rootDir>/tests/backend/tsconfig.json"
+      }
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "bankCode": "341",
+  "expectedHash": "264f33947f88ffade3fdb147ba1b3c3d0c3981a7d1575f95071f0122b50713f5",
+  "details": [
+    {
+      "bankCode": "341",
+      "sequence": 1,
+      "employeeId": "IT-RET-000001",
+      "amount": "1000.00",
+      "occurrenceCode": "00"
+    },
+    {
+      "bankCode": "341",
+      "sequence": 2,
+      "employeeId": "IT-RET-000002",
+      "amount": "1017.35",
+      "occurrenceCode": "BD"
+    },
+    {
+      "bankCode": "341",
+      "sequence": 3,
+      "employeeId": "IT-RET-000003",
+      "amount": "1034.70",
+      "occurrenceCode": "BE"
+    },
+    {
+      "bankCode": "341",
+      "sequence": 4,
+      "employeeId": "IT-RET-000004",
+      "amount": "1052.05",
+      "occurrenceCode": "BI"
+    },
+    {
+      "bankCode": "341",
+      "sequence": 5,
+      "employeeId": "IT-RET-000005",
+      "amount": "1069.40",
+      "occurrenceCode": "RJ"
+    }
+  ]
+}

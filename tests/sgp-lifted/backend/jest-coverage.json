@@ -1,0 +1,38 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": "../..",
+  "moduleDirectories": ["node_modules", "<rootDir>/backend/node_modules"],
+  "setupFiles": ["<rootDir>/tests/backend/test-env.js"],
+  "testEnvironment": "node",
+  "testPathIgnorePatterns": ["<rootDir>/tests/scripts/fixtures/"],
+  "testRegex": "(backend/src/.*\\.spec\\.ts|tests/backend/.*\\.(e2e-)?spec\\.ts|tests/rls/.*\\.spec\\.ts)$",
+  "transform": {
+    "^.+\\.ts$": [
+      "<rootDir>/backend/node_modules/ts-jest",
+      {
+        "tsconfig": "<rootDir>/tests/backend/tsconfig.json"
+      }
+    ]
+  },
+  "collectCoverage": true,
+  "coverageProvider": "v8",
+  "collectCoverageFrom": [
+    "backend/src/**/*.ts",
+    "!backend/src/**/*.spec.ts",
+    "!backend/src/**/*.controller.ts",
+    "!backend/src/**/*.dto.ts",
+    "!backend/src/**/*.module.ts",
+    "!backend/src/config/environment.ts",
+    "!backend/src/common/pagination/paged-response.ts",
+    "!backend/src/common/errors/standard-exception.filter.ts"
+  ],
+  "coverageDirectory": "backend/coverage",
+  "coverageThreshold": {
+    "global": {
+      "lines": 85,
+      "branches": 85,
+      "functions": 85
+    }
+  },
+  "coverageReporters": ["lcov", "text-summary", "cobertura"]
+}

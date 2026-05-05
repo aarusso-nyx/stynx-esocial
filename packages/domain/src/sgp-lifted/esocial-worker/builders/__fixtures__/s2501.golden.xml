@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtContProc/v_S_01_03_00">
+  <evtContProc Id="ID4507212155430183212522362600542522">
+    <ideEvento><indRetif>1</indRetif><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+    <ideProc>
+      <nrProcTrab>000000000000001</nrProcTrab>
+      <perApurPgto>2026-01</perApurPgto>
+      <ideSeqProc>1</ideSeqProc><obs>Acordo homologado com recolhimento previdenciario e IRRF.</obs>
+    </ideProc>
+    <ideTrab cpfTrab="11122233344"><calcTrib perRef="2025-12" vrBcCpMensal="5000.00" vrBcCp13="1000.00"><infoCRContrib tpCR="113851" vrCR="550.00"/><infoCRContrib tpCR="164621" vrCR="110.00"/></calcTrib><infoCRIRRF tpCR="593656" vrCR="250.00"/></ideTrab>
+    <ideTrab cpfTrab="22233344405"><calcTrib perRef="2026-01" vrBcCpMensal="1000.00" vrBcCp13="0.00"><infoCRContrib tpCR="113851" vrCR="110.00"/></calcTrib><infoCRIRRF tpCR="056152" vrCR="75.00" vrCR13="37.50"/></ideTrab>
+  </evtContProc>
+</eSocial>

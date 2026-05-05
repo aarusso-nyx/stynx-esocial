@@ -1,0 +1,24 @@
+{
+  "adapterId": "tce-mg",
+  "stateCode": "MG",
+  "organKind": "TCE",
+  "layoutCode": "TCE-MG-FOLHA-SOURCE-PENDING",
+  "layoutVersion": "0.0.1",
+  "sourceStatus": "UNVERIFIED_LAYOUT",
+  "officialConformance": false,
+  "payload": {
+    "sourceStatus": "UNVERIFIED_LAYOUT",
+    "tenantId": "00000000-0000-0000-0000-000000000100",
+    "competence": "2026-04",
+    "payrollRunId": "00000000-0000-4000-8000-000000001200",
+    "rows": [
+      {
+        "registration": "MAT-001",
+        "cpf": "11122233344",
+        "grossAmount": "3000.00",
+        "deductionAmount": "330.00",
+        "netAmount": "2670.00"
+      }
+    ]
+  }
+}

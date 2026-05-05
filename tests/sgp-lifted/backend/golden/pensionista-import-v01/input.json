@@ -1,0 +1,34 @@
+{
+  "fixture": "pensionista-import-v01",
+  "r4Id": "R4-16",
+  "functionalRequisite": "F-FOL-009",
+  "endpoint": "POST /api/v1/folhas/:folha_id/importar/pensionista",
+  "source": "docs/eng/domains/payroll-benefits.md#convencoes-de-fixtures-xlsx-dos-importadores-de-folha",
+  "scope": "structural SGP XLSX importer golden; no legacy-template byte parity claim",
+  "worksheet": "pensionista",
+  "headers": [
+    "pensao_id",
+    "matricula_pensionista",
+    "verba_codigo",
+    "valor",
+    "quantidade",
+    "referencia",
+    "observacao"
+  ],
+  "rows": [
+    {
+      "pensao_id": "55555555-5555-4555-8555-555555555555",
+      "matricula_pensionista": "PENS-R4-009",
+      "verba_codigo": "PENSAO_VAR",
+      "valor": "125.75",
+      "quantidade": "1.0000",
+      "referencia": "125.75",
+      "observacao": "R4-16 F-FOL-009 structural golden"
+    }
+  ],
+  "expected": {
+    "file": "expected.xlsx",
+    "sha256": "aec2d3da6f670c4765416040700590634befabe11d7bd27e0574c23ddd00b8a0",
+    "bytes": 3064
+  }
+}

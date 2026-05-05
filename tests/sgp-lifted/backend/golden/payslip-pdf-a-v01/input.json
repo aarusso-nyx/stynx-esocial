@@ -1,0 +1,32 @@
+{
+  "tenantName": "Municipio de Teste",
+  "legalReference": "Lei municipal de remuneracao.",
+  "employee": {
+    "id": "00000000-0000-4000-8000-000000000001",
+    "registration": "123",
+    "name": "Servidor Teste",
+    "cpf": "00000000000",
+    "employmentLink": "Efetivo",
+    "bankAgency": "0001",
+    "bankAccount": "12345-6"
+  },
+  "payrollRunId": "00000000-0000-4000-8000-000000000901",
+  "competence": "2026-05-01",
+  "totals": {
+    "earnings": "5000.00",
+    "deductions": "750.00",
+    "net": "4250.00",
+    "irrfBase": "5000.00",
+    "inssBase": "5000.00",
+    "fgtsDeposit": "0.00"
+  },
+  "lines": [
+    {
+      "code": "100",
+      "description": "Vencimento basico",
+      "reference": "30",
+      "earning": "5000.00",
+      "deduction": ""
+    }
+  ]
+}

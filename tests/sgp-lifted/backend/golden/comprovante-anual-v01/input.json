@@ -1,0 +1,22 @@
+{
+  "tenantId": "00000000-0000-4000-8000-000000000100",
+  "tenantName": "Municipio de Teste",
+  "tenantDocument": "12345678000199",
+  "employeeId": "00000000-0000-4000-8000-000000000001",
+  "registration": "MAT-001",
+  "employeeName": "Servidor Teste",
+  "cpf": "00011122233",
+  "employmentLink": "Efetivo",
+  "yearBase": 2025,
+  "taxableTotal": "74500.25",
+  "thirteenthSalary": "5000.25",
+  "vacationTotal": "9500.00",
+  "severanceTotal": "0.00",
+  "exemptTotal": "1200.00",
+  "inssRppsTotal": "8250.00",
+  "irrfTotal": "6100.00",
+  "dependentsCount": 2,
+  "s1210Total": "75700.25",
+  "s1210IrrfTotal": "6100.00",
+  "recomputedAt": "2026-02-28T00:00:00.000Z"
+}

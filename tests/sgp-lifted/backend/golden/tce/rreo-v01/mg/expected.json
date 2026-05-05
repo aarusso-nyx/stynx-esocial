@@ -1,0 +1,83 @@
+{
+  "schemaVersion": "tce-rreo-v01",
+  "reportType": "RREO",
+  "sourceStatus": "CALLER_SELECTED_LRF_STRUCTURE",
+  "officialConformance": false,
+  "layoutEdition": "LRF-RREO-CORE-V01",
+  "legalSourceUrl": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp101.htm",
+  "generatedAt": "2026-05-04T10:05:00.000Z",
+  "target": {
+    "adapterId": "tce-mg",
+    "stateCode": "MG",
+    "courtName": "TCE-MG",
+    "systemName": "SICOM/TCE-MG",
+    "transportMode": "tce-mg-portal-stub",
+    "sourceUrl": "https://www.tce.mg.gov.br/",
+    "layoutStatus": "UNVERIFIED_LAYOUT"
+  },
+  "entity": {
+    "tenantId": "00000000-0000-0000-0000-000000004416",
+    "ibgeCode": "3106200",
+    "name": "Sample City MG",
+    "cnpj": "22345678000190",
+    "power": "EXECUTIVE",
+    "sphere": "MUNICIPAL"
+  },
+  "responsible": {
+    "name": "Sample Minas Fiscal Officer",
+    "role": "Municipal Controller",
+    "registration": "CRC-MG-000002"
+  },
+  "period": {
+    "fiscalYear": 2026,
+    "periodKind": "BIMESTER",
+    "periodNumber": 2,
+    "startsOn": "2026-03-01",
+    "endsOn": "2026-04-30",
+    "legalDeadline": "2026-05-30"
+  },
+  "sourceLedger": {
+    "closureId": "ledger-mg-rreo-2026-bim-02",
+    "closedAt": "2026-05-03T22:00:00.000Z",
+    "sourceHash": "sha256:mg-rreo-ledger-2026-bim-02",
+    "accountingSystem": "sgp-fiscal-ledger",
+    "payrollRunIds": [
+      "00000000-0000-4000-8000-000000004402",
+      "00000000-0000-4000-8000-000000004406"
+    ]
+  },
+  "summary": {
+    "currentPeriodTotal": "1375000.00",
+    "yearToDateTotal": "2770000.00",
+    "lineCount": 2
+  },
+  "statements": [
+    {
+      "annex": "Annex 1",
+      "table": "Revenue",
+      "accountCode": "1.0.0.0.00.0.0",
+      "label": "Current revenue",
+      "budgetFunction": "General administration",
+      "currentPeriodAmount": "980000.00",
+      "yearToDateAmount": "1980000.00",
+      "sourceLedgerRef": "fiscal.rreo.current_revenue"
+    },
+    {
+      "annex": "Annex 1",
+      "table": "Personnel",
+      "accountCode": "3.1.90.00.00",
+      "label": "Personnel expenditure",
+      "budgetFunction": "Payroll",
+      "currentPeriodAmount": "395000.00",
+      "yearToDateAmount": "790000.00",
+      "sourceLedgerRef": "payroll.personnel_expense"
+    }
+  ],
+  "publicationEvidence": {
+    "transparencyUrl": "https://transparency.example.test/mg/rreo/2026/2",
+    "publishedAt": "2026-05-04T12:05:00.000Z",
+    "evidenceHash": "sha256:mg-rreo-publication-2026-bim-02"
+  },
+  "evidenceHash": "d3440d23634aec7cd3482aa938746f4c5ee468322494a2866a9ddd844694bf83",
+  "idempotencyKey": "sgp:tce:rreo:mg:2026:bimester:02:ledger-mg-rreo-2026-bim-02:d3440d23634aec7c"
+}

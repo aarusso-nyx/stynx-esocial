@@ -1,0 +1,44 @@
+{
+  "caseId": "r4-14-siafic-payroll-sync-v01",
+  "tenantId": "00000000-0000-0000-0000-000000004014",
+  "permissions": ["fiscal.dctfweb.write", "folha.read"],
+  "legalAnchor": {
+    "sourceStatus": "INTERNAL_CONFORMANCE_GOLDEN",
+    "regulatoryBasis": ["Decreto 10.540/2020", "Decreto 11.453/2023"],
+    "referencePath": "docs/refs/tce/siafic.md",
+    "layoutSelection": "DEFERRED_OWNER_DECISION"
+  },
+  "syncRequest": {
+    "payrollRunId": "00000000-0000-4000-8000-000000004014",
+    "enteCode": "35503080000191"
+  },
+  "batch": {
+    "id": "00000000-0000-4000-8000-000000014014",
+    "createdAt": "2026-05-04T12:14:00.000Z",
+    "updatedAt": "2026-05-04T12:14:00.000Z"
+  },
+  "accountingRows": [
+    {
+      "payroll_run_id": "00000000-0000-4000-8000-000000004014",
+      "competence": "2026-04-01",
+      "source_line_id": "00000000-0000-4000-8000-000000014011",
+      "accounting_account_id": "00000000-0000-4000-8000-000000014021",
+      "account_code": "3.1.90.11.00",
+      "account_type": "DESPESA_PESSOAL",
+      "earning_code": "001",
+      "earning_description": "Vencimento base",
+      "amount": "5200.00"
+    },
+    {
+      "payroll_run_id": "00000000-0000-4000-8000-000000004014",
+      "competence": "2026-04-01",
+      "source_line_id": "00000000-0000-4000-8000-000000014012",
+      "accounting_account_id": "00000000-0000-4000-8000-000000014022",
+      "account_code": "2.1.1.1.01.01",
+      "account_type": "RETENCAO_INSS",
+      "earning_code": "INSS",
+      "earning_description": "Desconto previdenciario segurado",
+      "amount": "-572.00"
+    }
+  ]
+}

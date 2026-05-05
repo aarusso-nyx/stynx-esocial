@@ -1,0 +1,38 @@
+{
+  "version": "rescisao-v01",
+  "rates": {
+    "rppsFlatPercent": "14.000000",
+    "fgtsTerminationFinePercent": "40.000000"
+  },
+  "vectors": [
+    {
+      "id": "clt-without-cause-fgts",
+      "registration": "GOLDEN-RESC-SJC",
+      "contractType": "celetista",
+      "salary": "3000.00",
+      "hiredOn": "2024-01-01",
+      "terminationDate": "2025-08-20",
+      "cause": "SEM_JUSTA_CAUSA",
+      "fgtsBalance": "12000.00"
+    },
+    {
+      "id": "clt-with-cause-no-fgts",
+      "registration": "GOLDEN-RESC-JC",
+      "contractType": "celetista",
+      "salary": "3000.00",
+      "hiredOn": "2025-01-01",
+      "terminationDate": "2025-08-20",
+      "cause": "COM_JUSTA_CAUSA",
+      "fgtsBalance": "12000.00"
+    },
+    {
+      "id": "statutory-retirement-rpps",
+      "registration": "GOLDEN-RESC-APOS",
+      "contractType": "statutory",
+      "salary": "6000.00",
+      "hiredOn": "2025-01-01",
+      "terminationDate": "2025-09-20",
+      "cause": "APOSENTADORIA"
+    }
+  ]
+}

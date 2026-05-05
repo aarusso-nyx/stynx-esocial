@@ -1,0 +1,61 @@
+{
+  "caseId": "lei-14509-2022-three-bucket-margin",
+  "legalAnchor": "Lei 14.509/2022",
+  "competence": "2026-05",
+  "employee": {
+    "id": "00000000-0000-4000-8000-000000004404",
+    "registration": "R4-04",
+    "name": "Fixture Servidor Margem",
+    "netBase": "10000.00"
+  },
+  "activeConsignments": [
+    {
+      "id": "00000000-0000-4000-8000-000000004401",
+      "kind": "PAYROLL_LOAN",
+      "monthlyAmount": "2000.00",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000004402",
+      "kind": "CARD",
+      "monthlyAmount": "300.00",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000004403",
+      "kind": "OTHER",
+      "monthlyAmount": "125.50",
+      "status": "ACTIVE"
+    }
+  ],
+  "proposedConsignments": {
+    "accepted": [
+      {
+        "kind": "PAYROLL_LOAN",
+        "monthlyAmount": "1500.00"
+      },
+      {
+        "kind": "CARD",
+        "monthlyAmount": "200.00"
+      },
+      {
+        "kind": "OTHER",
+        "monthlyAmount": "374.50"
+      }
+    ],
+    "rejected": [
+      {
+        "kind": "PAYROLL_LOAN",
+        "monthlyAmount": "1500.01"
+      },
+      {
+        "kind": "CARD",
+        "monthlyAmount": "200.01"
+      },
+      {
+        "kind": "OTHER",
+        "monthlyAmount": "374.51"
+      }
+    ]
+  }
+}

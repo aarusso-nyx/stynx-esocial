@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtTabFuncao/v_S_01_03_00">
+  <evtTabFuncao Id="ID0325914454601838420334528994168810">
+    <ideEvento><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+    <infoFuncao>
+      <inclusao>
+        <ideFuncao><codFuncao>FUNC01</codFuncao><iniValid>2026-01</iniValid></ideFuncao>
+        <dadosFuncao><dscFuncao>Funcao comissionada</dscFuncao></dadosFuncao>
+      </inclusao>
+    </infoFuncao>
+  </evtTabFuncao>
+</eSocial>

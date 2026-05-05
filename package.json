@@ -1,0 +1,27 @@
+{
+  "name": "stynx-esocial",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "npm@11.12.1",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "services/*",
+    "infra/cdk"
+  ],
+  "scripts": {
+    "lint": "node scripts/check.mjs lint",
+    "test": "node --test tests/contract/*.test.mjs",
+    "build": "node scripts/check.mjs build",
+    "coverage": "node scripts/check.mjs coverage",
+    "cdk:synth": "node scripts/cdk-synth.mjs",
+    "integration:localstack": "node scripts/check-migrations.mjs integration:localstack",
+    "migrate:dev": "node scripts/check-migrations.mjs migrate:dev",
+    "test:db": "node scripts/check-migrations.mjs test:db",
+    "test:integration": "node scripts/check-migrations.mjs test:integration"
+  },
+  "engines": {
+    "node": ">=20.0.0 <25",
+    "npm": ">=10.0.0 <12"
+  }
+}

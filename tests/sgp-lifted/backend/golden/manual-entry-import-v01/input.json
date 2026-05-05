@@ -1,0 +1,25 @@
+{
+  "fixture": "manual-entry-import-v01",
+  "r4Id": "R4-16",
+  "functionalRequisite": "F-FOL-007",
+  "endpoint": "POST /api/v1/folhas/:folha_id/importar/lancamento-manual",
+  "source": "docs/eng/domains/payroll-benefits.md#convencoes-de-fixtures-xlsx-dos-importadores-de-folha",
+  "scope": "structural SGP XLSX importer golden; no legacy-template byte parity claim",
+  "worksheet": "manual_entry",
+  "headers": ["matricula", "verba_codigo", "valor", "quantidade", "referencia", "observacao"],
+  "rows": [
+    {
+      "matricula": "MAT-R4-007",
+      "verba_codigo": "PLANTAO",
+      "valor": "250.00",
+      "quantidade": "1.0000",
+      "referencia": "250.00",
+      "observacao": "R4-16 F-FOL-007 structural golden"
+    }
+  ],
+  "expected": {
+    "file": "expected.xlsx",
+    "sha256": "e07915282204dcc4777120137001fc107b127c15ab150797d2ec7441ef11f32f",
+    "bytes": 2916
+  }
+}
