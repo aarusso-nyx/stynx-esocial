@@ -7,7 +7,7 @@ import { QueryResultRow } from 'pg';
 
 import { DatabaseService } from '../../database/database.service';
 import { employerRegistration, onlyDigits, sha256 } from './s1xxx-common';
-import { cleanText, dateOnly } from './s22xx-common';
+import { cleanText, dateOnly } from './shared-worker-common';
 import { s2410BenefitNumber } from './s2410.builder';
 
 export interface S2416BuildResult {

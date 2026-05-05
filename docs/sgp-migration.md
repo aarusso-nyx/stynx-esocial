@@ -21,8 +21,10 @@ For every event class listed in `docs/events.md`, SGP sends a v1 request
 envelope to `sgp.esocial.submit.request`. Round 0 implements the five families
 below end to end; Round 1 Batch 1 adds the unblocked table families
 `S-1005`, `S-1020`, `S-1050`, and `S-1070`; Round 1 Batch 2 adds the remaining
-periodic DTO families `S-1202`, `S-1207`, `S-1210`, and `S-1298`. Remaining
-exported event classes stay typed Round 1 pending DTOs with
+periodic DTO families `S-1202`, `S-1207`, `S-1210`, and `S-1298`; Round 1 Batch
+3 adds worker, SST, and TS-V DTO families `S-2205`, `S-2206`, `S-2210`,
+`S-2220`, `S-2230`, `S-2240`, `S-2298`, `S-2299`, `S-2300`, `S-2306`, and
+`S-2399`. Remaining exported event classes stay typed Round 1 pending DTOs with
 `round1Pending: true`.
 
 Required SGP-sourced fields:
@@ -60,6 +62,17 @@ Active DTO map:
 | `S-1298` | Employer CNPJ, competence, accepted S-1299 closure receipt, and acceptance timestamp for reopening evidence. | `packages/contracts/examples/v1/requests/S-1298.request.json` |
 | `S-1299` | Employer CNPJ, competence, payroll run id, accepted periodic event counts, pending periodic event list, closure metadata. | `docs/release/0.1.0/input-dtos/s1299.dto.json` |
 | `S-2200` | Employer CNPJ, employee id, CPF, registration, admission date, category, contract and personal source identifiers. | `docs/release/0.1.0/input-dtos/s2200.dto.json` |
+| `S-2205` | Employer CNPJ, employee id, CPF, registration, change date, updated worker identity fields, and optional dependent DTOs. | `packages/contracts/examples/v1/requests/S-2205.request.json` |
+| `S-2206` | Employer CNPJ, employee id, CPF, registration, change discriminator, dates, description, job/function/category, and optional workplace reference. | `packages/contracts/examples/v1/requests/S-2206.request.json` |
+| `S-2210` | Employer CNPJ, employee id, CPF, registration, CAT discriminator, accident date, and original CAT receipt for death/reopening variants. | `packages/contracts/examples/v1/requests/S-2210.request.json` |
+| `S-2220` | Employer CNPJ, employee id, CPF, registration, exam discriminator, exam date, and optional ASO/procedure/doctor evidence. | `packages/contracts/examples/v1/requests/S-2220.request.json` |
+| `S-2230` | Employer CNPJ, employee id, CPF, registration, leave discriminator, start date, leave reason, and optional vacation/acquisition evidence. | `packages/contracts/examples/v1/requests/S-2230.request.json` |
+| `S-2240` | Employer CNPJ, employee id, CPF, registration, `operation=start|change|end`, condition dates, workplace registration, risk metadata, intensity, and responsible CPF. | `packages/contracts/examples/v1/requests/S-2240.request.json` |
+| `S-2298` | Employer CNPJ, employee id, CPF, registration, reintegration discriminator, dates, optional process number, and accepted S-2299 receipt. | `packages/contracts/examples/v1/requests/S-2298.request.json` |
+| `S-2299` | Employer CNPJ, employee id, CPF, registration, termination discriminator/date/reason, demonstrative id, projected notice date, and severance rubrics. | `packages/contracts/examples/v1/requests/S-2299.request.json` |
+| `S-2300` | Employer CNPJ, TS-V worker id, CPF, name, birth date, registration, category, start date, role, pay, and optional workplace/email. | `packages/contracts/examples/v1/requests/S-2300.request.json` |
+| `S-2306` | Employer CNPJ, TS-V contract id, CPF, registration, change discriminator/date, and role/pay/internship/workplace evidence. | `packages/contracts/examples/v1/requests/S-2306.request.json` |
+| `S-2399` | Employer CNPJ, TS-V contract id, CPF, registration, termination date, accepted S-2300 receipt, and optional accepted S-2306 receipt. | `packages/contracts/examples/v1/requests/S-2399.request.json` |
 
 SGP must not populate XML, SOAP endpoint URL, `signedEnvelope`, certificate
 reference, or official response fields. Those are eSocial-owned runtime fields.

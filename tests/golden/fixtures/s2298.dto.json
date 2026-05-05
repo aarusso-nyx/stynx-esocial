@@ -1,0 +1,16 @@
+{
+  "eventClass": "S-2298",
+  "tenantId": "tenant-a",
+  "sourceEventId": "source-event-S-2298",
+  "sourceEntityId": "source-entity-S-2298",
+  "environment": "qualification",
+  "employerCnpj": "12345678000199",
+  "employeeId": "employee-1",
+  "cpf": "12345678901",
+  "registration": "MAT-1",
+  "kind": "judicial",
+  "reinstatementDate": "2026-05-20",
+  "decisionDate": "2026-05-10",
+  "processNumber": "12345678901234567890",
+  "originalS2299Receipt": "1.1.0000000000000002299"
+}

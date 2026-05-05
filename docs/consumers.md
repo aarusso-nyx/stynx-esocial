@@ -214,6 +214,13 @@ full exported event taxonomy:
   `S-2418`, `S-2420`, `S-2501`, `S-3000`.
 - Returns: `S-5001`, `S-5002`, `S-5011`, `S-5012`, `S-5013`.
 
+Round 1 Batch 3 promotes the Worker/SST/TSV classes listed above into active
+DTO schemas and builders. `S-2210` reopening/death DTOs carry the original CAT
+receipt in `originalReceipt`; `S-2220` and `S-2230` use discriminated `kind`
+fields; `S-2240` uses `operation: "start" | "change" | "end"`; `S-2399`
+carries accepted TS-V context as opaque S-2300/S-2306 receipt fields. These
+fields replace any historical SGP-side lookup of `public.esocial_event`.
+
 ## Idempotency
 
 Consumers must build idempotency keys with

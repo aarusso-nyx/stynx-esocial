@@ -5,7 +5,7 @@ import { QueryResultRow } from 'pg';
 
 import { DatabaseService } from '../../database/database.service';
 import { employerRegistration, xmlEscape } from './s1xxx-common';
-import { cpf } from './s22xx-common';
+import { cpf } from './shared-worker-common';
 
 export interface S3000BuildResult {
   requestId: string;

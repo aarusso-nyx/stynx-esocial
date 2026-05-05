@@ -1,0 +1,14 @@
+{
+  "eventClass": "S-2230",
+  "tenantId": "tenant-a",
+  "sourceEventId": "source-event-S-2230",
+  "sourceEntityId": "source-entity-S-2230",
+  "environment": "qualification",
+  "employerCnpj": "12345678000199",
+  "employeeId": "employee-1",
+  "cpf": "12345678901",
+  "registration": "MAT-1",
+  "kind": "medical-leave",
+  "startDate": "2026-05-04",
+  "leaveReasonCode": "01"
+}

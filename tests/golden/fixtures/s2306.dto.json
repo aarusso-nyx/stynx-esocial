@@ -1,0 +1,14 @@
+{
+  "eventClass": "S-2306",
+  "tenantId": "tenant-a",
+  "sourceEventId": "source-event-S-2306",
+  "sourceEntityId": "source-entity-S-2306",
+  "environment": "qualification",
+  "employerCnpj": "12345678000199",
+  "kind": "role",
+  "contractId": "tsv-contract-1",
+  "cpf": "12345678901",
+  "registration": "TSV-1",
+  "changeDate": "2026-05-15",
+  "role": "Estagiario de Controle"
+}

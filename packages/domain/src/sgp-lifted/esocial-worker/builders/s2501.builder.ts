@@ -1,6 +1,6 @@
 import { UnprocessableEntityException } from '@nestjs/common';
 
-import { cpf, ideEmpregadorXml } from './s22xx-common';
+import { cpf, ideEmpregadorXml } from './shared-worker-common';
 import { onlyDigits, sha256, xmlEscape } from './s1xxx-common';
 
 export interface S2501ContributionInput {

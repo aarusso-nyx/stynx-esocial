@@ -15,6 +15,17 @@ import type {
   S1298ReopeningDto,
   S1299ClosureDto,
   S2200AdmissionDto,
+  S2205WorkerChangeDto,
+  S2206ContractChangeDto,
+  S2210CatDto,
+  S2220ExamDto,
+  S2230LeaveDto,
+  S2240ExposureDto,
+  S2298ReintegrationDto,
+  S2299TerminationDto,
+  S2300TsvStartDto,
+  S2306TsvContractChangeDto,
+  S2399TsvTerminationDto,
 } from '@esocial/contracts';
 
 import {
@@ -31,6 +42,17 @@ import {
   buildS1298,
   buildS1299,
   buildS2200,
+  buildS2205,
+  buildS2206,
+  buildS2210,
+  buildS2220,
+  buildS2230,
+  buildS2240,
+  buildS2298Worker,
+  buildS2299Worker,
+  buildS2300,
+  buildS2306,
+  buildS2399,
 } from '../builders/index.js';
 import type { BuilderContext, BuiltXml } from '../builders/index.js';
 
@@ -139,6 +161,61 @@ const ROUND0_DISPATCHERS: Partial<Record<EsocialRelayEventClass, SubmissionDispa
     'S-2200': (dto, context) =>
       dispatchBuiltXml(
         buildS2200(dto as S2200AdmissionDto, builderContext(context)),
+        context,
+      ),
+    'S-2205': (dto, context) =>
+      dispatchBuiltXml(
+        buildS2205(dto as S2205WorkerChangeDto, builderContext(context)),
+        context,
+      ),
+    'S-2206': (dto, context) =>
+      dispatchBuiltXml(
+        buildS2206(dto as S2206ContractChangeDto, builderContext(context)),
+        context,
+      ),
+    'S-2210': (dto, context) =>
+      dispatchBuiltXml(
+        buildS2210(dto as S2210CatDto, builderContext(context)),
+        context,
+      ),
+    'S-2220': (dto, context) =>
+      dispatchBuiltXml(
+        buildS2220(dto as S2220ExamDto, builderContext(context)),
+        context,
+      ),
+    'S-2230': (dto, context) =>
+      dispatchBuiltXml(
+        buildS2230(dto as S2230LeaveDto, builderContext(context)),
+        context,
+      ),
+    'S-2240': (dto, context) =>
+      dispatchBuiltXml(
+        buildS2240(dto as S2240ExposureDto, builderContext(context)),
+        context,
+      ),
+    'S-2298': (dto, context) =>
+      dispatchBuiltXml(
+        buildS2298Worker(dto as S2298ReintegrationDto, builderContext(context)),
+        context,
+      ),
+    'S-2299': (dto, context) =>
+      dispatchBuiltXml(
+        buildS2299Worker(dto as S2299TerminationDto, builderContext(context)),
+        context,
+      ),
+    'S-2300': (dto, context) =>
+      dispatchBuiltXml(
+        buildS2300(dto as S2300TsvStartDto, builderContext(context)),
+        context,
+      ),
+    'S-2306': (dto, context) =>
+      dispatchBuiltXml(
+        buildS2306(dto as S2306TsvContractChangeDto, builderContext(context)),
+        context,
+      ),
+    'S-2399': (dto, context) =>
+      dispatchBuiltXml(
+        buildS2399(dto as S2399TsvTerminationDto, builderContext(context)),
         context,
       ),
   };

@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtExpRisco/v_S_01_03_00">
-  <evtExpRisco Id="ID6351009313038089251655037442056472">
+  <evtExpRisco Id="ID1530122301925596490709622308739444">
     <ideEvento><indRetif>1</indRetif><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
-    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678000199</nrInsc></ideEmpregador>
-    <ideVinculo><cpfTrab>11122233344</cpfTrab><matricula>MAT-2240</matricula></ideVinculo>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+
+    <ideVinculo><cpfTrab>12345678901</cpfTrab><matricula>MAT-1</matricula></ideVinculo>
     <infoExpRisco>
-      <dtIniCondicao>2026-05-02</dtIniCondicao>
+      <dtIniCondicao>2026-05-05</dtIniCondicao>
       
-      <infoAmb><localAmb>1</localAmb><dscSetor>Oficina de maquinas</dscSetor><tpInsc>1</tpInsc><nrInsc>12345678000199</nrInsc></infoAmb>
-      <infoAtiv><dscAtivDes>Executar atividades com exposicao a ruido 88.000000 dB(A)</dscAtivDes></infoAtiv>
+      <infoAmb><localAmb>1</localAmb><dscSetor>Oficina</dscSetor><tpInsc>1</tpInsc><nrInsc>12345678000199</nrInsc></infoAmb>
+      <infoAtiv><dscAtivDes>Operacao em area com ruido 85.500000 dB(A)</dscAtivDes></infoAtiv>
       <agNoc>
-        <codAgNoc>01.01.001</codAgNoc>
-        <dscAgNoc>ruido 88.000000 dB(A)</dscAgNoc>
+        <codAgNoc>02.01.001</codAgNoc>
+        <dscAgNoc>Ruido continuo 85.500000 dB(A)</dscAgNoc>
         <tpAval>1</tpAval>
-        <intConc>88.0000</intConc><unMed>4</unMed><tecMedicao>Dosimetria ocupacional</tecMedicao>
+        <intConc>85.5000</intConc><unMed>4</unMed><tecMedicao>Dosimetria ocupacional</tecMedicao>
         <epcEpi><utilizEPC>1</utilizEPC><utilizEPI>2</utilizEPI><eficEpi>S</eficEpi><epi><docAval>12345</docAval></epi><epiCompl><medProtecao>S</medProtecao><condFuncto>S</condFuncto><usoInint>S</usoInint><przValid>S</przValid><periodicTroca>S</periodicTroca><higienizacao>S</higienizacao></epiCompl></epcEpi>
       </agNoc>
-      <respReg><cpfResp>22233344455</cpfResp><ideOC>4</ideOC><nrOC>0001</nrOC><ufOC>SP</ufOC></respReg>
+      <respReg><cpfResp>12345678901</cpfResp><ideOC>4</ideOC><nrOC>0001</nrOC><ufOC>SP</ufOC></respReg>
       <obs><obsCompl>S-2240 START gerado pelo inventario ambiental SGP.</obsCompl></obs>
     </infoExpRisco>
   </evtExpRisco>

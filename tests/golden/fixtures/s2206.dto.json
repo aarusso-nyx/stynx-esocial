@@ -1,0 +1,17 @@
+{
+  "eventClass": "S-2206",
+  "tenantId": "tenant-a",
+  "sourceEventId": "source-event-S-2206",
+  "sourceEntityId": "source-entity-S-2206",
+  "environment": "qualification",
+  "employerCnpj": "12345678000199",
+  "employeeId": "employee-1",
+  "cpf": "12345678901",
+  "registration": "MAT-1",
+  "changeKind": "promotion",
+  "changeDate": "2026-05-10",
+  "effectiveDate": "2026-05-15",
+  "description": "Promocao funcional aprovada",
+  "jobName": "Coordenador Administrativo",
+  "categoryCode": "301"
+}

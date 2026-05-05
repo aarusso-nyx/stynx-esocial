@@ -42,19 +42,74 @@
         "exclusion"
       ]
     },
-    "round1Pending": {
-      "const": true
+    "employerCnpj": {
+      "type": "string",
+      "minLength": 1
     },
-    "deferredReason": {
-      "const": "builder_not_promoted_in_round0"
+    "employerCpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "eventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "employeeId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "registration": {
+      "type": "string",
+      "minLength": 1
+    },
+    "receiptReference": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "enum": [
+        "judicial",
+        "amnesty",
+        "other"
+      ]
+    },
+    "reinstatementDate": {
+      "type": "string",
+      "minLength": 1
+    },
+    "decisionDate": {
+      "type": "string",
+      "minLength": 1
+    },
+    "processNumber": {
+      "type": "string",
+      "minLength": 1
+    },
+    "originalS2299Receipt": {
+      "type": "string",
+      "minLength": 1
+    },
+    "originatingS2418Receipt": {
+      "type": "string",
+      "minLength": 1
     }
   },
   "required": [
     "eventClass",
     "tenantId",
     "sourceEventId",
-    "round1Pending",
-    "deferredReason"
+    "employerCnpj",
+    "employeeId",
+    "cpf",
+    "registration",
+    "kind",
+    "reinstatementDate",
+    "decisionDate",
+    "originalS2299Receipt"
   ],
   "not": {
     "anyOf": [

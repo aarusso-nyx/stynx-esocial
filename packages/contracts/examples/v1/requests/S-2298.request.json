@@ -3,7 +3,7 @@
   "family": "request",
   "request-id": "req-request-S-2298",
   "correlation-id": "corr-S-2298",
-  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-2298:source-event-S-2298:source-entity-S-2298:-:-:sha256%3Af7ceafacdc489973718314993ab7fbe40874b0919cf620635f9f0396e466549e:-:-",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-2298:source-event-S-2298:source-entity-S-2298:-:-:sha256%3A6e3519296671909274d4f43c76da9d50035e0d14643e2acb54140d9540335e63:-:-",
   "created_at": "2026-05-05T12:00:00.000Z",
   "tenant_id": "tenant-a",
   "environment": "QUALIFICATION",
@@ -15,7 +15,7 @@
     "source_system": "SGP"
   },
   "kind": "trabalhador",
-  "payload_hash": "sha256:f7ceafacdc489973718314993ab7fbe40874b0919cf620635f9f0396e466549e",
+  "payload_hash": "sha256:6e3519296671909274d4f43c76da9d50035e0d14643e2acb54140d9540335e63",
   "attempt": 1,
   "max-attempts": 3,
   "reply-to": "sgp.esocial.submit.response",
@@ -26,7 +26,14 @@
     "sourceEventId": "source-event-S-2298",
     "sourceEntityId": "source-entity-S-2298",
     "environment": "qualification",
-    "round1Pending": true,
-    "deferredReason": "builder_not_promoted_in_round0"
+    "employerCnpj": "12345678000199",
+    "employeeId": "employee-1",
+    "cpf": "12345678901",
+    "registration": "MAT-1",
+    "kind": "judicial",
+    "reinstatementDate": "2026-05-20",
+    "decisionDate": "2026-05-10",
+    "processNumber": "12345678901234567890",
+    "originalS2299Receipt": "1.1.0000000000000002299"
   }
 }

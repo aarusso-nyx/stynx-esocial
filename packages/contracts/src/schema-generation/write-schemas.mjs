@@ -24,6 +24,17 @@ const promotedDtoEvents = new Set([
   'S-1298',
   'S-1299',
   'S-2200',
+  'S-2205',
+  'S-2206',
+  'S-2210',
+  'S-2220',
+  'S-2230',
+  'S-2240',
+  'S-2298',
+  'S-2299',
+  'S-2300',
+  'S-2306',
+  'S-2399',
 ]);
 const eventClasses = [...kinds.ESOCIAL_RELAY_EVENT_CLASSES];
 const statuses = [...kinds.ESOCIAL_STATUSES];
@@ -590,6 +601,257 @@ function activeDtoSchema(eventClass) {
         },
       },
     },
+    'S-2205': {
+      required: ['employerCnpj', 'employeeId', 'cpf', 'registration', 'changeDate', 'name'],
+      properties: workerProperties({
+        changeDate: nonEmptyString(),
+        name: nonEmptyString(),
+        sex: { enum: ['F', 'M'] },
+        maritalStatus: nonEmptyString(),
+        educationLevel: nonEmptyString(),
+        phone: nonEmptyString(),
+        email: nonEmptyString(),
+        dependents: {
+          type: 'array',
+          items: {
+            type: 'object',
+            additionalProperties: false,
+            properties: {
+              sourceDependentId: nonEmptyString(),
+              name: nonEmptyString(),
+              birthDate: nonEmptyString(),
+              relationshipCode: nonEmptyString(),
+              cpf: nonEmptyString(),
+            },
+            required: ['sourceDependentId', 'name', 'birthDate', 'relationshipCode'],
+          },
+        },
+      }),
+    },
+    'S-2206': {
+      required: [
+        'employerCnpj',
+        'employeeId',
+        'cpf',
+        'registration',
+        'changeKind',
+        'changeDate',
+        'effectiveDate',
+        'description',
+        'jobName',
+        'categoryCode',
+      ],
+      properties: workerProperties({
+        changeKind: { enum: ['promotion', 'transfer', 'regime-change'] },
+        changeDate: nonEmptyString(),
+        effectiveDate: nonEmptyString(),
+        description: nonEmptyString(),
+        jobName: nonEmptyString(),
+        functionName: nonEmptyString(),
+        categoryCode: nonEmptyString(),
+        workplaceRegistrationNumber: nonEmptyString(),
+        workplaceDescription: nonEmptyString(),
+      }),
+    },
+    'S-2210': {
+      required: ['employerCnpj', 'employeeId', 'cpf', 'registration', 'kind', 'accidentDate'],
+      properties: workerProperties({
+        kind: { enum: ['initial', 'death', 'reopening'] },
+        accidentDate: nonEmptyString(),
+        accidentTime: nonEmptyString(),
+        workedHoursBeforeAccident: nonEmptyString(),
+        deathDate: nonEmptyString(),
+        originalReceipt: nonEmptyString(),
+        policeCommunication: { type: 'boolean' },
+        causedLeave: { type: 'boolean' },
+        internment: { type: 'boolean' },
+        treatmentDurationDays: integer(0),
+        observation: nonEmptyString(),
+      }),
+    },
+    'S-2220': {
+      required: ['employerCnpj', 'employeeId', 'cpf', 'registration', 'kind', 'examDate'],
+      properties: workerProperties({
+        kind: { enum: ['admission', 'periodic', 'return-to-work', 'termination'] },
+        examDate: nonEmptyString(),
+        resultCode: nonEmptyString(),
+        procedureCode: nonEmptyString(),
+        procedureObservation: nonEmptyString(),
+        doctorName: nonEmptyString(),
+        doctorCrm: nonEmptyString(),
+        doctorUf: nonEmptyString(),
+      }),
+    },
+    'S-2230': {
+      required: [
+        'employerCnpj',
+        'employeeId',
+        'cpf',
+        'registration',
+        'kind',
+        'startDate',
+        'leaveReasonCode',
+      ],
+      properties: workerProperties({
+        kind: { enum: ['medical-leave', 'vacation'] },
+        startDate: nonEmptyString(),
+        leaveReasonCode: nonEmptyString(),
+        observation: nonEmptyString(),
+        acquisitionStart: nonEmptyString(),
+        acquisitionEnd: nonEmptyString(),
+      }),
+    },
+    'S-2240': {
+      required: [
+        'employerCnpj',
+        'employeeId',
+        'cpf',
+        'registration',
+        'operation',
+        'startDate',
+        'workplaceRegistrationNumber',
+        'sector',
+        'activityDescription',
+        'riskCode',
+        'riskDescription',
+        'intensity',
+        'responsibleCpf',
+      ],
+      properties: workerProperties({
+        operation: { enum: ['start', 'change', 'end'] },
+        startDate: nonEmptyString(),
+        endDate: nonEmptyString(),
+        workplaceRegistrationNumber: nonEmptyString(),
+        sector: nonEmptyString(),
+        activityDescription: nonEmptyString(),
+        riskCode: nonEmptyString(),
+        riskDescription: nonEmptyString(),
+        intensity: periodicMoneySchema(),
+        responsibleCpf: nonEmptyString(),
+      }),
+    },
+    'S-2298': {
+      required: [
+        'employerCnpj',
+        'employeeId',
+        'cpf',
+        'registration',
+        'kind',
+        'reinstatementDate',
+        'decisionDate',
+        'originalS2299Receipt',
+      ],
+      properties: workerProperties({
+        kind: { enum: ['judicial', 'amnesty', 'other'] },
+        reinstatementDate: nonEmptyString(),
+        decisionDate: nonEmptyString(),
+        processNumber: nonEmptyString(),
+        originalS2299Receipt: nonEmptyString(),
+        originatingS2418Receipt: nonEmptyString(),
+      }),
+    },
+    'S-2299': {
+      required: [
+        'employerCnpj',
+        'employeeId',
+        'cpf',
+        'registration',
+        'kind',
+        'terminationDate',
+        'terminationReasonCode',
+        'ideDmDev',
+        'rubrics',
+      ],
+      properties: workerProperties({
+        kind: { enum: ['with-notice', 'without-notice'] },
+        terminationDate: nonEmptyString(),
+        terminationReasonCode: nonEmptyString(),
+        projectedNoticeEndDate: nonEmptyString(),
+        ideDmDev: nonEmptyString(),
+        establishmentRegistrationNumber: nonEmptyString(),
+        lotationCode: nonEmptyString(),
+        rubrics: terminationRubricsArraySchema(),
+      }),
+    },
+    'S-2300': {
+      required: [
+        'employerCnpj',
+        'kind',
+        'workerId',
+        'cpf',
+        'name',
+        'birthDate',
+        'registration',
+        'categoryCode',
+        'startDate',
+        'role',
+        'salaryAmount',
+      ],
+      properties: {
+        employerCnpj: nonEmptyString(),
+        employerCpf: nonEmptyString(),
+        eventId: nonEmptyString(),
+        kind: { enum: ['intern', 'autonomous', 'council-member'] },
+        workerId: nonEmptyString(),
+        cpf: nonEmptyString(),
+        name: nonEmptyString(),
+        birthDate: nonEmptyString(),
+        registration: nonEmptyString(),
+        categoryCode: nonEmptyString(),
+        startDate: nonEmptyString(),
+        role: nonEmptyString(),
+        salaryAmount: periodicMoneySchema(),
+        workplaceRegistrationNumber: nonEmptyString(),
+        email: nonEmptyString(),
+      },
+    },
+    'S-2306': {
+      required: [
+        'employerCnpj',
+        'kind',
+        'contractId',
+        'cpf',
+        'registration',
+        'changeDate',
+      ],
+      properties: {
+        employerCnpj: nonEmptyString(),
+        employerCpf: nonEmptyString(),
+        eventId: nonEmptyString(),
+        kind: { enum: ['role', 'pay', 'internship', 'workplace'] },
+        contractId: nonEmptyString(),
+        cpf: nonEmptyString(),
+        registration: nonEmptyString(),
+        changeDate: nonEmptyString(),
+        role: nonEmptyString(),
+        salaryAmount: periodicMoneySchema(),
+        workplaceRegistrationNumber: nonEmptyString(),
+        educationInstitution: nonEmptyString(),
+      },
+    },
+    'S-2399': {
+      required: [
+        'employerCnpj',
+        'kind',
+        'contractId',
+        'cpf',
+        'registration',
+        'terminationDate',
+        'acceptedS2300Receipt',
+      ],
+      properties: {
+        employerCnpj: nonEmptyString(),
+        employerCpf: nonEmptyString(),
+        eventId: nonEmptyString(),
+        kind: { enum: ['intern', 'autonomous', 'council-member'] },
+        contractId: nonEmptyString(),
+        cpf: nonEmptyString(),
+        registration: nonEmptyString(),
+        terminationDate: nonEmptyString(),
+        acceptedS2300Receipt: nonEmptyString(),
+        acceptedS2306Receipt: nonEmptyString(),
+      },
+    },
   };
 
   const event = byEvent[eventClass];
@@ -870,10 +1132,157 @@ function dtoExample(eventClass) {
     };
   }
 
+  if (eventClass === 'S-2205') {
+    return workerExample(common, {
+      changeDate: '2026-05-10',
+      name: 'Maria Silva Atualizada',
+      sex: 'F',
+      dependents: [
+        {
+          sourceDependentId: 'dependent-1',
+          name: 'Dependente Um',
+          birthDate: '2015-03-12',
+          relationshipCode: '03',
+          cpf: '98765432100',
+        },
+      ],
+    });
+  }
+
+  if (eventClass === 'S-2206') {
+    return workerExample(common, {
+      changeKind: 'promotion',
+      changeDate: '2026-05-10',
+      effectiveDate: '2026-05-15',
+      description: 'Promocao funcional aprovada',
+      jobName: 'Coordenador Administrativo',
+      categoryCode: '301',
+    });
+  }
+
+  if (eventClass === 'S-2210') {
+    return workerExample(common, {
+      kind: 'initial',
+      accidentDate: '2026-05-02',
+    });
+  }
+
+  if (eventClass === 'S-2220') {
+    return workerExample(common, {
+      kind: 'periodic',
+      examDate: '2026-05-03',
+    });
+  }
+
+  if (eventClass === 'S-2230') {
+    return workerExample(common, {
+      kind: 'medical-leave',
+      startDate: '2026-05-04',
+      leaveReasonCode: '01',
+    });
+  }
+
+  if (eventClass === 'S-2240') {
+    return workerExample(common, {
+      operation: 'start',
+      startDate: '2026-05-05',
+      workplaceRegistrationNumber: '12345678000199',
+      sector: 'Oficina',
+      activityDescription: 'Operacao em area com ruido',
+      riskCode: '02.01.001',
+      riskDescription: 'Ruido continuo',
+      intensity: '85.5000',
+      responsibleCpf: '12345678901',
+    });
+  }
+
+  if (eventClass === 'S-2298') {
+    return workerExample(common, {
+      kind: 'judicial',
+      reinstatementDate: '2026-05-20',
+      decisionDate: '2026-05-10',
+      processNumber: '12345678901234567890',
+      originalS2299Receipt: '1.1.0000000000000002299',
+    });
+  }
+
+  if (eventClass === 'S-2299') {
+    return workerExample(common, {
+      kind: 'with-notice',
+      terminationDate: '2026-05-31',
+      terminationReasonCode: '02',
+      projectedNoticeEndDate: '2026-06-30',
+      ideDmDev: 'RESC-1',
+      rubrics: [
+        {
+          rubricCode: 'RUB-RESC',
+          quantity: '1.0000',
+          amount: '2500.00',
+        },
+      ],
+    });
+  }
+
+  if (eventClass === 'S-2300') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      kind: 'intern',
+      workerId: 'tsv-worker-1',
+      cpf: '12345678901',
+      name: 'TSV Fixture Worker',
+      birthDate: '2000-01-01',
+      registration: 'TSV-1',
+      categoryCode: '901',
+      startDate: '2026-05-01',
+      role: 'Estagiario Administrativo',
+      salaryAmount: 1200,
+      workplaceRegistrationNumber: '12345678000199',
+    };
+  }
+
+  if (eventClass === 'S-2306') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      kind: 'role',
+      contractId: 'tsv-contract-1',
+      cpf: '12345678901',
+      registration: 'TSV-1',
+      changeDate: '2026-05-15',
+      role: 'Estagiario de Controle',
+    };
+  }
+
+  if (eventClass === 'S-2399') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      kind: 'intern',
+      contractId: 'tsv-contract-1',
+      cpf: '12345678901',
+      registration: 'TSV-1',
+      terminationDate: '2026-05-31',
+      acceptedS2300Receipt: '1.1.0000000000000002300',
+      acceptedS2306Receipt: '1.1.0000000000000002306',
+    };
+  }
+
   return {
     ...common,
     round1Pending: true,
     deferredReason: 'builder_not_promoted_in_round0',
+  };
+}
+
+function workerExample(common, fields) {
+  return {
+    ...common,
+    employerCnpj: '12345678000199',
+    employeeId: 'employee-1',
+    cpf: '12345678901',
+    registration: 'MAT-1',
+    ...fields,
   };
 }
 
@@ -966,6 +1375,37 @@ function periodicRubricsArraySchema() {
       },
       required: ['rubricCode', 'amount', 'kind'],
     },
+  };
+}
+
+function terminationRubricsArraySchema() {
+  return {
+    type: 'array',
+    minItems: 1,
+    items: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        rubricCode: nonEmptyString(),
+        rubricTableId: nonEmptyString(),
+        quantity: periodicMoneySchema(),
+        amount: periodicMoneySchema(),
+      },
+      required: ['rubricCode', 'quantity', 'amount'],
+    },
+  };
+}
+
+function workerProperties(eventProperties) {
+  return {
+    employerCnpj: nonEmptyString(),
+    employerCpf: nonEmptyString(),
+    eventId: nonEmptyString(),
+    employeeId: nonEmptyString(),
+    cpf: nonEmptyString(),
+    registration: nonEmptyString(),
+    receiptReference: nonEmptyString(),
+    ...eventProperties,
   };
 }
 

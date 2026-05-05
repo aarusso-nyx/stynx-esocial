@@ -3,7 +3,7 @@
   "family": "request",
   "request-id": "req-request-S-2306",
   "correlation-id": "corr-S-2306",
-  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-2306:source-event-S-2306:source-entity-S-2306:-:-:sha256%3A8fa2f41d6de5eab68ee4098cc321c4ab64fb73da00ae8186fd80d8f8b9620cce:-:-",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-2306:source-event-S-2306:source-entity-S-2306:-:-:sha256%3Abfc11553922626628848fb248dc4d7c7c2a1f17d297bb305ebecb8848878ac78:-:-",
   "created_at": "2026-05-05T12:00:00.000Z",
   "tenant_id": "tenant-a",
   "environment": "QUALIFICATION",
@@ -15,7 +15,7 @@
     "source_system": "SGP"
   },
   "kind": "trabalhador",
-  "payload_hash": "sha256:8fa2f41d6de5eab68ee4098cc321c4ab64fb73da00ae8186fd80d8f8b9620cce",
+  "payload_hash": "sha256:bfc11553922626628848fb248dc4d7c7c2a1f17d297bb305ebecb8848878ac78",
   "attempt": 1,
   "max-attempts": 3,
   "reply-to": "sgp.esocial.submit.response",
@@ -26,7 +26,12 @@
     "sourceEventId": "source-event-S-2306",
     "sourceEntityId": "source-entity-S-2306",
     "environment": "qualification",
-    "round1Pending": true,
-    "deferredReason": "builder_not_promoted_in_round0"
+    "employerCnpj": "12345678000199",
+    "kind": "role",
+    "contractId": "tsv-contract-1",
+    "cpf": "12345678901",
+    "registration": "TSV-1",
+    "changeDate": "2026-05-15",
+    "role": "Estagiario de Controle"
   }
 }

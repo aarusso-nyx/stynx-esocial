@@ -8,7 +8,7 @@ import { QueryResultRow } from 'pg';
 import { DatabaseService } from '../../database/database.service';
 import { employerRegistration, onlyDigits, sha256 } from './s1xxx-common';
 import { s2410BenefitNumber, S2410BenefitSourceKind } from './s2410.builder';
-import { dateOnly } from './s22xx-common';
+import { dateOnly } from './shared-worker-common';
 
 export interface S2418BuildInput {
   sourceId: string;

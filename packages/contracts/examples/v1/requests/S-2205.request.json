@@ -3,7 +3,7 @@
   "family": "request",
   "request-id": "req-request-S-2205",
   "correlation-id": "corr-S-2205",
-  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-2205:source-event-S-2205:source-entity-S-2205:-:-:sha256%3Ad3f6599053925acebc365d72820161992a7d7a320d4bb87c40e0ab08459b7674:-:-",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-2205:source-event-S-2205:source-entity-S-2205:-:-:sha256%3A3ecfb5ec0d496cff5eaf8d51d87e31601f5cfbedc576ad624fd1ce37f01c376c:-:-",
   "created_at": "2026-05-05T12:00:00.000Z",
   "tenant_id": "tenant-a",
   "environment": "QUALIFICATION",
@@ -15,7 +15,7 @@
     "source_system": "SGP"
   },
   "kind": "trabalhador",
-  "payload_hash": "sha256:d3f6599053925acebc365d72820161992a7d7a320d4bb87c40e0ab08459b7674",
+  "payload_hash": "sha256:3ecfb5ec0d496cff5eaf8d51d87e31601f5cfbedc576ad624fd1ce37f01c376c",
   "attempt": 1,
   "max-attempts": 3,
   "reply-to": "sgp.esocial.submit.response",
@@ -26,7 +26,21 @@
     "sourceEventId": "source-event-S-2205",
     "sourceEntityId": "source-entity-S-2205",
     "environment": "qualification",
-    "round1Pending": true,
-    "deferredReason": "builder_not_promoted_in_round0"
+    "employerCnpj": "12345678000199",
+    "employeeId": "employee-1",
+    "cpf": "12345678901",
+    "registration": "MAT-1",
+    "changeDate": "2026-05-10",
+    "name": "Maria Silva Atualizada",
+    "sex": "F",
+    "dependents": [
+      {
+        "sourceDependentId": "dependent-1",
+        "name": "Dependente Um",
+        "birthDate": "2015-03-12",
+        "relationshipCode": "03",
+        "cpf": "98765432100"
+      }
+    ]
   }
 }

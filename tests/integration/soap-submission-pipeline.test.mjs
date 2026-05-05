@@ -22,6 +22,17 @@ import {
   buildS1298,
   buildS1299,
   buildS2200,
+  buildS2205,
+  buildS2206,
+  buildS2210,
+  buildS2220,
+  buildS2230,
+  buildS2240,
+  buildS2298Worker,
+  buildS2299Worker,
+  buildS2300,
+  buildS2306,
+  buildS2399,
   routeSubmissionEventClass,
 } from '../../packages/domain/dist/index.js';
 import { signXmlBytes } from '../../packages/pki-pades/dist/index.js';
@@ -49,6 +60,17 @@ const familySpecs = {
   'S-1298': { fixture: 's1298.dto.json', build: buildS1298, kind: 'fechamento' },
   'S-1299': { fixture: 's1299.dto.json', build: buildS1299, kind: 'fechamento' },
   'S-2200': { fixture: 's2200.dto.json', build: buildS2200, kind: 'trabalhador' },
+  'S-2205': { fixture: 's2205.dto.json', build: buildS2205, kind: 'trabalhador' },
+  'S-2206': { fixture: 's2206.dto.json', build: buildS2206, kind: 'trabalhador' },
+  'S-2210': { fixture: 's2210.dto.json', build: buildS2210, kind: 'trabalhador' },
+  'S-2220': { fixture: 's2220.dto.json', build: buildS2220, kind: 'trabalhador' },
+  'S-2230': { fixture: 's2230.dto.json', build: buildS2230, kind: 'trabalhador' },
+  'S-2240': { fixture: 's2240.dto.json', build: buildS2240, kind: 'trabalhador' },
+  'S-2298': { fixture: 's2298.dto.json', build: buildS2298Worker, kind: 'trabalhador' },
+  'S-2299': { fixture: 's2299.dto.json', build: buildS2299Worker, kind: 'trabalhador' },
+  'S-2300': { fixture: 's2300.dto.json', build: buildS2300, kind: 'trabalhador' },
+  'S-2306': { fixture: 's2306.dto.json', build: buildS2306, kind: 'trabalhador' },
+  'S-2399': { fixture: 's2399.dto.json', build: buildS2399, kind: 'trabalhador' },
 };
 
 test('promoted DTO to SOAP pipeline persists sent status and deterministic hashes for all active families', async () => {

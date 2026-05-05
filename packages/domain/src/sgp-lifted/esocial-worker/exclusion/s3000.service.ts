@@ -9,7 +9,7 @@ import {
   ESocialEmitService,
 } from '../esocial-emit.service';
 import { S3000Builder } from '../builders/s3000.builder';
-import { sha256 } from '../builders/s22xx-common';
+import { sha256 } from '../builders/shared-worker-common';
 
 export interface S3000EligibleEvent {
   id: string;

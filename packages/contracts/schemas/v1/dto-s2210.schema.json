@@ -42,19 +42,89 @@
         "exclusion"
       ]
     },
-    "round1Pending": {
-      "const": true
+    "employerCnpj": {
+      "type": "string",
+      "minLength": 1
     },
-    "deferredReason": {
-      "const": "builder_not_promoted_in_round0"
+    "employerCpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "eventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "employeeId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "registration": {
+      "type": "string",
+      "minLength": 1
+    },
+    "receiptReference": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "enum": [
+        "initial",
+        "death",
+        "reopening"
+      ]
+    },
+    "accidentDate": {
+      "type": "string",
+      "minLength": 1
+    },
+    "accidentTime": {
+      "type": "string",
+      "minLength": 1
+    },
+    "workedHoursBeforeAccident": {
+      "type": "string",
+      "minLength": 1
+    },
+    "deathDate": {
+      "type": "string",
+      "minLength": 1
+    },
+    "originalReceipt": {
+      "type": "string",
+      "minLength": 1
+    },
+    "policeCommunication": {
+      "type": "boolean"
+    },
+    "causedLeave": {
+      "type": "boolean"
+    },
+    "internment": {
+      "type": "boolean"
+    },
+    "treatmentDurationDays": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "observation": {
+      "type": "string",
+      "minLength": 1
     }
   },
   "required": [
     "eventClass",
     "tenantId",
     "sourceEventId",
-    "round1Pending",
-    "deferredReason"
+    "employerCnpj",
+    "employeeId",
+    "cpf",
+    "registration",
+    "kind",
+    "accidentDate"
   ],
   "not": {
     "anyOf": [

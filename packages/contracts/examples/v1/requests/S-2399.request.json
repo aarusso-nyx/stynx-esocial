@@ -3,7 +3,7 @@
   "family": "request",
   "request-id": "req-request-S-2399",
   "correlation-id": "corr-S-2399",
-  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-2399:source-event-S-2399:source-entity-S-2399:-:-:sha256%3Af2673c7a29238af8023bf616a6a26067e93abb625102772988587b1a025f2a75:-:-",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-2399:source-event-S-2399:source-entity-S-2399:-:-:sha256%3A09e0951d32216110663cc06966c9abaef4df0945b22835726b145f47453b200f:-:-",
   "created_at": "2026-05-05T12:00:00.000Z",
   "tenant_id": "tenant-a",
   "environment": "QUALIFICATION",
@@ -15,7 +15,7 @@
     "source_system": "SGP"
   },
   "kind": "trabalhador",
-  "payload_hash": "sha256:f2673c7a29238af8023bf616a6a26067e93abb625102772988587b1a025f2a75",
+  "payload_hash": "sha256:09e0951d32216110663cc06966c9abaef4df0945b22835726b145f47453b200f",
   "attempt": 1,
   "max-attempts": 3,
   "reply-to": "sgp.esocial.submit.response",
@@ -26,7 +26,13 @@
     "sourceEventId": "source-event-S-2399",
     "sourceEntityId": "source-entity-S-2399",
     "environment": "qualification",
-    "round1Pending": true,
-    "deferredReason": "builder_not_promoted_in_round0"
+    "employerCnpj": "12345678000199",
+    "kind": "intern",
+    "contractId": "tsv-contract-1",
+    "cpf": "12345678901",
+    "registration": "TSV-1",
+    "terminationDate": "2026-05-31",
+    "acceptedS2300Receipt": "1.1.0000000000000002300",
+    "acceptedS2306Receipt": "1.1.0000000000000002306"
   }
 }

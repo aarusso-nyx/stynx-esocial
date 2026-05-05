@@ -3,7 +3,7 @@
   "family": "request",
   "request-id": "req-request-S-2240",
   "correlation-id": "corr-S-2240",
-  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-2240:source-event-S-2240:source-entity-S-2240:-:-:sha256%3A3959a0111ae9f23c6d212edb122dc1c1fb10d5c7f5529a82ab96c578b821895b:-:-",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-2240:source-event-S-2240:source-entity-S-2240:-:-:sha256%3A4fc4c7fd26ac728127ca78da729d7329f44da1712f33ef47f64c46a149dd6932:-:-",
   "created_at": "2026-05-05T12:00:00.000Z",
   "tenant_id": "tenant-a",
   "environment": "QUALIFICATION",
@@ -15,7 +15,7 @@
     "source_system": "SGP"
   },
   "kind": "trabalhador",
-  "payload_hash": "sha256:3959a0111ae9f23c6d212edb122dc1c1fb10d5c7f5529a82ab96c578b821895b",
+  "payload_hash": "sha256:4fc4c7fd26ac728127ca78da729d7329f44da1712f33ef47f64c46a149dd6932",
   "attempt": 1,
   "max-attempts": 3,
   "reply-to": "sgp.esocial.submit.response",
@@ -26,7 +26,18 @@
     "sourceEventId": "source-event-S-2240",
     "sourceEntityId": "source-entity-S-2240",
     "environment": "qualification",
-    "round1Pending": true,
-    "deferredReason": "builder_not_promoted_in_round0"
+    "employerCnpj": "12345678000199",
+    "employeeId": "employee-1",
+    "cpf": "12345678901",
+    "registration": "MAT-1",
+    "operation": "start",
+    "startDate": "2026-05-05",
+    "workplaceRegistrationNumber": "12345678000199",
+    "sector": "Oficina",
+    "activityDescription": "Operacao em area com ruido",
+    "riskCode": "02.01.001",
+    "riskDescription": "Ruido continuo",
+    "intensity": "85.5000",
+    "responsibleCpf": "12345678901"
   }
 }

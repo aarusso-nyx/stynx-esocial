@@ -13,11 +13,16 @@ import {
   ESOCIAL_PROMOTED_TABLE_DTO_EVENT_CLASSES,
 } from './tables.js';
 import type { EsocialPromotedTableDto } from './tables.js';
+import {
+  ESOCIAL_PROMOTED_WORKER_DTO_EVENT_CLASSES,
+} from './worker.js';
+import type { EsocialPromotedWorkerDto } from './worker.js';
 
 export type EsocialSgpRequestDto =
   | EsocialRound0RequestDto
   | EsocialPromotedTableDto
   | EsocialPromotedPeriodicDto
+  | EsocialPromotedWorkerDto
   | EsocialRound1PendingDto;
 
 export type EsocialRelayRequestPayload =
@@ -80,6 +85,13 @@ export function validateEsocialSgpRequestDto(
   ) {
     validatePromotedPeriodicDto(candidate, candidate.eventClass, errors);
   } else if (
+    includesString(
+      ESOCIAL_PROMOTED_WORKER_DTO_EVENT_CLASSES,
+      candidate.eventClass,
+    )
+  ) {
+    validatePromotedWorkerDto(candidate, candidate.eventClass, errors);
+  } else if (
     includesString(ESOCIAL_RELAY_EVENT_CLASSES, candidate.eventClass) &&
     candidate.round1Pending !== true
   ) {
@@ -88,6 +100,103 @@ export function validateEsocialSgpRequestDto(
 
   if (errors.length > 0) return { ok: false, errors };
   return { ok: true, dto: candidate as EsocialSgpRequestDto };
+}
+
+function validatePromotedWorkerDto(
+  candidate: Record<string, unknown>,
+  eventClass: EsocialRelayEventClass,
+  errors: string[],
+): void {
+  requireStrings(candidate, errors, ['employerCnpj']);
+
+  if (eventClass.startsWith('S-22') || eventClass === 'S-2298' || eventClass === 'S-2299') {
+    requireStrings(candidate, errors, ['employeeId', 'cpf', 'registration']);
+  }
+
+  if (eventClass === 'S-2205') {
+    requireStrings(candidate, errors, ['changeDate', 'name']);
+  }
+  if (eventClass === 'S-2206') {
+    requireStrings(candidate, errors, [
+      'changeKind',
+      'changeDate',
+      'effectiveDate',
+      'description',
+      'jobName',
+      'categoryCode',
+    ]);
+  }
+  if (eventClass === 'S-2210') {
+    requireStrings(candidate, errors, ['kind', 'accidentDate']);
+    requireVariantReceipt(candidate, errors, 'kind', ['death', 'reopening'], 'originalReceipt');
+  }
+  if (eventClass === 'S-2220') {
+    requireStrings(candidate, errors, ['kind', 'examDate']);
+  }
+  if (eventClass === 'S-2230') {
+    requireStrings(candidate, errors, ['kind', 'startDate', 'leaveReasonCode']);
+  }
+  if (eventClass === 'S-2240') {
+    requireStrings(candidate, errors, [
+      'operation',
+      'startDate',
+      'workplaceRegistrationNumber',
+      'sector',
+      'activityDescription',
+      'riskCode',
+      'riskDescription',
+      'responsibleCpf',
+    ]);
+  }
+  if (eventClass === 'S-2298') {
+    requireStrings(candidate, errors, [
+      'kind',
+      'reinstatementDate',
+      'decisionDate',
+      'originalS2299Receipt',
+    ]);
+  }
+  if (eventClass === 'S-2299') {
+    requireStrings(candidate, errors, [
+      'kind',
+      'terminationDate',
+      'terminationReasonCode',
+      'ideDmDev',
+    ]);
+    requireArray(candidate, errors, 'rubrics');
+  }
+  if (eventClass === 'S-2300') {
+    requireStrings(candidate, errors, [
+      'kind',
+      'workerId',
+      'cpf',
+      'name',
+      'birthDate',
+      'registration',
+      'categoryCode',
+      'startDate',
+      'role',
+    ]);
+  }
+  if (eventClass === 'S-2306') {
+    requireStrings(candidate, errors, [
+      'kind',
+      'contractId',
+      'cpf',
+      'registration',
+      'changeDate',
+    ]);
+  }
+  if (eventClass === 'S-2399') {
+    requireStrings(candidate, errors, [
+      'kind',
+      'contractId',
+      'cpf',
+      'registration',
+      'terminationDate',
+      'acceptedS2300Receipt',
+    ]);
+  }
 }
 
 function validatePromotedPeriodicDto(
@@ -302,6 +411,23 @@ function requireNestedArrays(
       errors.push(`${arrayKey}[${index}].${nestedKey} must be an array.`);
     }
   });
+}
+
+function requireVariantReceipt(
+  candidate: Record<string, unknown>,
+  errors: string[],
+  variantKey: string,
+  variants: readonly string[],
+  receiptKey: string,
+): void {
+  const variant = candidate[variantKey];
+  if (
+    typeof variant === 'string' &&
+    variants.includes(variant) &&
+    !isNonEmptyString(candidate[receiptKey])
+  ) {
+    errors.push(`${receiptKey} is required for ${variant}.`);
+  }
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {

@@ -489,10 +489,156 @@ function dtoForEvent(eventClass) {
     };
   }
 
+  if (eventClass === 'S-2205') {
+    return workerDto(common, {
+      changeDate: '2026-05-10',
+      name: 'Maria Silva Atualizada',
+      dependents: [
+        {
+          sourceDependentId: 'dependent-1',
+          name: 'Dependente Um',
+          birthDate: '2015-03-12',
+          relationshipCode: '03',
+        },
+      ],
+    });
+  }
+
+  if (eventClass === 'S-2206') {
+    return workerDto(common, {
+      changeKind: 'promotion',
+      changeDate: '2026-05-10',
+      effectiveDate: '2026-05-15',
+      description: 'Promocao funcional aprovada',
+      jobName: 'Coordenador Administrativo',
+      categoryCode: '301',
+    });
+  }
+
+  if (eventClass === 'S-2210') {
+    return workerDto(common, {
+      kind: 'reopening',
+      accidentDate: '2026-05-02',
+      originalReceipt: '1.1.0000000000000002210',
+    });
+  }
+
+  if (eventClass === 'S-2220') {
+    return workerDto(common, {
+      kind: 'periodic',
+      examDate: '2026-05-03',
+    });
+  }
+
+  if (eventClass === 'S-2230') {
+    return workerDto(common, {
+      kind: 'medical-leave',
+      startDate: '2026-05-04',
+      leaveReasonCode: '01',
+    });
+  }
+
+  if (eventClass === 'S-2240') {
+    return workerDto(common, {
+      operation: 'start',
+      startDate: '2026-05-05',
+      workplaceRegistrationNumber: '12345678000199',
+      sector: 'Oficina',
+      activityDescription: 'Operacao em area com ruido',
+      riskCode: '02.01.001',
+      riskDescription: 'Ruido continuo',
+      intensity: '85.5000',
+      responsibleCpf: '12345678901',
+    });
+  }
+
+  if (eventClass === 'S-2298') {
+    return workerDto(common, {
+      kind: 'judicial',
+      reinstatementDate: '2026-05-20',
+      decisionDate: '2026-05-10',
+      processNumber: '12345678901234567890',
+      originalS2299Receipt: '1.1.0000000000000002299',
+    });
+  }
+
+  if (eventClass === 'S-2299') {
+    return workerDto(common, {
+      kind: 'with-notice',
+      terminationDate: '2026-05-31',
+      terminationReasonCode: '02',
+      projectedNoticeEndDate: '2026-06-30',
+      ideDmDev: 'RESC-1',
+      rubrics: [
+        {
+          rubricCode: 'RUB-RESC',
+          quantity: '1.0000',
+          amount: '2500.00',
+        },
+      ],
+    });
+  }
+
+  if (eventClass === 'S-2300') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      kind: 'intern',
+      workerId: 'tsv-worker-1',
+      cpf: '12345678901',
+      name: 'TSV Fixture Worker',
+      birthDate: '2000-01-01',
+      registration: 'TSV-1',
+      categoryCode: '901',
+      startDate: '2026-05-01',
+      role: 'Estagiario Administrativo',
+      salaryAmount: 1200,
+      workplaceRegistrationNumber: '12345678000199',
+    };
+  }
+
+  if (eventClass === 'S-2306') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      kind: 'role',
+      contractId: 'tsv-contract-1',
+      cpf: '12345678901',
+      registration: 'TSV-1',
+      changeDate: '2026-05-15',
+      role: 'Estagiario de Controle',
+    };
+  }
+
+  if (eventClass === 'S-2399') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      kind: 'intern',
+      contractId: 'tsv-contract-1',
+      cpf: '12345678901',
+      registration: 'TSV-1',
+      terminationDate: '2026-05-31',
+      acceptedS2300Receipt: '1.1.0000000000000002300',
+      acceptedS2306Receipt: '1.1.0000000000000002306',
+    };
+  }
+
   return {
     ...common,
     round1Pending: true,
     deferredReason: 'builder_not_promoted_in_round0',
+  };
+}
+
+function workerDto(common, fields) {
+  return {
+    ...common,
+    employerCnpj: '12345678000199',
+    employeeId: 'employee-1',
+    cpf: '12345678901',
+    registration: 'MAT-1',
+    ...fields,
   };
 }
 

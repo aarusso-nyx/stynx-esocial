@@ -9,7 +9,7 @@ import {
   EmittedESocialEvent,
 } from '../esocial-emit.service';
 import { S1200Builder } from './s1200.builder';
-import { sha256 } from './s22xx-common';
+import { sha256 } from './shared-worker-common';
 
 export interface ES04DispatchResult {
   eventKind: 'S-1200' | 'S-1202' | 'S-1210';

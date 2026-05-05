@@ -42,19 +42,61 @@
         "exclusion"
       ]
     },
-    "round1Pending": {
-      "const": true
+    "employerCnpj": {
+      "type": "string",
+      "minLength": 1
     },
-    "deferredReason": {
-      "const": "builder_not_promoted_in_round0"
+    "employerCpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "eventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "enum": [
+        "intern",
+        "autonomous",
+        "council-member"
+      ]
+    },
+    "contractId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "registration": {
+      "type": "string",
+      "minLength": 1
+    },
+    "terminationDate": {
+      "type": "string",
+      "minLength": 1
+    },
+    "acceptedS2300Receipt": {
+      "type": "string",
+      "minLength": 1
+    },
+    "acceptedS2306Receipt": {
+      "type": "string",
+      "minLength": 1
     }
   },
   "required": [
     "eventClass",
     "tenantId",
     "sourceEventId",
-    "round1Pending",
-    "deferredReason"
+    "employerCnpj",
+    "kind",
+    "contractId",
+    "cpf",
+    "registration",
+    "terminationDate",
+    "acceptedS2300Receipt"
   ],
   "not": {
     "anyOf": [

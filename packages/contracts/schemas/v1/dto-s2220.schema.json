@@ -42,19 +42,81 @@
         "exclusion"
       ]
     },
-    "round1Pending": {
-      "const": true
+    "employerCnpj": {
+      "type": "string",
+      "minLength": 1
     },
-    "deferredReason": {
-      "const": "builder_not_promoted_in_round0"
+    "employerCpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "eventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "employeeId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "registration": {
+      "type": "string",
+      "minLength": 1
+    },
+    "receiptReference": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "enum": [
+        "admission",
+        "periodic",
+        "return-to-work",
+        "termination"
+      ]
+    },
+    "examDate": {
+      "type": "string",
+      "minLength": 1
+    },
+    "resultCode": {
+      "type": "string",
+      "minLength": 1
+    },
+    "procedureCode": {
+      "type": "string",
+      "minLength": 1
+    },
+    "procedureObservation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "doctorName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "doctorCrm": {
+      "type": "string",
+      "minLength": 1
+    },
+    "doctorUf": {
+      "type": "string",
+      "minLength": 1
     }
   },
   "required": [
     "eventClass",
     "tenantId",
     "sourceEventId",
-    "round1Pending",
-    "deferredReason"
+    "employerCnpj",
+    "employeeId",
+    "cpf",
+    "registration",
+    "kind",
+    "examDate"
   ],
   "not": {
     "anyOf": [

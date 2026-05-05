@@ -7,7 +7,7 @@ import { QueryResultRow } from 'pg';
 
 import { DatabaseService } from '../../database/database.service';
 import { employerRegistration, onlyDigits, sha256 } from './s1xxx-common';
-import { cleanText, dateOnly } from './s22xx-common';
+import { cleanText, dateOnly } from './shared-worker-common';
 
 export type S2410BenefitSourceKind = 'RETIREMENT' | 'PENSION';
 

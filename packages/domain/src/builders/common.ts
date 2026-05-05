@@ -14,7 +14,18 @@ export type BuilderMetadata = Readonly<{
     | 'S-1210'
     | 'S-1298'
     | 'S-1299'
-    | 'S-2200';
+    | 'S-2200'
+    | 'S-2205'
+    | 'S-2206'
+    | 'S-2210'
+    | 'S-2220'
+    | 'S-2230'
+    | 'S-2240'
+    | 'S-2298'
+    | 'S-2299'
+    | 'S-2300'
+    | 'S-2306'
+    | 'S-2399';
   leiauteVersion: 'S-1.3';
   xmlRoot: 'eSocial';
   eventElement:
@@ -30,7 +41,18 @@ export type BuilderMetadata = Readonly<{
     | 'evtPgtos'
     | 'evtReabreEvPer'
     | 'evtFechaEvPer'
-    | 'evtAdmissao';
+    | 'evtAdmissao'
+    | 'evtAltCadastral'
+    | 'evtAltContratual'
+    | 'evtCAT'
+    | 'evtMonit'
+    | 'evtAfastTemp'
+    | 'evtExpRisco'
+    | 'evtReintegr'
+    | 'evtDeslig'
+    | 'evtTSVInicio'
+    | 'evtTSVAltContr'
+    | 'evtTSVTermino';
   namespace: string;
   xsdBinding: string;
   tableVersionDependencies: readonly string[];

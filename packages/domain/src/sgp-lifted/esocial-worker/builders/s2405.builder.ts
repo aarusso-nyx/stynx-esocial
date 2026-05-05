@@ -7,7 +7,7 @@ import { QueryResultRow } from 'pg';
 
 import { DatabaseService } from '../../database/database.service';
 import { employerRegistration, onlyDigits, sha256 } from './s1xxx-common';
-import { addressXml, cleanText, dateOnly } from './s22xx-common';
+import { addressXml, cleanText, dateOnly } from './shared-worker-common';
 
 export interface S2405BuildResult {
   recertificationRecordId: string;

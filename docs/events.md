@@ -121,24 +121,31 @@ Event-specific DTO fields:
 
 ## Non-Periodic Labor, SST, and TS-V Events
 
-| Event | Purpose | Lifted implementation | XML example |
-| --- | --- | --- | --- |
-| S-2200 | Worker admission/initial registration | `builders/s2200/builder.ts` | `templates/golden/builders/s2200.golden.xml` |
-| S-2205 | Worker cadastral change | `builders/s2205.builder.ts` | `templates/golden/builders/s2205.golden.xml` |
-| S-2206 | Worker contract change | `builders/s2206.builder.ts` | `templates/golden/builders/s2206-promotion.golden.xml` |
-| S-2210 | Work accident communication | `builders/s2210.builder.ts` | `templates/golden/builders/s2210-inicial.golden.xml` |
-| S-2220 | Occupational health monitoring | `builders/s2220.builder.ts` | `templates/golden/builders/s2220-admissional.golden.xml` |
-| S-2230 | Temporary leave/absence | `builders/s2230.builder.ts` | `templates/golden/builders/s2230-medical-leave.golden.xml` |
-| S-2240 | Workplace risk exposure | `builders/s2240.builder.ts` | `templates/golden/builders/s2240-noise-start.golden.xml` |
-| S-2298 | Reintegration | `s2298/s2298.builder.ts` | See builder tests; no standalone golden copied in this lift snapshot. |
-| S-2299 | Termination | `builders/s2299.builder.ts` | `templates/golden/builders/s2299-with-notice.golden.xml` |
-| S-2300 | TS-V start | `builders/s2300.builder.ts` | `templates/golden/builders/s2300-estagiario.golden.xml` |
-| S-2306 | TS-V contract change | `s2306/s2306.builder.ts` | See builder tests; no standalone golden copied in this lift snapshot. |
-| S-2399 | TS-V termination | `builders/s2399.builder.ts` | `templates/golden/builders/s2399-estagiario.golden.xml` |
+Promoted worker/SST/TSV builders live in
+`packages/domain/src/builders/<event>/builder.ts` and share the active
+DTO-to-XML adapter in `packages/domain/src/builders/worker-adapter.ts`. They do
+not read SGP schemas; SGP context is carried as opaque DTO ids and accepted
+receipt references.
+
+| Event | Purpose | Production implementation | Status | XML example |
+| --- | --- | --- | --- | --- |
+| S-2200 | Worker admission/initial registration | `builders/s2200/builder.ts` | Promoted in Round 0 Wave B | `templates/golden/builders/s2200.golden.xml` |
+| S-2205 | Worker cadastral change | `builders/s2205/builder.ts` | Promoted in Round 1 Batch 3 | `templates/golden/builders/s2205.golden.xml` |
+| S-2206 | Worker contract change | `builders/s2206/builder.ts` | Promoted in Round 1 Batch 3 | `templates/golden/builders/s2206-promotion.golden.xml` |
+| S-2210 | Work accident communication | `builders/s2210/builder.ts` | Promoted in Round 1 Batch 3 | `templates/golden/builders/s2210-inicial.golden.xml` |
+| S-2220 | Occupational health monitoring | `builders/s2220/builder.ts` | Promoted in Round 1 Batch 3 | `templates/golden/builders/s2220-periodico.golden.xml` |
+| S-2230 | Temporary leave/absence | `builders/s2230/builder.ts` | Promoted in Round 1 Batch 3 | `templates/golden/builders/s2230-medical-leave.golden.xml` |
+| S-2240 | Workplace risk exposure | `builders/s2240/builder.ts` | Promoted in Round 1 Batch 3 | `templates/golden/builders/s2240-noise-start.golden.xml` |
+| S-2298 | Reintegration | `builders/s2298/builder.ts` | Promoted in Round 1 Batch 3 | `templates/golden/builders/s2298.golden.xml` |
+| S-2299 | Termination | `builders/s2299/builder.ts` | Promoted in Round 1 Batch 3 | `templates/golden/builders/s2299-with-notice.golden.xml` |
+| S-2300 | TS-V start | `builders/s2300/builder.ts` | Promoted in Round 1 Batch 3 | `templates/golden/builders/s2300-estagiario.golden.xml` |
+| S-2306 | TS-V contract change | `builders/s2306/builder.ts` | Promoted in Round 1 Batch 3 | `templates/golden/builders/s2306.golden.xml` |
+| S-2399 | TS-V termination | `builders/s2399/builder.ts` | Promoted in Round 1 Batch 3 | `templates/golden/builders/s2399-estagiario.golden.xml` |
 
 Additional golden variants are retained for S-2210 reopening/death, S-2220 exam
-types, S-2230 vacation, S-2240 start/change/end, S-2299 notice variants, S-2300
-category variants, and S-2399 category variants.
+types, S-2230 vacation, S-2240 start/change/end, S-2298 reintegration variants,
+S-2299 notice variants, S-2300 category variants, S-2306 alteration variants,
+and S-2399 category variants.
 
 ### Round 0 Wave B DTO and Metadata References
 
