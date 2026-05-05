@@ -25,7 +25,15 @@ export type BuilderMetadata = Readonly<{
     | 'S-2299'
     | 'S-2300'
     | 'S-2306'
-    | 'S-2399';
+    | 'S-2399'
+    | 'S-2400'
+    | 'S-2405'
+    | 'S-2410'
+    | 'S-2416'
+    | 'S-2418'
+    | 'S-2420'
+    | 'S-2501'
+    | 'S-3000';
   leiauteVersion: 'S-1.3';
   xmlRoot: 'eSocial';
   eventElement:
@@ -52,7 +60,15 @@ export type BuilderMetadata = Readonly<{
     | 'evtDeslig'
     | 'evtTSVInicio'
     | 'evtTSVAltContr'
-    | 'evtTSVTermino';
+    | 'evtTSVTermino'
+    | 'evtCdBenefIn'
+    | 'evtCdBenefAlt'
+    | 'evtCdBenIn'
+    | 'evtCdBenAlt'
+    | 'evtReativBen'
+    | 'evtCdBenTerm'
+    | 'evtContProc'
+    | 'evtExclusao';
   namespace: string;
   xsdBinding: string;
   tableVersionDependencies: readonly string[];

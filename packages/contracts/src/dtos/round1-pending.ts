@@ -1,5 +1,6 @@
 import type { EsocialRelayEventClass } from '../kinds.js';
 
+import type { EsocialPromotedBenefitProcessDtoEventClass } from './benefits-process-exclusion.js';
 import type { EsocialSourceDtoBase } from './common.js';
 import type { EsocialPromotedPeriodicDtoEventClass } from './periodic.js';
 import type { EsocialPromotedTableDtoEventClass } from './tables.js';
@@ -22,6 +23,7 @@ export type EsocialRound1PendingEventClass = Exclude<
   | EsocialPromotedTableDtoEventClass
   | EsocialPromotedPeriodicDtoEventClass
   | EsocialPromotedWorkerDtoEventClass
+  | EsocialPromotedBenefitProcessDtoEventClass
 >;
 
 export type EsocialRound1PendingDto<

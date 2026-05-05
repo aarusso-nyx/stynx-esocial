@@ -42,19 +42,70 @@
         "exclusion"
       ]
     },
-    "round1Pending": {
-      "const": true
+    "employerCnpj": {
+      "type": "string",
+      "minLength": 1
     },
-    "deferredReason": {
-      "const": "builder_not_promoted_in_round0"
+    "employerCpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "eventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "benefitKind": {
+      "enum": [
+        "RETIREMENT",
+        "PENSION"
+      ]
+    },
+    "benefitIdentifier": {
+      "type": "string",
+      "minLength": 1
+    },
+    "beneficiaryCpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "benefitNumber": {
+      "type": "string",
+      "minLength": 1
+    },
+    "effectiveReactivationDate": {
+      "type": "string",
+      "minLength": 1
+    },
+    "financialEffectDate": {
+      "type": "string",
+      "minLength": 1
+    },
+    "acceptedS2410Receipt": {
+      "type": "string",
+      "minLength": 1
+    },
+    "suspendedOrTerminatedBenefitReceipt": {
+      "type": "string",
+      "minLength": 1
+    },
+    "reactivatedBenefitReceipt": {
+      "type": "string",
+      "minLength": 1
     }
   },
   "required": [
     "eventClass",
     "tenantId",
     "sourceEventId",
-    "round1Pending",
-    "deferredReason"
+    "employerCnpj",
+    "benefitKind",
+    "benefitIdentifier",
+    "beneficiaryCpf",
+    "benefitNumber",
+    "effectiveReactivationDate",
+    "financialEffectDate",
+    "acceptedS2410Receipt",
+    "suspendedOrTerminatedBenefitReceipt"
   ],
   "not": {
     "anyOf": [

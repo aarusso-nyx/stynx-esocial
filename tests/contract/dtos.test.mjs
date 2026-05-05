@@ -624,6 +624,130 @@ function dtoForEvent(eventClass) {
     };
   }
 
+  if (eventClass === 'S-2400') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      beneficiaryId: 'beneficiary-1',
+      cpf: '12345678901',
+      name: 'Beneficiaria RPPS',
+      birthDate: '1960-01-01',
+      startDate: '2026-05-01',
+      sex: 'F',
+      dependents: [
+        {
+          sourceDependentId: 'benef-dependent-1',
+          name: 'Dependente Beneficio',
+          birthDate: '2010-02-03',
+          relationshipCode: '03',
+        },
+      ],
+    };
+  }
+
+  if (eventClass === 'S-2405') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      beneficiaryId: 'beneficiary-1',
+      cpf: '12345678901',
+      name: 'Beneficiaria RPPS Atualizada',
+      changeDate: '2026-05-15',
+      acceptedS2400Receipt: '1.1.0000000000000002400',
+    };
+  }
+
+  if (eventClass === 'S-2410') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      benefitKind: 'RETIREMENT',
+      benefitIdentifier: 'sgp-s2410-benefit-1',
+      beneficiaryCpf: '12345678901',
+      benefitNumber: 'RET08000000000000001',
+      startDate: '2026-05-01',
+      benefitType: '0101',
+      planType: '0',
+      description: 'Aposentadoria por tempo de contribuicao',
+      registration: 'MAT-1',
+    };
+  }
+
+  if (eventClass === 'S-2416') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      benefitIdentifier: 'sgp-s2410-pension-1',
+      beneficiaryCpf: '12345678901',
+      benefitNumber: 'PEN08000000000000001',
+      changeDate: '2026-05-16',
+      acceptedS2410Receipt: '1.1.0000000000000002410',
+      benefitType: '0601',
+      pensionDeathType: '1',
+      dependentTypeCode: '03',
+    };
+  }
+
+  if (eventClass === 'S-2418') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      benefitKind: 'RETIREMENT',
+      benefitIdentifier: 'sgp-s2410-benefit-1',
+      beneficiaryCpf: '12345678901',
+      benefitNumber: 'RET08000000000000001',
+      effectiveReactivationDate: '2026-05-20',
+      financialEffectDate: '2026-05-01',
+      acceptedS2410Receipt: '1.1.0000000000000002410',
+      suspendedOrTerminatedBenefitReceipt: '1.1.0000000000000002420',
+      reactivatedBenefitReceipt: '1.1.0000000000000002418',
+    };
+  }
+
+  if (eventClass === 'S-2420') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      benefitIdentifier: 'sgp-s2410-pension-1',
+      beneficiaryCpf: '12345678901',
+      benefitNumber: 'PEN08000000000000001',
+      terminationDate: '2026-05-31',
+      terminationReasonCode: '05',
+      acceptedS2410Receipt: '1.1.0000000000000002410',
+    };
+  }
+
+  if (eventClass === 'S-2501') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      processNumber: '12345678901234567890',
+      linkedProcessNumbers: ['000000000000001'],
+      paymentPeriod: '2026-05',
+      processTaxBases: [
+        {
+          workerCpf: '12345678901',
+          referencePeriod: '2026-05',
+          monthlyBase: '1000.00',
+          thirteenthBase: '0.00',
+          contributions: [{ revenueCode: '113851', amount: '110.00' }],
+          irrf: [{ revenueCode: '593656', amount: '50.00' }],
+        },
+      ],
+    };
+  }
+
+  if (eventClass === 'S-3000') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      originalEventClass: 'S-2200',
+      originalReceipt: '1.1.0000000000000002200',
+      exclusionReason: 'Evento enviado indevidamente pelo sistema de origem',
+      cpf: '12345678901',
+    };
+  }
+
   return {
     ...common,
     round1Pending: true,

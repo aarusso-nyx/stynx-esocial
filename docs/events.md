@@ -163,7 +163,7 @@ submission, and status persistence are owned by the adjacent Wave B workers.
 | S-1070 | `S1070ProcessDto` | `packages/domain/src/builders/s1070/builder.ts` | `evtTabProcesso` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabProcesso.xsd` | S-1000 |
 | S-1200 | `S1200RemunerationDto` | `packages/domain/src/builders/s1200/builder.ts` | `evtRemun` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtRemun.xsd` | S-1000, S-1005, S-1010, S-1020 |
 | S-1202 | `S1202RppsRemunerationDto` | `packages/domain/src/builders/s1202/builder.ts` | `evtRmnRPPS` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtRmnRPPS.xsd` | S-1000, S-1005, S-1010 |
-| S-1207 | `S1207RppsBenefitPaymentDto` | `packages/domain/src/builders/s1207/builder.ts` | `evtBenPrRP` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtBenPrRP.xsd` | S-1000, S-1010; opaque S-2410 receipt/source id |
+| S-1207 | `S1207RppsBenefitPaymentDto` | `packages/domain/src/builders/s1207/builder.ts` | `evtBenPrRP` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtBenPrRP.xsd` | S-1000, S-1010; opaque S-2410 `benefitIdentifier` via `benefitSourceId` |
 | S-1210 | `S1210PaymentDto` | `packages/domain/src/builders/s1210/builder.ts` | `evtPgtos` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtPgtos.xsd` | S-1000; receipts from S-1200, S-1202, S-1207 |
 | S-1298 | `S1298ReopeningDto` | `packages/domain/src/builders/s1298/builder.ts` | `evtReabreEvPer` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtReabreEvPer.xsd` | S-1000; accepted S-1299 receipt |
 | S-1299 | `S1299ClosureDto` | `packages/domain/src/builders/s1299/builder.ts` | `evtFechaEvPer` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtFechaEvPer.xsd` | S-1000; receipts from S-1200, S-1202, S-1207, S-1210 |
@@ -177,21 +177,21 @@ contract before real SGP cutover.
 
 ## Public-Benefit and RPPS Events
 
-| Event | Purpose | Lifted implementation | XML example |
+| Event | Purpose | Active DTO/builder | XML example |
 | --- | --- | --- | --- |
-| S-2400 | Benefit beneficiary registration | `builders/s2400.builder.ts` | `templates/golden/builders/s2400.golden.xml` |
-| S-2405 | Beneficiary cadastral change | `builders/s2405.builder.ts` | `templates/golden/builders/s2405.golden.xml` |
-| S-2410 | Benefit start | `builders/s2410.builder.ts` | `templates/golden/builders/s2410-retirement.golden.xml` |
-| S-2416 | Benefit change | `builders/s2416.builder.ts` | `templates/golden/builders/s2416-pension-founder.golden.xml` |
-| S-2418 | Benefit reactivation | `builders/s2418.builder.ts` | `templates/golden/builders/s2418-retirement.golden.xml` |
-| S-2420 | Benefit termination | `builders/s2420.builder.ts` | `templates/golden/builders/s2420-pension.golden.xml` |
+| S-2400 | Benefit beneficiary registration | `S2400BeneficiaryRegistrationDto`; `packages/domain/src/builders/s2400/builder.ts` | `templates/golden/builders/s2400.golden.xml` |
+| S-2405 | Beneficiary cadastral change | `S2405BeneficiaryChangeDto`; `packages/domain/src/builders/s2405/builder.ts` | `templates/golden/builders/s2405.golden.xml` |
+| S-2410 | Benefit start; publishes stable `benefitIdentifier` for S-1207 | `S2410BenefitStartDto`; `packages/domain/src/builders/s2410/builder.ts` | `templates/golden/builders/s2410-retirement.golden.xml` |
+| S-2416 | Benefit change | `S2416BenefitChangeDto`; `packages/domain/src/builders/s2416/builder.ts` | `templates/golden/builders/s2416-pension-founder.golden.xml` |
+| S-2418 | Benefit reactivation; publishes `reactivatedBenefitReceipt` for S-2298 | `S2418BenefitReactivationDto`; `packages/domain/src/builders/s2418/builder.ts` | `templates/golden/builders/s2418-retirement.golden.xml` |
+| S-2420 | Benefit termination | `S2420BenefitTerminationDto`; `packages/domain/src/builders/s2420/builder.ts` | `templates/golden/builders/s2420-pension.golden.xml` |
 
 ## Process, Exclusion, and Return Events
 
-| Event | Purpose | Lifted implementation | XML example |
+| Event | Purpose | Active DTO/builder | XML example |
 | --- | --- | --- | --- |
-| S-2501 | Labor process tax information | `builders/s2501.builder.ts` | `templates/golden/builders/s2501.golden.xml` |
-| S-3000 | Event exclusion | `builders/s3000.builder.ts` | `templates/golden/builders/s3000.golden.xml` |
+| S-2501 | Labor process tax information; rejects empty tax-base lists and duplicate normalized process numbers | `S2501ProcessTaxDto`; `packages/domain/src/builders/s2501/builder.ts` | `templates/golden/builders/s2501.golden.xml` |
+| S-3000 | Event exclusion; DTO carries `originalEventClass`, `originalReceipt`, and `exclusionReason`; routing is in `dispatchExclusionByOriginalClass(dto)` with no `public.esocial_event` reads | `S3000ExclusionDto`; `packages/domain/src/builders/s3000/builder.ts` | `templates/golden/builders/s3000.golden.xml` |
 | S-5001 | Social-security contribution totalizer | `packages/domain/src/returns/parsers.ts` | `packages/domain/src/sgp-lifted/esocial-worker/parsers/__fixtures__/s5001-totalizer.golden.xml` |
 | S-5002 | IRRF totalizer | `packages/domain/src/returns/parsers.ts` | `packages/domain/src/sgp-lifted/esocial-worker/parsers/__fixtures__/s5002-totalizer.golden.xml` |
 | S-5011 | Employer contribution totalizer | `packages/domain/src/returns/parsers.ts` | `packages/domain/src/sgp-lifted/esocial-worker/parsers/__fixtures__/s5011-totalizer.golden.xml` |

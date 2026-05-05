@@ -42,19 +42,78 @@
         "exclusion"
       ]
     },
-    "round1Pending": {
-      "const": true
+    "employerCnpj": {
+      "type": "string",
+      "minLength": 1
     },
-    "deferredReason": {
-      "const": "builder_not_promoted_in_round0"
+    "employerCpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "eventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "benefitIdentifier": {
+      "type": "string",
+      "minLength": 1
+    },
+    "beneficiaryCpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "benefitNumber": {
+      "type": "string",
+      "minLength": 1
+    },
+    "changeDate": {
+      "type": "string",
+      "minLength": 1
+    },
+    "acceptedS2410Receipt": {
+      "type": "string",
+      "minLength": 1
+    },
+    "benefitType": {
+      "type": "string",
+      "minLength": 1
+    },
+    "planType": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "suspensionIndicator": {
+      "enum": [
+        "S",
+        "N"
+      ]
+    },
+    "pensionDeathType": {
+      "enum": [
+        "1",
+        "2"
+      ]
+    },
+    "dependentTypeCode": {
+      "type": "string",
+      "minLength": 1
     }
   },
   "required": [
     "eventClass",
     "tenantId",
     "sourceEventId",
-    "round1Pending",
-    "deferredReason"
+    "employerCnpj",
+    "benefitIdentifier",
+    "beneficiaryCpf",
+    "benefitNumber",
+    "changeDate",
+    "acceptedS2410Receipt",
+    "benefitType"
   ],
   "not": {
     "anyOf": [

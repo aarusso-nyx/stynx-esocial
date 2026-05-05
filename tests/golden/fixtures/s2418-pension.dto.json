@@ -1,0 +1,17 @@
+{
+  "eventClass": "S-2418",
+  "tenantId": "tenant-a",
+  "sourceEventId": "source-event-S-2418-pension",
+  "sourceEntityId": "sgp-s2410-pension-1",
+  "environment": "qualification",
+  "employerCnpj": "12345678000199",
+  "benefitKind": "PENSION",
+  "benefitIdentifier": "sgp-s2410-pension-1",
+  "beneficiaryCpf": "12345678901",
+  "benefitNumber": "PEN08000000000000001",
+  "effectiveReactivationDate": "2026-05-20",
+  "financialEffectDate": "2026-05-01",
+  "acceptedS2410Receipt": "1.1.0000000000000002410",
+  "suspendedOrTerminatedBenefitReceipt": "1.1.0000000000000002420",
+  "reactivatedBenefitReceipt": "1.1.0000000000000002418"
+}

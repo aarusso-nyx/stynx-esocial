@@ -93,7 +93,7 @@
       "type": "string",
       "minLength": 1
     },
-    "originatingS2418Receipt": {
+    "reactivatedBenefitReceipt": {
       "type": "string",
       "minLength": 1
     }

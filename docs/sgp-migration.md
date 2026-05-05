@@ -73,6 +73,14 @@ Active DTO map:
 | `S-2300` | Employer CNPJ, TS-V worker id, CPF, name, birth date, registration, category, start date, role, pay, and optional workplace/email. | `packages/contracts/examples/v1/requests/S-2300.request.json` |
 | `S-2306` | Employer CNPJ, TS-V contract id, CPF, registration, change discriminator/date, and role/pay/internship/workplace evidence. | `packages/contracts/examples/v1/requests/S-2306.request.json` |
 | `S-2399` | Employer CNPJ, TS-V contract id, CPF, registration, termination date, accepted S-2300 receipt, and optional accepted S-2306 receipt. | `packages/contracts/examples/v1/requests/S-2399.request.json` |
+| `S-2400` | Employer CNPJ, opaque beneficiary id, CPF, name, birth/start dates, sex, marital status, and optional dependents. | `packages/contracts/examples/v1/requests/S-2400.request.json` |
+| `S-2405` | Employer CNPJ, beneficiary id/CPF/name, change date, and accepted S-2400 receipt. | `packages/contracts/examples/v1/requests/S-2405.request.json` |
+| `S-2410` | Employer CNPJ, `benefitKind`, stable `benefitIdentifier`, beneficiary CPF, benefit number, start date, benefit type, and optional pension/death metadata. | `packages/contracts/examples/v1/requests/S-2410.request.json` |
+| `S-2416` | Employer CNPJ, `benefitIdentifier`, beneficiary CPF, benefit number, change date, accepted S-2410 receipt, benefit type, and pension-founder metadata. | `packages/contracts/examples/v1/requests/S-2416.request.json` |
+| `S-2418` | Employer CNPJ, `benefitIdentifier`, beneficiary CPF, benefit number, reactivation/effect dates, accepted S-2410 receipt, prior suspended/terminated receipt, and optional `reactivatedBenefitReceipt`. | `packages/contracts/examples/v1/requests/S-2418.request.json` |
+| `S-2420` | Employer CNPJ, `benefitIdentifier`, beneficiary CPF, benefit number, termination date/reason, and accepted S-2410 receipt. | `packages/contracts/examples/v1/requests/S-2420.request.json` |
+| `S-2501` | Employer CNPJ, process number, optional linked process numbers, payment period, sequence, observation, and non-empty process tax-base list. | `packages/contracts/examples/v1/requests/S-2501.request.json` |
+| `S-3000` | Employer CNPJ, `originalEventClass`, `originalReceipt`, `exclusionReason`, and the applicable worker/benefit/period identity fields. | `packages/contracts/examples/v1/requests/S-3000.request.json` |
 
 SGP must not populate XML, SOAP endpoint URL, `signedEnvelope`, certificate
 reference, or official response fields. Those are eSocial-owned runtime fields.

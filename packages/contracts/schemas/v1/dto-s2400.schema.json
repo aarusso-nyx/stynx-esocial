@@ -42,19 +42,95 @@
         "exclusion"
       ]
     },
-    "round1Pending": {
-      "const": true
+    "employerCnpj": {
+      "type": "string",
+      "minLength": 1
     },
-    "deferredReason": {
-      "const": "builder_not_promoted_in_round0"
+    "employerCpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "eventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "beneficiaryId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "birthDate": {
+      "type": "string",
+      "minLength": 1
+    },
+    "startDate": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sex": {
+      "enum": [
+        "F",
+        "M"
+      ]
+    },
+    "maritalStatus": {
+      "type": "string",
+      "minLength": 1
+    },
+    "dependents": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "sourceDependentId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "birthDate": {
+            "type": "string",
+            "minLength": 1
+          },
+          "relationshipCode": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cpf": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "sourceDependentId",
+          "name",
+          "birthDate",
+          "relationshipCode"
+        ]
+      }
     }
   },
   "required": [
     "eventClass",
     "tenantId",
     "sourceEventId",
-    "round1Pending",
-    "deferredReason"
+    "employerCnpj",
+    "beneficiaryId",
+    "cpf",
+    "name",
+    "birthDate",
+    "startDate",
+    "sex"
   ],
   "not": {
     "anyOf": [

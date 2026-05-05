@@ -26,6 +26,14 @@ import type {
   S2300TsvStartDto,
   S2306TsvContractChangeDto,
   S2399TsvTerminationDto,
+  S2400BeneficiaryRegistrationDto,
+  S2405BeneficiaryChangeDto,
+  S2410BenefitStartDto,
+  S2416BenefitChangeDto,
+  S2418BenefitReactivationDto,
+  S2420BenefitTerminationDto,
+  S2501ProcessTaxDto,
+  S3000ExclusionDto,
 } from '@esocial/contracts';
 
 import {
@@ -53,6 +61,14 @@ import {
   buildS2300,
   buildS2306,
   buildS2399,
+  buildS2400,
+  buildS2405,
+  buildS2410,
+  buildS2416,
+  buildS2418,
+  buildS2420,
+  buildS2501,
+  buildS3000,
 } from '../builders/index.js';
 import type { BuilderContext, BuiltXml } from '../builders/index.js';
 
@@ -216,6 +232,46 @@ const ROUND0_DISPATCHERS: Partial<Record<EsocialRelayEventClass, SubmissionDispa
     'S-2399': (dto, context) =>
       dispatchBuiltXml(
         buildS2399(dto as S2399TsvTerminationDto, builderContext(context)),
+        context,
+      ),
+    'S-2400': (dto, context) =>
+      dispatchBuiltXml(
+        buildS2400(dto as S2400BeneficiaryRegistrationDto, builderContext(context)),
+        context,
+      ),
+    'S-2405': (dto, context) =>
+      dispatchBuiltXml(
+        buildS2405(dto as S2405BeneficiaryChangeDto, builderContext(context)),
+        context,
+      ),
+    'S-2410': (dto, context) =>
+      dispatchBuiltXml(
+        buildS2410(dto as S2410BenefitStartDto, builderContext(context)),
+        context,
+      ),
+    'S-2416': (dto, context) =>
+      dispatchBuiltXml(
+        buildS2416(dto as S2416BenefitChangeDto, builderContext(context)),
+        context,
+      ),
+    'S-2418': (dto, context) =>
+      dispatchBuiltXml(
+        buildS2418(dto as S2418BenefitReactivationDto, builderContext(context)),
+        context,
+      ),
+    'S-2420': (dto, context) =>
+      dispatchBuiltXml(
+        buildS2420(dto as S2420BenefitTerminationDto, builderContext(context)),
+        context,
+      ),
+    'S-2501': (dto, context) =>
+      dispatchBuiltXml(
+        buildS2501(dto as S2501ProcessTaxDto, builderContext(context)),
+        context,
+      ),
+    'S-3000': (dto, context) =>
+      dispatchBuiltXml(
+        buildS3000(dto as S3000ExclusionDto, builderContext(context)),
         context,
       ),
   };

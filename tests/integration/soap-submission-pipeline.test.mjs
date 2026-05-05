@@ -33,6 +33,14 @@ import {
   buildS2300,
   buildS2306,
   buildS2399,
+  buildS2400,
+  buildS2405,
+  buildS2410,
+  buildS2416,
+  buildS2418,
+  buildS2420,
+  buildS2501,
+  buildS3000,
   routeSubmissionEventClass,
 } from '../../packages/domain/dist/index.js';
 import { signXmlBytes } from '../../packages/pki-pades/dist/index.js';
@@ -71,6 +79,14 @@ const familySpecs = {
   'S-2300': { fixture: 's2300.dto.json', build: buildS2300, kind: 'trabalhador' },
   'S-2306': { fixture: 's2306.dto.json', build: buildS2306, kind: 'trabalhador' },
   'S-2399': { fixture: 's2399.dto.json', build: buildS2399, kind: 'trabalhador' },
+  'S-2400': { fixture: 's2400.dto.json', build: buildS2400, kind: 'submit' },
+  'S-2405': { fixture: 's2405.dto.json', build: buildS2405, kind: 'submit' },
+  'S-2410': { fixture: 's2410-retirement.dto.json', build: buildS2410, kind: 'submit' },
+  'S-2416': { fixture: 's2416.dto.json', build: buildS2416, kind: 'submit' },
+  'S-2418': { fixture: 's2418-retirement.dto.json', build: buildS2418, kind: 'submit' },
+  'S-2420': { fixture: 's2420.dto.json', build: buildS2420, kind: 'submit' },
+  'S-2501': { fixture: 's2501.dto.json', build: buildS2501, kind: 'submit' },
+  'S-3000': { fixture: 's3000-table.dto.json', build: buildS3000, kind: 'exclusao' },
 };
 
 test('promoted DTO to SOAP pipeline persists sent status and deterministic hashes for all active families', async () => {
@@ -135,7 +151,26 @@ test('promoted DTO to SOAP pipeline persists sent status and deterministic hashe
       assert.equal(result.spoolUpdate.status_transition.to, 'sent');
     }
 
-    const expectedCount = String(Object.keys(familySpecs).length);
+    const workerExclusion = {
+      ...fixture('s3000-worker.dto.json'),
+      tenantId,
+      environment: 'qualification',
+    };
+    const workerExclusionResult = await processor.process(
+      submissionEnvelope({
+        tenantId,
+        eventClass: 'S-3000',
+        kind: 'exclusao',
+        dto: workerExclusion,
+      }),
+    );
+    assert.equal(workerExclusionResult.record.status, 'sent', 'S-3000 worker exclusion');
+    assert.match(
+      buildS3000(workerExclusion).xml,
+      /<ideTrabalhador><cpfTrab>12345678901<\/cpfTrab><\/ideTrabalhador>/u,
+    );
+
+    const expectedCount = String(Object.keys(familySpecs).length + 1);
     assert.equal(queryScalar(workerUrl, 'SELECT count(*) FROM esocial.submission_batch;'), expectedCount);
     assert.equal(queryScalar(workerUrl, "SELECT count(*) FROM esocial.submission_batch WHERE status = 'SENT';"), expectedCount);
     assert.equal(queryScalar(workerUrl, "SELECT count(*) FROM esocial.event_record WHERE status = 'SENT';"), expectedCount);
@@ -152,8 +187,8 @@ test('promoted DTO to SOAP pipeline persists sent status and deterministic hashe
       ),
       expectedCount,
     );
-    assert.equal(published.spool.length, Object.keys(familySpecs).length);
-    assert.equal(published.response.length, Object.keys(familySpecs).length);
+    assert.equal(published.spool.length, Number(expectedCount));
+    assert.equal(published.response.length, Number(expectedCount));
   } finally {
     if (repository) await repository.close();
     cleanup(databaseName, workerRole);

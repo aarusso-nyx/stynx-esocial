@@ -218,7 +218,15 @@ Round 1 Batch 3 promotes the Worker/SST/TSV classes listed above into active
 DTO schemas and builders. `S-2210` reopening/death DTOs carry the original CAT
 receipt in `originalReceipt`; `S-2220` and `S-2230` use discriminated `kind`
 fields; `S-2240` uses `operation: "start" | "change" | "end"`; `S-2399`
-carries accepted TS-V context as opaque S-2300/S-2306 receipt fields. These
+carries accepted TS-V context as opaque S-2300/S-2306 receipt fields.
+
+Round 1 Batch 4 promotes benefits/process/exclusion into active DTO schemas
+and builders. `S-2410.benefitIdentifier` is the stable opaque identifier that
+`S-1207.benefits[].benefitSourceId` references. `S-2418` publishes optional
+`reactivatedBenefitReceipt`, which `S-2298` carries when reintegration is tied
+to benefit reactivation. `S-3000` is DTO-complete: SGP must send
+`originalEventClass`, `originalReceipt`, and `exclusionReason`, plus the
+family-specific worker/benefit/period identity fields when applicable. These
 fields replace any historical SGP-side lookup of `public.esocial_event`.
 
 ## Idempotency

@@ -1,0 +1,35 @@
+{
+  "eventClass": "S-2501",
+  "tenantId": "tenant-a",
+  "sourceEventId": "source-event-S-2501",
+  "sourceEntityId": "process-tax-1",
+  "environment": "qualification",
+  "employerCnpj": "12345678000199",
+  "processNumber": "12345678901234567890",
+  "linkedProcessNumbers": [
+    "000000000000001"
+  ],
+  "paymentPeriod": "2026-05",
+  "sequenceNumber": 1,
+  "observation": "Processo trabalhista com bases tributarias apuradas",
+  "processTaxBases": [
+    {
+      "workerCpf": "12345678901",
+      "referencePeriod": "2026-05",
+      "monthlyBase": "1000.00",
+      "thirteenthBase": "0.00",
+      "contributions": [
+        {
+          "revenueCode": "113851",
+          "amount": "110.00"
+        }
+      ],
+      "irrf": [
+        {
+          "revenueCode": "593656",
+          "amount": "50.00"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "eventClass": "S-2420",
+  "tenantId": "tenant-a",
+  "sourceEventId": "source-event-S-2420",
+  "sourceEntityId": "sgp-s2410-pension-1",
+  "environment": "qualification",
+  "employerCnpj": "12345678000199",
+  "benefitIdentifier": "sgp-s2410-pension-1",
+  "beneficiaryCpf": "12345678901",
+  "benefitNumber": "PEN08000000000000001",
+  "terminationDate": "2026-05-31",
+  "terminationReasonCode": "05",
+  "acceptedS2410Receipt": "1.1.0000000000000002410"
+}

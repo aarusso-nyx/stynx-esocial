@@ -106,7 +106,7 @@ export type S2298ReintegrationDto = WorkerEventBase<'S-2298'> &
     decisionDate: string;
     processNumber?: string;
     originalS2299Receipt: string;
-    originatingS2418Receipt?: string;
+    reactivatedBenefitReceipt?: string;
   }>;
 
 export type S2299TerminationRubricDto = Readonly<{

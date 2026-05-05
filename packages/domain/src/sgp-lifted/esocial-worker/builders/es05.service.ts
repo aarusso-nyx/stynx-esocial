@@ -13,7 +13,7 @@ import {
 } from '../parsers/totalizer.parser';
 import { S1299Builder, S1299PendingPeriodic } from './s1299.builder';
 import { dateCompetence, monthCompetence } from './s1299.builder';
-import { sha256 } from './shared-worker-common';
+import { sha256 } from './s1xxx-common';
 
 export interface ES05ClosureState {
   competence: string;

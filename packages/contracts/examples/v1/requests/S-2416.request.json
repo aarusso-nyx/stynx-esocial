@@ -3,7 +3,7 @@
   "family": "request",
   "request-id": "req-request-S-2416",
   "correlation-id": "corr-S-2416",
-  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-2416:source-event-S-2416:source-entity-S-2416:-:-:sha256%3A37ea5fe4ee39e811b5477b25b18ab06410a837920cb99a26977e72d417b97476:-:-",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-2416:source-event-S-2416:source-entity-S-2416:-:-:sha256%3Ae491ba9d40732ca0d0047e40a9af49137c70542e704e0b0a1afe9c652bfa52b7:-:-",
   "created_at": "2026-05-05T12:00:00.000Z",
   "tenant_id": "tenant-a",
   "environment": "QUALIFICATION",
@@ -15,7 +15,7 @@
     "source_system": "SGP"
   },
   "kind": "submit",
-  "payload_hash": "sha256:37ea5fe4ee39e811b5477b25b18ab06410a837920cb99a26977e72d417b97476",
+  "payload_hash": "sha256:e491ba9d40732ca0d0047e40a9af49137c70542e704e0b0a1afe9c652bfa52b7",
   "attempt": 1,
   "max-attempts": 3,
   "reply-to": "sgp.esocial.submit.response",
@@ -26,7 +26,16 @@
     "sourceEventId": "source-event-S-2416",
     "sourceEntityId": "source-entity-S-2416",
     "environment": "qualification",
-    "round1Pending": true,
-    "deferredReason": "builder_not_promoted_in_round0"
+    "employerCnpj": "12345678000199",
+    "benefitIdentifier": "sgp-s2410-pension-1",
+    "beneficiaryCpf": "12345678901",
+    "benefitNumber": "PEN08000000000000001",
+    "changeDate": "2026-05-16",
+    "acceptedS2410Receipt": "1.1.0000000000000002410",
+    "benefitType": "0601",
+    "planType": "0",
+    "description": "Alteracao de pensao por morte",
+    "pensionDeathType": "1",
+    "dependentTypeCode": "03"
   }
 }

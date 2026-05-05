@@ -1,0 +1,24 @@
+{
+  "eventClass": "S-2400",
+  "tenantId": "tenant-a",
+  "sourceEventId": "source-event-S-2400",
+  "sourceEntityId": "beneficiary-1",
+  "environment": "qualification",
+  "employerCnpj": "12345678000199",
+  "beneficiaryId": "beneficiary-1",
+  "cpf": "12345678901",
+  "name": "Beneficiaria RPPS",
+  "birthDate": "1960-01-01",
+  "startDate": "2026-05-01",
+  "sex": "F",
+  "maritalStatus": "2",
+  "dependents": [
+    {
+      "sourceDependentId": "benef-dependent-1",
+      "name": "Dependente Beneficio",
+      "birthDate": "2010-02-03",
+      "relationshipCode": "03",
+      "cpf": "98765432100"
+    }
+  ]
+}

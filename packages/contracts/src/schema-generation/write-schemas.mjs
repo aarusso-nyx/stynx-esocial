@@ -35,6 +35,14 @@ const promotedDtoEvents = new Set([
   'S-2300',
   'S-2306',
   'S-2399',
+  'S-2400',
+  'S-2405',
+  'S-2410',
+  'S-2416',
+  'S-2418',
+  'S-2420',
+  'S-2501',
+  'S-3000',
 ]);
 const eventClasses = [...kinds.ESOCIAL_RELAY_EVENT_CLASSES];
 const statuses = [...kinds.ESOCIAL_STATUSES];
@@ -747,7 +755,7 @@ function activeDtoSchema(eventClass) {
         decisionDate: nonEmptyString(),
         processNumber: nonEmptyString(),
         originalS2299Receipt: nonEmptyString(),
-        originatingS2418Receipt: nonEmptyString(),
+        reactivatedBenefitReceipt: nonEmptyString(),
       }),
     },
     'S-2299': {
@@ -851,6 +859,180 @@ function activeDtoSchema(eventClass) {
         acceptedS2300Receipt: nonEmptyString(),
         acceptedS2306Receipt: nonEmptyString(),
       },
+    },
+    'S-2400': {
+      required: [
+        'employerCnpj',
+        'beneficiaryId',
+        'cpf',
+        'name',
+        'birthDate',
+        'startDate',
+        'sex',
+      ],
+      properties: benefitProperties({
+        beneficiaryId: nonEmptyString(),
+        cpf: nonEmptyString(),
+        name: nonEmptyString(),
+        birthDate: nonEmptyString(),
+        startDate: nonEmptyString(),
+        sex: { enum: ['F', 'M'] },
+        maritalStatus: nonEmptyString(),
+        dependents: dependentsArraySchema(),
+      }),
+    },
+    'S-2405': {
+      required: [
+        'employerCnpj',
+        'beneficiaryId',
+        'cpf',
+        'name',
+        'changeDate',
+        'acceptedS2400Receipt',
+      ],
+      properties: benefitProperties({
+        beneficiaryId: nonEmptyString(),
+        cpf: nonEmptyString(),
+        name: nonEmptyString(),
+        changeDate: nonEmptyString(),
+        acceptedS2400Receipt: nonEmptyString(),
+        sex: { enum: ['F', 'M'] },
+        maritalStatus: nonEmptyString(),
+      }),
+    },
+    'S-2410': {
+      required: [
+        'employerCnpj',
+        'benefitKind',
+        'benefitIdentifier',
+        'beneficiaryCpf',
+        'benefitNumber',
+        'startDate',
+        'benefitType',
+      ],
+      properties: benefitProperties({
+        benefitKind: { enum: ['RETIREMENT', 'PENSION'] },
+        benefitIdentifier: nonEmptyString(),
+        beneficiaryCpf: nonEmptyString(),
+        benefitNumber: nonEmptyString(),
+        startDate: nonEmptyString(),
+        benefitType: nonEmptyString(),
+        planType: nonEmptyString(),
+        description: nonEmptyString(),
+        registration: nonEmptyString(),
+        judicialDecision: { enum: ['S', 'N'] },
+        institutingCpf: nonEmptyString(),
+        pensionDeathType: { enum: ['1', '2'] },
+        dependentTypeCode: nonEmptyString(),
+      }),
+    },
+    'S-2416': {
+      required: [
+        'employerCnpj',
+        'benefitIdentifier',
+        'beneficiaryCpf',
+        'benefitNumber',
+        'changeDate',
+        'acceptedS2410Receipt',
+        'benefitType',
+      ],
+      properties: benefitProperties({
+        benefitIdentifier: nonEmptyString(),
+        beneficiaryCpf: nonEmptyString(),
+        benefitNumber: nonEmptyString(),
+        changeDate: nonEmptyString(),
+        acceptedS2410Receipt: nonEmptyString(),
+        benefitType: nonEmptyString(),
+        planType: nonEmptyString(),
+        description: nonEmptyString(),
+        suspensionIndicator: { enum: ['S', 'N'] },
+        pensionDeathType: { enum: ['1', '2'] },
+        dependentTypeCode: nonEmptyString(),
+      }),
+    },
+    'S-2418': {
+      required: [
+        'employerCnpj',
+        'benefitKind',
+        'benefitIdentifier',
+        'beneficiaryCpf',
+        'benefitNumber',
+        'effectiveReactivationDate',
+        'financialEffectDate',
+        'acceptedS2410Receipt',
+        'suspendedOrTerminatedBenefitReceipt',
+      ],
+      properties: benefitProperties({
+        benefitKind: { enum: ['RETIREMENT', 'PENSION'] },
+        benefitIdentifier: nonEmptyString(),
+        beneficiaryCpf: nonEmptyString(),
+        benefitNumber: nonEmptyString(),
+        effectiveReactivationDate: nonEmptyString(),
+        financialEffectDate: nonEmptyString(),
+        acceptedS2410Receipt: nonEmptyString(),
+        suspendedOrTerminatedBenefitReceipt: nonEmptyString(),
+        reactivatedBenefitReceipt: nonEmptyString(),
+      }),
+    },
+    'S-2420': {
+      required: [
+        'employerCnpj',
+        'benefitIdentifier',
+        'beneficiaryCpf',
+        'benefitNumber',
+        'terminationDate',
+        'terminationReasonCode',
+        'acceptedS2410Receipt',
+      ],
+      properties: benefitProperties({
+        benefitIdentifier: nonEmptyString(),
+        beneficiaryCpf: nonEmptyString(),
+        benefitNumber: nonEmptyString(),
+        terminationDate: nonEmptyString(),
+        terminationReasonCode: nonEmptyString(),
+        acceptedS2410Receipt: nonEmptyString(),
+      }),
+    },
+    'S-2501': {
+      required: [
+        'employerCnpj',
+        'processNumber',
+        'paymentPeriod',
+        'processTaxBases',
+      ],
+      properties: benefitProperties({
+        processNumber: nonEmptyString(),
+        linkedProcessNumbers: {
+          type: 'array',
+          items: nonEmptyString(),
+        },
+        paymentPeriod: nonEmptyString(),
+        sequenceNumber: integer(1),
+        observation: nonEmptyString(),
+        processTaxBases: {
+          type: 'array',
+          minItems: 1,
+          items: processTaxBaseSchema(),
+        },
+      }),
+    },
+    'S-3000': {
+      required: [
+        'employerCnpj',
+        'originalEventClass',
+        'originalReceipt',
+        'exclusionReason',
+      ],
+      properties: benefitProperties({
+        originalEventClass: nonEmptyString(),
+        originalReceipt: nonEmptyString(),
+        exclusionReason: nonEmptyString(),
+        originalCompetence: nonEmptyString(),
+        cpf: nonEmptyString(),
+        registration: nonEmptyString(),
+        beneficiaryCpf: nonEmptyString(),
+        benefitNumber: nonEmptyString(),
+      }),
     },
   };
 
@@ -1268,6 +1450,138 @@ function dtoExample(eventClass) {
     };
   }
 
+  if (eventClass === 'S-2400') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      beneficiaryId: 'beneficiary-1',
+      cpf: '12345678901',
+      name: 'Beneficiaria RPPS',
+      birthDate: '1960-01-01',
+      startDate: '2026-05-01',
+      sex: 'F',
+      maritalStatus: '2',
+      dependents: [
+        {
+          sourceDependentId: 'benef-dependent-1',
+          name: 'Dependente Beneficio',
+          birthDate: '2010-02-03',
+          relationshipCode: '03',
+        },
+      ],
+    };
+  }
+
+  if (eventClass === 'S-2405') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      beneficiaryId: 'beneficiary-1',
+      cpf: '12345678901',
+      name: 'Beneficiaria RPPS Atualizada',
+      changeDate: '2026-05-15',
+      acceptedS2400Receipt: '1.1.0000000000000002400',
+      sex: 'F',
+    };
+  }
+
+  if (eventClass === 'S-2410') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      benefitKind: 'RETIREMENT',
+      benefitIdentifier: 'sgp-s2410-benefit-1',
+      beneficiaryCpf: '12345678901',
+      benefitNumber: 'RET08000000000000001',
+      startDate: '2026-05-01',
+      benefitType: '0101',
+      planType: '0',
+      description: 'Aposentadoria por tempo de contribuicao',
+      registration: 'MAT-1',
+      judicialDecision: 'N',
+    };
+  }
+
+  if (eventClass === 'S-2416') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      benefitIdentifier: 'sgp-s2410-pension-1',
+      beneficiaryCpf: '12345678901',
+      benefitNumber: 'PEN08000000000000001',
+      changeDate: '2026-05-16',
+      acceptedS2410Receipt: '1.1.0000000000000002410',
+      benefitType: '0601',
+      planType: '0',
+      description: 'Alteracao de pensao por morte',
+      pensionDeathType: '1',
+      dependentTypeCode: '03',
+    };
+  }
+
+  if (eventClass === 'S-2418') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      benefitKind: 'RETIREMENT',
+      benefitIdentifier: 'sgp-s2410-benefit-1',
+      beneficiaryCpf: '12345678901',
+      benefitNumber: 'RET08000000000000001',
+      effectiveReactivationDate: '2026-05-20',
+      financialEffectDate: '2026-05-01',
+      acceptedS2410Receipt: '1.1.0000000000000002410',
+      suspendedOrTerminatedBenefitReceipt: '1.1.0000000000000002420',
+      reactivatedBenefitReceipt: '1.1.0000000000000002418',
+    };
+  }
+
+  if (eventClass === 'S-2420') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      benefitIdentifier: 'sgp-s2410-pension-1',
+      beneficiaryCpf: '12345678901',
+      benefitNumber: 'PEN08000000000000001',
+      terminationDate: '2026-05-31',
+      terminationReasonCode: '05',
+      acceptedS2410Receipt: '1.1.0000000000000002410',
+    };
+  }
+
+  if (eventClass === 'S-2501') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      processNumber: '12345678901234567890',
+      linkedProcessNumbers: ['000000000000001'],
+      paymentPeriod: '2026-05',
+      sequenceNumber: 1,
+      observation: 'Processo trabalhista com bases tributarias apuradas',
+      processTaxBases: [
+        {
+          workerCpf: '12345678901',
+          referencePeriod: '2026-05',
+          monthlyBase: '1000.00',
+          thirteenthBase: '0.00',
+          contributions: [{ revenueCode: '113851', amount: '110.00' }],
+          irrf: [{ revenueCode: '593656', amount: '50.00' }],
+        },
+      ],
+    };
+  }
+
+  if (eventClass === 'S-3000') {
+    return {
+      ...common,
+      employerCnpj: '12345678000199',
+      originalEventClass: 'S-2200',
+      originalReceipt: '1.1.0000000000000002200',
+      exclusionReason: 'Evento enviado indevidamente pelo sistema de origem',
+      cpf: '12345678901',
+      registration: 'MAT-1',
+    };
+  }
+
   return {
     ...common,
     round1Pending: true,
@@ -1406,6 +1720,72 @@ function workerProperties(eventProperties) {
     registration: nonEmptyString(),
     receiptReference: nonEmptyString(),
     ...eventProperties,
+  };
+}
+
+function benefitProperties(eventProperties) {
+  return {
+    employerCnpj: nonEmptyString(),
+    employerCpf: nonEmptyString(),
+    eventId: nonEmptyString(),
+    ...eventProperties,
+  };
+}
+
+function dependentsArraySchema() {
+  return {
+    type: 'array',
+    items: {
+      type: 'object',
+      additionalProperties: false,
+      properties: {
+        sourceDependentId: nonEmptyString(),
+        name: nonEmptyString(),
+        birthDate: nonEmptyString(),
+        relationshipCode: nonEmptyString(),
+        cpf: nonEmptyString(),
+      },
+      required: ['sourceDependentId', 'name', 'birthDate', 'relationshipCode'],
+    },
+  };
+}
+
+function processTaxBaseSchema() {
+  return {
+    type: 'object',
+    additionalProperties: false,
+    properties: {
+      workerCpf: nonEmptyString(),
+      referencePeriod: nonEmptyString(),
+      monthlyBase: periodicMoneySchema(),
+      thirteenthBase: periodicMoneySchema(),
+      contributions: {
+        type: 'array',
+        items: {
+          type: 'object',
+          additionalProperties: false,
+          properties: {
+            revenueCode: nonEmptyString(),
+            amount: periodicMoneySchema(),
+          },
+          required: ['revenueCode', 'amount'],
+        },
+      },
+      irrf: {
+        type: 'array',
+        items: {
+          type: 'object',
+          additionalProperties: false,
+          properties: {
+            revenueCode: { enum: ['593656', '056152', '188951'] },
+            amount: periodicMoneySchema(),
+            thirteenthAmount: periodicMoneySchema(),
+          },
+          required: ['revenueCode', 'amount'],
+        },
+      },
+    },
+    required: ['workerCpf', 'referencePeriod', 'monthlyBase', 'thirteenthBase'],
   };
 }
 

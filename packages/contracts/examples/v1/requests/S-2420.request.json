@@ -3,7 +3,7 @@
   "family": "request",
   "request-id": "req-request-S-2420",
   "correlation-id": "corr-S-2420",
-  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-2420:source-event-S-2420:source-entity-S-2420:-:-:sha256%3Adbd26f7f66f87e5772bd6dcb1c82aacca5cf37b27761c546437fff89b1c28f06:-:-",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-2420:source-event-S-2420:source-entity-S-2420:-:-:sha256%3A7ca0328e202a0c95c45076da41aceab7cfc415c2a55ef729cb3d15a00d8ec8c6:-:-",
   "created_at": "2026-05-05T12:00:00.000Z",
   "tenant_id": "tenant-a",
   "environment": "QUALIFICATION",
@@ -15,7 +15,7 @@
     "source_system": "SGP"
   },
   "kind": "submit",
-  "payload_hash": "sha256:dbd26f7f66f87e5772bd6dcb1c82aacca5cf37b27761c546437fff89b1c28f06",
+  "payload_hash": "sha256:7ca0328e202a0c95c45076da41aceab7cfc415c2a55ef729cb3d15a00d8ec8c6",
   "attempt": 1,
   "max-attempts": 3,
   "reply-to": "sgp.esocial.submit.response",
@@ -26,7 +26,12 @@
     "sourceEventId": "source-event-S-2420",
     "sourceEntityId": "source-entity-S-2420",
     "environment": "qualification",
-    "round1Pending": true,
-    "deferredReason": "builder_not_promoted_in_round0"
+    "employerCnpj": "12345678000199",
+    "benefitIdentifier": "sgp-s2410-pension-1",
+    "beneficiaryCpf": "12345678901",
+    "benefitNumber": "PEN08000000000000001",
+    "terminationDate": "2026-05-31",
+    "terminationReasonCode": "05",
+    "acceptedS2410Receipt": "1.1.0000000000000002410"
   }
 }

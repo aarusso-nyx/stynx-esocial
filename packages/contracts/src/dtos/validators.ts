@@ -1,6 +1,10 @@
 import { ESOCIAL_RELAY_EVENT_CLASSES } from '../kinds.js';
 import type { EsocialRelayEventClass } from '../kinds.js';
 
+import {
+  ESOCIAL_PROMOTED_BENEFIT_PROCESS_DTO_EVENT_CLASSES,
+} from './benefits-process-exclusion.js';
+import type { EsocialPromotedBenefitProcessDto } from './benefits-process-exclusion.js';
 import type { EsocialDtoEnvironment } from './common.js';
 import {
   ESOCIAL_PROMOTED_PERIODIC_DTO_EVENT_CLASSES,
@@ -23,6 +27,7 @@ export type EsocialSgpRequestDto =
   | EsocialPromotedTableDto
   | EsocialPromotedPeriodicDto
   | EsocialPromotedWorkerDto
+  | EsocialPromotedBenefitProcessDto
   | EsocialRound1PendingDto;
 
 export type EsocialRelayRequestPayload =
@@ -92,6 +97,13 @@ export function validateEsocialSgpRequestDto(
   ) {
     validatePromotedWorkerDto(candidate, candidate.eventClass, errors);
   } else if (
+    includesString(
+      ESOCIAL_PROMOTED_BENEFIT_PROCESS_DTO_EVENT_CLASSES,
+      candidate.eventClass,
+    )
+  ) {
+    validatePromotedBenefitProcessDto(candidate, candidate.eventClass, errors);
+  } else if (
     includesString(ESOCIAL_RELAY_EVENT_CLASSES, candidate.eventClass) &&
     candidate.round1Pending !== true
   ) {
@@ -100,6 +112,95 @@ export function validateEsocialSgpRequestDto(
 
   if (errors.length > 0) return { ok: false, errors };
   return { ok: true, dto: candidate as EsocialSgpRequestDto };
+}
+
+function validatePromotedBenefitProcessDto(
+  candidate: Record<string, unknown>,
+  eventClass: EsocialRelayEventClass,
+  errors: string[],
+): void {
+  requireStrings(candidate, errors, ['employerCnpj']);
+
+  if (eventClass === 'S-2400') {
+    requireStrings(candidate, errors, [
+      'beneficiaryId',
+      'cpf',
+      'name',
+      'birthDate',
+      'startDate',
+      'sex',
+    ]);
+  }
+  if (eventClass === 'S-2405') {
+    requireStrings(candidate, errors, [
+      'beneficiaryId',
+      'cpf',
+      'name',
+      'changeDate',
+      'acceptedS2400Receipt',
+    ]);
+  }
+  if (eventClass === 'S-2410') {
+    requireStrings(candidate, errors, [
+      'benefitKind',
+      'benefitIdentifier',
+      'beneficiaryCpf',
+      'benefitNumber',
+      'startDate',
+      'benefitType',
+    ]);
+  }
+  if (eventClass === 'S-2416') {
+    requireStrings(candidate, errors, [
+      'benefitIdentifier',
+      'beneficiaryCpf',
+      'benefitNumber',
+      'changeDate',
+      'acceptedS2410Receipt',
+      'benefitType',
+    ]);
+  }
+  if (eventClass === 'S-2418') {
+    requireStrings(candidate, errors, [
+      'benefitKind',
+      'benefitIdentifier',
+      'beneficiaryCpf',
+      'benefitNumber',
+      'effectiveReactivationDate',
+      'financialEffectDate',
+      'acceptedS2410Receipt',
+      'suspendedOrTerminatedBenefitReceipt',
+    ]);
+  }
+  if (eventClass === 'S-2420') {
+    requireStrings(candidate, errors, [
+      'benefitIdentifier',
+      'beneficiaryCpf',
+      'benefitNumber',
+      'terminationDate',
+      'terminationReasonCode',
+      'acceptedS2410Receipt',
+    ]);
+  }
+  if (eventClass === 'S-2501') {
+    requireStrings(candidate, errors, ['processNumber', 'paymentPeriod']);
+    requireArray(candidate, errors, 'processTaxBases');
+    const bases = candidate.processTaxBases;
+    if (Array.isArray(bases) && bases.length === 0) {
+      errors.push('processTaxBases must contain at least one item.');
+    }
+    requireNestedStrings(candidate, errors, 'processTaxBases', [
+      'workerCpf',
+      'referencePeriod',
+    ]);
+  }
+  if (eventClass === 'S-3000') {
+    requireStrings(candidate, errors, [
+      'originalEventClass',
+      'originalReceipt',
+      'exclusionReason',
+    ]);
+  }
 }
 
 function validatePromotedWorkerDto(

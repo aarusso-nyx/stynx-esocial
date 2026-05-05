@@ -3,7 +3,7 @@
   "family": "request",
   "request-id": "req-request-S-2418",
   "correlation-id": "corr-S-2418",
-  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-2418:source-event-S-2418:source-entity-S-2418:-:-:sha256%3Aea41ed19abe7bab204c8f4a642df8ba3cd4f0fc0179302210064a33dd06e6bba:-:-",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-2418:source-event-S-2418:source-entity-S-2418:-:-:sha256%3A6040888d958d245488d5c7d81e3ef749510f87a9a0d0427b7884c71b869d23f5:-:-",
   "created_at": "2026-05-05T12:00:00.000Z",
   "tenant_id": "tenant-a",
   "environment": "QUALIFICATION",
@@ -15,7 +15,7 @@
     "source_system": "SGP"
   },
   "kind": "submit",
-  "payload_hash": "sha256:ea41ed19abe7bab204c8f4a642df8ba3cd4f0fc0179302210064a33dd06e6bba",
+  "payload_hash": "sha256:6040888d958d245488d5c7d81e3ef749510f87a9a0d0427b7884c71b869d23f5",
   "attempt": 1,
   "max-attempts": 3,
   "reply-to": "sgp.esocial.submit.response",
@@ -26,7 +26,15 @@
     "sourceEventId": "source-event-S-2418",
     "sourceEntityId": "source-entity-S-2418",
     "environment": "qualification",
-    "round1Pending": true,
-    "deferredReason": "builder_not_promoted_in_round0"
+    "employerCnpj": "12345678000199",
+    "benefitKind": "RETIREMENT",
+    "benefitIdentifier": "sgp-s2410-benefit-1",
+    "beneficiaryCpf": "12345678901",
+    "benefitNumber": "RET08000000000000001",
+    "effectiveReactivationDate": "2026-05-20",
+    "financialEffectDate": "2026-05-01",
+    "acceptedS2410Receipt": "1.1.0000000000000002410",
+    "suspendedOrTerminatedBenefitReceipt": "1.1.0000000000000002420",
+    "reactivatedBenefitReceipt": "1.1.0000000000000002418"
   }
 }

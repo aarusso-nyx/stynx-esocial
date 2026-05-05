@@ -3,7 +3,7 @@
   "family": "request",
   "request-id": "req-request-S-2501",
   "correlation-id": "corr-S-2501",
-  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-2501:source-event-S-2501:source-entity-S-2501:-:-:sha256%3A58a8e96a5ee166c2e71f331ea1f13b1107d86646e5d34494321aa4163e74a0f9:-:-",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-2501:source-event-S-2501:source-entity-S-2501:-:-:sha256%3A143ad546b70d61d6c7b914359aa79a6cb4f0e803c3c1b1a5143915655ffca357:-:-",
   "created_at": "2026-05-05T12:00:00.000Z",
   "tenant_id": "tenant-a",
   "environment": "QUALIFICATION",
@@ -15,7 +15,7 @@
     "source_system": "SGP"
   },
   "kind": "submit",
-  "payload_hash": "sha256:58a8e96a5ee166c2e71f331ea1f13b1107d86646e5d34494321aa4163e74a0f9",
+  "payload_hash": "sha256:143ad546b70d61d6c7b914359aa79a6cb4f0e803c3c1b1a5143915655ffca357",
   "attempt": 1,
   "max-attempts": 3,
   "reply-to": "sgp.esocial.submit.response",
@@ -26,7 +26,33 @@
     "sourceEventId": "source-event-S-2501",
     "sourceEntityId": "source-entity-S-2501",
     "environment": "qualification",
-    "round1Pending": true,
-    "deferredReason": "builder_not_promoted_in_round0"
+    "employerCnpj": "12345678000199",
+    "processNumber": "12345678901234567890",
+    "linkedProcessNumbers": [
+      "000000000000001"
+    ],
+    "paymentPeriod": "2026-05",
+    "sequenceNumber": 1,
+    "observation": "Processo trabalhista com bases tributarias apuradas",
+    "processTaxBases": [
+      {
+        "workerCpf": "12345678901",
+        "referencePeriod": "2026-05",
+        "monthlyBase": "1000.00",
+        "thirteenthBase": "0.00",
+        "contributions": [
+          {
+            "revenueCode": "113851",
+            "amount": "110.00"
+          }
+        ],
+        "irrf": [
+          {
+            "revenueCode": "593656",
+            "amount": "50.00"
+          }
+        ]
+      }
+    ]
   }
 }

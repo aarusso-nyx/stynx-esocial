@@ -42,19 +42,59 @@
         "exclusion"
       ]
     },
-    "round1Pending": {
-      "const": true
+    "employerCnpj": {
+      "type": "string",
+      "minLength": 1
     },
-    "deferredReason": {
-      "const": "builder_not_promoted_in_round0"
+    "employerCpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "eventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "originalEventClass": {
+      "type": "string",
+      "minLength": 1
+    },
+    "originalReceipt": {
+      "type": "string",
+      "minLength": 1
+    },
+    "exclusionReason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "originalCompetence": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "registration": {
+      "type": "string",
+      "minLength": 1
+    },
+    "beneficiaryCpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "benefitNumber": {
+      "type": "string",
+      "minLength": 1
     }
   },
   "required": [
     "eventClass",
     "tenantId",
     "sourceEventId",
-    "round1Pending",
-    "deferredReason"
+    "employerCnpj",
+    "originalEventClass",
+    "originalReceipt",
+    "exclusionReason"
   ],
   "not": {
     "anyOf": [

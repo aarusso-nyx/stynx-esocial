@@ -32,8 +32,22 @@ export { buildS2299Worker } from './s2299/builder.js';
 export { buildS2300 } from './s2300/builder.js';
 export { buildS2306 } from './s2306/builder.js';
 export { buildS2399 } from './s2399/builder.js';
+export { buildS2400 } from './s2400/builder.js';
+export { buildS2405 } from './s2405/builder.js';
+export { buildS2410 } from './s2410/builder.js';
+export { buildS2416 } from './s2416/builder.js';
+export { buildS2418 } from './s2418/builder.js';
+export { buildS2420 } from './s2420/builder.js';
+export { buildS2501 } from './s2501/builder.js';
+export { buildS3000 } from './s3000/builder.js';
 export {
   WORKER_EVENT_METADATA,
   assertPromotedWorkerVariantHandled,
   buildPromotedWorkerXml,
 } from './worker-adapter.js';
+export {
+  BENEFIT_PROCESS_EVENT_METADATA,
+  assertPromotedBenefitProcessVariantHandled,
+  buildPromotedBenefitProcessXml,
+  dispatchExclusionByOriginalClass,
+} from './benefits-process-exclusion-adapter.js';
