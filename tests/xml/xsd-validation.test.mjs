@@ -32,7 +32,7 @@ test('promoted table XML validates against bound S-1.3 XSDs with unsigned pre-si
     assert.equal(result.eventClass, eventClass);
     assert.equal(result.issues.length, 0);
     assert.match(result.payloadHash, /^sha256:[a-f0-9]{64}$/u);
-    assert.equal(result.xsdPath, built.metadata.xsdPath);
+    assert.match(result.xsdPath, /^packages\/domain\/src\/xml\/xsd\/tables\//u);
   }
 });
 
@@ -101,20 +101,58 @@ test('XXE and DTD payloads are rejected before XSD and signing', async () => {
   );
 });
 
-test('valid promoted table XML can be signed only after XSD validation', () => {
-  const built = buildTableEvent(tableDto('S-1000'));
-  const signed = signValidatedPromotedTableXml({
-    eventClass: 'S-1000',
-    xml: built.xml,
-    certificate: localCertificate(),
-    tenantId,
-    environment,
-    now,
-  });
+test('stylesheet, external identifier, and unresolved entity payloads are rejected before XSD', async () => {
+  const cases = [
+    [
+      '<?xml-stylesheet type="text/xsl" href="file:///tmp/esocial.xsl"?><eSocial />',
+      'XML_STYLESHEET_FORBIDDEN',
+    ],
+    [
+      '<eSocial SYSTEM "file:///etc/passwd" />',
+      'XML_EXTERNAL_IDENTIFIER_FORBIDDEN',
+    ],
+    [
+      '<eSocial>&tenantSecret;</eSocial>',
+      'XML_ENTITY_REFERENCE_FORBIDDEN',
+    ],
+  ];
 
-  assert.equal(signed.validation.valid, true);
-  assert.equal(signed.signed.requestXmlSha256, built.xmlSha256);
-  assert.match(signed.signed.signedBytes.toString('utf8'), /<ds:Signature\b/u);
+  for (const [xml, code] of cases) {
+    const sink = new InMemoryXsdValidationFailureSink();
+    const result = await validateAndCapturePromotedTableXml(
+      {
+        eventClass: 'S-1000',
+        xml,
+        tenantId,
+        environment,
+        now,
+      },
+      sink,
+    );
+
+    assert.equal(result.valid, false, code);
+    assert.equal(result.statusUpdate.failure_category, 'xml_security', code);
+    assert.equal(result.issues[0].code, code);
+    assert.equal(sink.failures[0].xsdCode, code);
+  }
+});
+
+test('valid promoted table XML can be signed only after XSD validation', () => {
+  for (const eventClass of PROMOTED_TABLE_EVENT_CLASSES) {
+    const built = buildTableEvent(tableDto(eventClass));
+    const signed = signValidatedPromotedTableXml({
+      eventClass,
+      xml: built.xml,
+      certificate: localCertificate(),
+      tenantId,
+      environment,
+      now,
+    });
+
+    assert.equal(signed.validation.valid, true, eventClass);
+    assert.equal(signed.signed.requestXmlSha256, built.xmlSha256, eventClass);
+    assert.match(signed.signed.signedBytes.toString('utf8'), /<ds:Signature\b/u, eventClass);
+  }
 });
 
 function tableDto(eventClass) {

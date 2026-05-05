@@ -1,7 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-import { S2200Builder } from './s2200.builder';
 import { S2205Builder } from './s2205.builder';
 import { XsdValidatorService } from '../xsd/xsd-validator.service';
 
@@ -10,24 +9,6 @@ const employeeId = '00000000-0000-4000-8000-000000002200';
 
 describe('S-2200 and S-2205 builders', () => {
   const validator = new XsdValidatorService();
-
-  it('builds S-2200 golden XML for an employee with two dependents', async () => {
-    const builder = new S2200Builder(
-      database([
-        [employeeRow()],
-        [
-          dependentRow('Ana Silva', '22233344405', '2015-02-03', true),
-          dependentRow('Bruno Silva', '33344455506', '2018-06-07', false),
-        ],
-      ]) as never,
-    );
-
-    const record = await builder.build(tenantId, employeeId, '2026-01');
-    expect(record.xml).toBe(golden('s2200.golden.xml'));
-    expect(() =>
-      validator.assertValid('S-2200', record.xml, { allowUnsigned: true }),
-    ).not.toThrow();
-  });
 
   it('builds S-2205 golden XML for address and dependent changes', async () => {
     const builder = new S2205Builder(

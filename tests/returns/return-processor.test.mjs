@@ -54,9 +54,30 @@ test('return processor maps regulatory rejection and SOAP fault without SGP tabl
       'return-fault',
     ),
   );
-  assert.equal(faultResult.record.status, 'retry');
-  assert.equal(faultResult.spoolUpdate.status_transition.to, 'retry');
+  assert.equal(faultResult.record.status, 'failed');
+  assert.equal(faultResult.spoolUpdate.status_transition.to, 'failed');
   assert.equal(faultResult.spoolUpdate.errors[0]?.code, 'ESOCIAL_SOAP_FAULT');
+});
+
+test('return processor maps malformed XML and unknown regulatory codes to failed audit outcomes', async () => {
+  const malformed = createHarness();
+  const malformedResult = await malformed.processor.process(
+    returnEnvelope('<eSocial>', 'return-malformed'),
+  );
+  assert.equal(malformedResult.record.status, 'failed');
+  assert.equal(malformedResult.spoolUpdate.errors[0]?.category, 'schema');
+  assert.equal(malformedResult.spoolUpdate.errors[0]?.code, 'MALFORMED_XML');
+  assert.equal(malformed.repository.persisted[0].totalizerClass, undefined);
+
+  const unknown = createHarness();
+  const unknownResult = await unknown.processor.process(
+    returnEnvelope(processingXml('999'), 'return-unknown'),
+  );
+  assert.equal(unknownResult.record.status, 'failed');
+  assert.equal(unknownResult.spoolUpdate.errors[0]?.category, 'regulatory');
+  assert.equal(unknownResult.spoolUpdate.errors[0]?.code, 'ESOCIAL_RESPONSE_CODE_UNMAPPED');
+  assert.deepEqual(unknown.repository.persisted[0].auditFlags, ['unknown_regulatory_code']);
+  assert.deepEqual(unknownResult.auditEvent.after.audit_flags, ['unknown_regulatory_code']);
 });
 
 test('return processor persists totalizer traceability and publishes SGP-facing totalizer status', async () => {

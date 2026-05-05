@@ -149,12 +149,17 @@ WHERE tenant_id = '<tenant uuid>'
 ORDER BY created_at DESC;
 ```
 
-Return handling persists raw response evidence under `esocial.submission_message`,
-appends `esocial.event_status_history`, appends `esocial.audit_event_log`, and
-stores S-50xx regulatory totalizers in `esocial.esocial_totalizer`. The active
+Return handling persists raw response evidence under `esocial.submission_message`;
+audit rows carry `response_sha256`, a local raw-response reference, and payload
+byte length rather than duplicating XML. It appends `esocial.event_status_history`
+and stores S-50xx regulatory totalizers in `esocial.esocial_totalizer`. The active
 tests cover protocol success, regulatory rejection, SOAP faults, malformed XML,
 all S-5001/S-5002/S-5011/S-5012/S-5013 totalizer variants, and PostgreSQL
-totalizer persistence.
+totalizer persistence. SOAP faults are terminal `failed` transport outcomes in
+Round 0; malformed XML is a terminal `failed` schema outcome and must not create
+an `esocial_totalizer` row. Unknown regulatory response codes are terminal
+`failed` regulatory outcomes with `audit_flags` containing
+`unknown_regulatory_code`.
 
 ## Retry, DLQ, And Replay
 

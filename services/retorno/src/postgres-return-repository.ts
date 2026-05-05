@@ -1,8 +1,13 @@
 import { randomUUID } from 'node:crypto';
 
+import {
+  ESOCIAL_RELAY_EVENT_CLASSES,
+} from '@esocial/contracts';
 import type { EsocialStatus } from '@esocial/contracts';
 import type {
   PersistReturnCommand,
+  ReturnOriginLookup,
+  ReturnOriginRecord,
   ReturnPersistenceRecord,
   ReturnRepository,
   ReturnResponseClassification,
@@ -82,6 +87,53 @@ export class PostgresReturnRepository implements ReturnRepository {
       category: row.category,
       description: row.description,
       operatorActionRequired: row.operator_action_required,
+    };
+  }
+
+  async resolveOrigin(input: ReturnOriginLookup): Promise<ReturnOriginRecord | undefined> {
+    const result = await this.pool.query<{
+      event_record_id: string;
+      batch_id: string | null;
+      status: string;
+      event_class: string;
+      competence: string | null;
+    }>(
+      `
+        SELECT
+          er.event_record_id,
+          COALESCE(er.batch_id, sb.batch_id) AS batch_id,
+          er.status,
+          er.event_class,
+          er.competence
+        FROM esocial.event_record er
+        LEFT JOIN esocial.submission_batch sb
+          ON sb.tenant_id = er.tenant_id
+         AND sb.environment = er.environment
+         AND (
+           sb.batch_id = er.batch_id
+           OR ($3::text IS NOT NULL AND sb.protocol_number = $3)
+         )
+        WHERE er.tenant_id = $1
+          AND er.environment = $2
+          AND (
+            ($3::text IS NOT NULL AND er.protocol_number = $3)
+            OR ($4::text IS NOT NULL AND er.receipt_number = $4)
+            OR ($3::text IS NOT NULL AND sb.protocol_number = $3)
+          )
+        ORDER BY er.updated_at DESC, er.created_at DESC
+        LIMIT 1
+      `,
+      [input.tenantId, input.environment, input.protocol ?? null, input.receipt ?? null],
+    );
+    const row = result.rows[0];
+    if (!row || !row.batch_id) return undefined;
+
+    return {
+      eventRecordId: row.event_record_id,
+      batchId: row.batch_id,
+      previousStatus: statusFromDatabase(row.status),
+      sourceEventClass: returnEventClass(row.event_class),
+      competence: row.competence ?? undefined,
     };
   }
 
@@ -201,6 +253,7 @@ async function persistReturnMessage(
         envelope: command.envelope,
         parsed: command.parsed,
         classification: command.classification,
+        audit_flags: command.auditFlags,
         raw_response_xml: command.rawResponseXml,
       }),
       command.status,
@@ -380,7 +433,9 @@ async function appendAuditEvent(
         parsed: command.parsed,
         classification: command.classification,
         errors: command.errors,
-        raw_response_xml: command.rawResponseXml,
+        audit_flags: command.auditFlags,
+        raw_response_ref: `local://esocial.submission_message/${messageId}/payload.raw_response_xml`,
+        raw_response_bytes: command.rawResponseXml.length,
       }),
       command.responseHash,
     ],
@@ -484,4 +539,12 @@ function statusFromDatabase(status: string): EsocialStatus {
   return statuses.includes(normalized as EsocialStatus)
     ? normalized as EsocialStatus
     : 'failed';
+}
+
+function returnEventClass(value: string): ReturnOriginRecord['sourceEventClass'] {
+  return ESOCIAL_RELAY_EVENT_CLASSES.includes(
+    value as NonNullable<ReturnOriginRecord['sourceEventClass']>,
+  )
+    ? value as ReturnOriginRecord['sourceEventClass']
+    : undefined;
 }

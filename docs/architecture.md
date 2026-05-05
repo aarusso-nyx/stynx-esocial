@@ -47,6 +47,15 @@ logic into standalone packages.
 5. SGP consumes the update and mirrors receipt/status/error data into
    `public.esocial_events` for local reports and audit traces.
 
+## FIFO Grouping
+
+Submission, spool, retry, and DLQ publishers use FIFO grouping by
+`MessageGroupId = ${tenant_id}:${event_class}` so one tenant/event family is
+ordered without serializing unrelated tenants or event classes. The
+`MessageDeduplicationId` is derived from the inbound idempotency key plus the
+outbound event id, and the `correlation-id` is propagated through the envelope,
+publisher command, and handler logs.
+
 ## Database Boundary
 
 The service owns only the PostgreSQL schema `esocial`. Migrations must not

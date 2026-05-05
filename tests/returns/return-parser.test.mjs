@@ -45,6 +45,32 @@ test('return parsers cover protocol success, processing rejection, SOAP fault, a
   );
 });
 
+test('return parsers reject XXE, DTD, stylesheet, and unresolved entity payloads before parsing', () => {
+  const cases = [
+    [
+      '<!DOCTYPE eSocial [<!ENTITY xxe SYSTEM "file:///etc/passwd">]><eSocial>&xxe;</eSocial>',
+      /XML DTD declarations/u,
+    ],
+    [
+      '<?xml-stylesheet type="text/xsl" href="file:///tmp/esocial.xsl"?><eSocial />',
+      /stylesheet/u,
+    ],
+    [
+      '<eSocial>&tenantSecret;</eSocial>',
+      /entity reference/u,
+    ],
+  ];
+
+  for (const [xml, message] of cases) {
+    assert.throws(
+      () => parseEsocialReturnXml(xml),
+      (error) =>
+        error.name === 'ReturnXmlParseError' &&
+        message.test(error.message),
+    );
+  }
+});
+
 test('totalizer parser covers every S-50xx variant and preserves trace fields', () => {
   const cases = [
     ['s5001-totalizer.golden.xml', 'S-5001'],

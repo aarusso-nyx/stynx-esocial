@@ -33,6 +33,10 @@ export {
   validateIngressEnvelope,
 } from './submission/submission-processor.js';
 export {
+  SUBMISSION_DISPATCHERS,
+  dispatchByEventClass,
+} from './submission/submission-dispatcher.js';
+export {
   SUBMISSION_ROUTES,
   routeSubmissionEventClass,
 } from './submission/submission-router.js';
@@ -41,6 +45,29 @@ export {
   buildSubmissionFifoMetadata,
   buildSubmissionPublishCommand,
 } from './transport/submission-publishers.js';
+export {
+  DeterministicSandboxTransport,
+  SoapClientTransport,
+  SoapTransportGuardError,
+  assertNonProductionEndpointSafe,
+  assertSoapEndpointAllowed,
+  loadCommittedEnviarLoteWsdl,
+  normalizeSoapEnvironment,
+  resolveEsocialSoapEndpoints,
+  transportFactory,
+} from './transport/soap-transport.js';
+export {
+  S1000_METADATA,
+  S1010_METADATA,
+  S1200_METADATA,
+  S1299_METADATA,
+  S2200_METADATA,
+  buildS1000,
+  buildS1010,
+  buildS1200,
+  buildS1299,
+  buildS2200,
+} from './builders/index.js';
 export {
   ReturnProcessor,
   parseEsocialReturnXml,
@@ -109,7 +136,14 @@ export type {
   SubmissionProcessorResult,
   SubmissionRepository,
   SubmissionRequestEnvelope,
+  SubmissionTransportEvidence,
 } from './submission/submission-processor.js';
+export type {
+  SubmissionDispatcher,
+  SubmissionDispatchContext,
+  SubmissionDispatchResult,
+  SubmissionDispatchTransportEvidence,
+} from './submission/submission-dispatcher.js';
 export type {
   SubmissionRoute,
   SubmissionRouteName,
@@ -125,6 +159,8 @@ export type {
   ProtocolParseResult,
   ReturnClassificationStatus,
   ReturnIngressValidationResult,
+  ReturnOriginLookup,
+  ReturnOriginRecord,
   ReturnOccurrence,
   ReturnPersistenceRecord,
   ReturnProcessorOptions,
@@ -143,6 +179,28 @@ export type {
   SubmissionPublishers,
   SubmissionTopicFamily,
 } from './transport/submission-publishers.js';
+export type {
+  DeterministicSandboxTransportOptions,
+  LegacySoapEnvironment,
+  ResolveSoapEndpointOptions,
+  SoapContext,
+  SoapEndpointConfig,
+  SoapEndpointGuardOptions,
+  SoapEndpointSet,
+  SoapEnvironment,
+  SoapLogger,
+  SoapResult,
+  SoapStatus,
+  SoapSubmitOperation,
+  SoapTransport,
+  SoapClientTransportOptions,
+  TransportFactoryOptions,
+} from './transport/soap-transport.js';
+export type {
+  BuilderContext,
+  BuilderMetadata,
+  BuiltXml,
+} from './builders/index.js';
 export type {
   BuiltTableXmlEvent,
   EsocialEnvironment,

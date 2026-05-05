@@ -4,15 +4,15 @@ import { test } from 'node:test';
 
 import {
   buildTableEvent,
-  signValidatedPromotedTableXml,
-} from '../../packages/domain/dist/index.js';
-import {
-  SandboxSoapTransport,
+  DeterministicSandboxTransport,
+  SoapClientTransport,
   SoapTransportGuardError,
   assertSoapEndpointAllowed,
   loadCommittedEnviarLoteWsdl,
   resolveEsocialSoapEndpoints,
-} from '../../services/submission/dist/transport/soap-sandbox.js';
+  signValidatedPromotedTableXml,
+  transportFactory,
+} from '../../packages/domain/dist/index.js';
 
 const now = new Date('2026-05-05T12:00:00.000Z');
 const tenantId = '00000000-0000-4000-8000-000000000603';
@@ -22,7 +22,7 @@ test('SOAP sandbox performs deterministic submit and return exchanges with hashe
   const endpoints = resolveEsocialSoapEndpoints('qualification', {
     nodeEnv: 'test',
   });
-  const transport = new SandboxSoapTransport();
+  const transport = new DeterministicSandboxTransport({ endpoints });
   const built = buildTableEvent({
     eventClass: 'S-1000',
     tenantId,
@@ -41,30 +41,32 @@ test('SOAP sandbox performs deterministic submit and return exchanges with hashe
     now,
   });
 
-  const submit = await transport.submit({
-    endpointUrl: endpoints.submit,
-    signedBatchXml: signed.signed.signedBytes.toString('utf8'),
+  const submit = await transport.submit('enviar_lote_eventos', signed.signed.signedBytes.toString('utf8'), {
+    tenantId,
+    environment: 'qualification',
+    eventClass: 'S-1000',
+    requestXml: built.xml,
     now,
-    protocolSeed: 'phase6-submit',
   });
-  const returned = await transport.queryReturn({
-    endpointUrl: endpoints.returnQuery,
-    protocol: submit.protocol,
+  const returned = await transport.consultProtocol(submit.protocol, {
+    tenantId,
+    environment: 'qualification',
+    eventClass: 'S-1000',
     now,
   });
 
-  assert.equal(submit.accepted, true);
-  assert.equal(returned.accepted, true);
+  assert.equal(submit.soapStatus, 'accepted');
+  assert.equal(returned.soapStatus, 'accepted');
   assert.match(submit.protocol, /^LOCAL-[0-9A-F]{24}$/u);
-  assert.equal(submit.requestXmlSha256, signed.signed.requestXmlSha256);
-  assert.equal(submit.signedPayloadSha256, signed.signed.signedPayloadSha256);
-  assert.match(submit.soapRequestSha256, /^[a-f0-9]{64}$/u);
-  assert.match(submit.soapResponseSha256, /^[a-f0-9]{64}$/u);
+  assert.equal(submit.requestHash, signed.signed.requestXmlSha256);
+  assert.equal(submit.signedPayloadHash, signed.signed.signedPayloadSha256);
+  assert.match(submit.soapRequestHash, /^[a-f0-9]{64}$/u);
+  assert.match(submit.responseHash, /^[a-f0-9]{64}$/u);
   assert.equal(returned.protocol, submit.protocol);
-  assert.match(returned.soapResponse, /retornoProcessamento/u);
+  assert.match(returned.rawResponse, /retornoProcessamento/u);
 });
 
-test('SOAP WSDL stub is committed and dev/test guard rejects gov.br and production routing', () => {
+test('SOAP WSDL stub is committed and dev/test guard rejects official hosts and production routing', () => {
   const wsdl = loadCommittedEnviarLoteWsdl();
   assert.match(wsdl, /ServicoEnviarLoteEventos/u);
   assert.match(wsdl, /127\.0\.0\.1/u);
@@ -96,11 +98,51 @@ test('SOAP WSDL stub is committed and dev/test guard rejects gov.br and producti
       error.code === 'SOAP_PRODUCTION_ENDPOINT_FORBIDDEN_IN_TEST',
   );
 
-  const restricted = resolveEsocialSoapEndpoints('restricted-production', {
+  assert.throws(
+    () => resolveEsocialSoapEndpoints('restricted_production', { nodeEnv: 'test' }),
+    (error) =>
+      error instanceof SoapTransportGuardError &&
+      error.code === 'SOAP_ENDPOINT_REQUIRED',
+  );
+});
+
+test('transport factory wires sandbox, restricted client, and TLS guards without hardcoded endpoints', () => {
+  const qualification = transportFactory('qualification', {
     nodeEnv: 'test',
+    ci: true,
   });
-  assert.match(restricted.submit, /127\.0\.0\.1/u);
-  assert.match(restricted.returnQuery, /restricted-production/u);
+  assert.equal(qualification instanceof DeterministicSandboxTransport, true);
+
+  const restricted = transportFactory('restricted_production', {
+    nodeEnv: 'test',
+    mode: 'client',
+    config: {
+      restricted_production: {
+        submit: 'https://restricted-esocial.example.test/submit',
+        returnQuery: 'https://restricted-esocial.example.test/return',
+      },
+    },
+    allowlistHosts: ['restricted-esocial.example.test'],
+  });
+  assert.equal(restricted instanceof SoapClientTransport, true);
+
+  assert.throws(
+    () =>
+      transportFactory('restricted_production', {
+        nodeEnv: 'test',
+        mode: 'client',
+        config: {
+          restricted_production: {
+            submit: 'http://restricted-esocial.example.test/submit',
+            returnQuery: 'https://restricted-esocial.example.test/return',
+          },
+        },
+        allowlistHosts: ['restricted-esocial.example.test'],
+      }),
+    (error) =>
+      error instanceof SoapTransportGuardError &&
+      error.code === 'SOAP_ENDPOINT_HTTPS_REQUIRED',
+  );
 });
 
 function localCertificate() {

@@ -1,0 +1,14 @@
+{
+  "eventClass": "S-1000",
+  "tenantId": "00000000-0000-0000-0000-000000000100",
+  "sourceEventId": "source-s1000-round0",
+  "sourceEntityId": "00000000-0000-4000-8000-000000000001",
+  "employerCnpj": "12345678000199",
+  "validityStart": "2026-01",
+  "legalName": "Municipio Demo",
+  "taxClassification": "85",
+  "cooperativeIndicator": "0",
+  "constructionIndicator": "0",
+  "payrollExemptionIndicator": "0",
+  "electronicRecordOption": "0"
+}

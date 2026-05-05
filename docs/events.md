@@ -7,6 +7,12 @@ payload shape without walking source fixtures.
 
 ## Table Events
 
+Round 0 Wave B active builders live in `packages/domain/src/builders/<event>/`.
+They consume A3 DTOs from `@esocial/contracts`, produce unsigned XML for the
+signing/XSD/SOAP workers, and do not import or query SGP code. Earlier
+`xml/builders/*` entries remain compatibility evidence until B1 switches the
+dispatcher to the Round 0 entrypoints.
+
 Promoted table builders live in
 `packages/domain/src/xml/builders/tables/index.ts`. They accept normalized DTOs
 from the bus and never read SGP databases, SGP schemas, or SGP modules. The
@@ -15,9 +21,9 @@ family has not yet been promoted.
 
 | Event | Purpose | Production implementation | Status | XML example |
 | --- | --- | --- | --- | --- |
-| S-1000 | Employer/contributor information | `xml/builders/tables` | Promoted in Phase 5 | `templates/golden/builders/s1000.golden.xml` |
+| S-1000 | Employer/contributor information | `builders/s1000/builder.ts` | Promoted in Round 0 Wave B | `templates/golden/builders/s1000.golden.xml` |
 | S-1005 | Establishment/workplace table | `xml/builders/tables` | Promoted in Phase 5 | `templates/golden/builders/s1005.golden.xml` |
-| S-1010 | Rubric table | `xml/builders/tables` | Promoted in Phase 5 | `templates/golden/builders/s1010.golden.xml` |
+| S-1010 | Rubric table | `builders/s1010/builder.ts` | Promoted in Round 0 Wave B | `templates/golden/builders/s1010.golden.xml` |
 | S-1020 | Tax lotation table | `xml/builders/tables` | Promoted in Phase 5 | `templates/golden/builders/s1020.golden.xml` |
 | S-1030 | Job/cargo table | `builders/s1030.builder.ts` | Deferred: lifted golden exists, but no active XSD binding is present in `packages/domain/src/sgp-lifted/esocial-worker/xsd/` | `templates/golden/builders/s1030.golden.xml` |
 | S-1040 | Function table | `builders/s1040.builder.ts` | Deferred: lifted golden exists, but no active XSD binding is present in `packages/domain/src/sgp-lifted/esocial-worker/xsd/` | `templates/golden/builders/s1040.golden.xml` |
@@ -73,12 +79,12 @@ read payroll, HR, eSocial state, or SGP database tables.
 
 | Event | Purpose | Production implementation | Status | XML example |
 | --- | --- | --- | --- | --- |
-| S-1200 | Worker remuneration | `xml/builders/periodic` | Promoted in Phase 5 | `templates/golden/builders/s1200-three-workers.golden.xml` |
+| S-1200 | Worker remuneration | `builders/s1200/builder.ts` | Promoted in Round 0 Wave B | `templates/golden/builders/s1200-three-workers.golden.xml` |
 | S-1202 | RPPS remuneration | `xml/builders/periodic` | Promoted in Phase 5 | `templates/golden/builders/s1202-rpps-workers.golden.xml` |
 | S-1207 | RPPS benefit payment | `xml/builders/periodic` | Promoted in Phase 5 | `templates/golden/builders/s1207-rpps-benefit.golden.xml` |
 | S-1210 | Labor income payment | `xml/builders/periodic` | Promoted in Phase 5 | `templates/golden/builders/s1210-confirmed-payments.golden.xml` |
 | S-1298 | Reopening periodic events | `xml/builders/periodic` | Promoted in Phase 5 | `templates/golden/builders/s1298.golden.xml` |
-| S-1299 | Periodic closure | `xml/builders/periodic` | Promoted in Phase 5 | `templates/golden/builders/s1299.golden.xml` |
+| S-1299 | Periodic closure | `builders/s1299/builder.ts` | Promoted in Round 0 Wave B | `templates/golden/builders/s1299.golden.xml` |
 
 No preferred periodic payroll event is deferred in this batch.
 
@@ -124,7 +130,7 @@ Event-specific DTO fields:
 
 | Event | Purpose | Lifted implementation | XML example |
 | --- | --- | --- | --- |
-| S-2200 | Worker admission/initial registration | `builders/s2200.builder.ts` | `templates/golden/builders/s2200.golden.xml` |
+| S-2200 | Worker admission/initial registration | `builders/s2200/builder.ts` | `templates/golden/builders/s2200.golden.xml` |
 | S-2205 | Worker cadastral change | `builders/s2205.builder.ts` | `templates/golden/builders/s2205.golden.xml` |
 | S-2206 | Worker contract change | `builders/s2206.builder.ts` | `templates/golden/builders/s2206-promotion.golden.xml` |
 | S-2210 | Work accident communication | `builders/s2210.builder.ts` | `templates/golden/builders/s2210-inicial.golden.xml` |
@@ -140,6 +146,26 @@ Event-specific DTO fields:
 Additional golden variants are retained for S-2210 reopening/death, S-2220 exam
 types, S-2230 vacation, S-2240 start/change/end, S-2299 notice variants, S-2300
 category variants, and S-2399 category variants.
+
+### Round 0 Wave B DTO and Metadata References
+
+The Round 0 active builders use the A3 DTO names below. They intentionally keep
+SGP identifiers opaque and produce unsigned XML; XSD validation, signing, SOAP
+submission, and status persistence are owned by the adjacent Wave B workers.
+
+| Event | DTO type | Active builder | Event element | XSD binding | Dependencies |
+| --- | --- | --- | --- | --- | --- |
+| S-1000 | `S1000EmployerInfoDto` | `packages/domain/src/builders/s1000/builder.ts` | `evtInfoEmpregador` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtInfoEmpregador.xsd` | None |
+| S-1010 | `S1010RubricDto` | `packages/domain/src/builders/s1010/builder.ts` | `evtTabRubrica` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabRubrica.xsd` | S-1000 |
+| S-1200 | `S1200RemunerationDto` | `packages/domain/src/builders/s1200/builder.ts` | `evtRemun` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtRemun.xsd` | S-1000, S-1005, S-1010, S-1020 |
+| S-1299 | `S1299ClosureDto` | `packages/domain/src/builders/s1299/builder.ts` | `evtFechaEvPer` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtFechaEvPer.xsd` | S-1000; receipts from S-1200, S-1202, S-1207, S-1210 |
+| S-2200 | `S2200AdmissionDto` | `packages/domain/src/builders/s2200/builder.ts` | `evtAdmissao` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtAdmissao.xsd` | S-1000, S-1030, S-1050 |
+
+Known A3 DTO follow-ups for S-2200: the DTO lacks explicit address/contact,
+sex, marital status, education level, nationality, worker dependents'
+`depIRRF`, and cargo-name fields. The active builder currently uses deterministic
+Round 0 defaults where the fixture needs those XML nodes; A3 should widen the
+contract before real SGP cutover.
 
 ## Public-Benefit and RPPS Events
 

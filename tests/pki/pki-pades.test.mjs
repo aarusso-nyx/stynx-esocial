@@ -62,6 +62,36 @@ test('PKI boundary rejects DTD and unsigned non-eSocial candidates', () => {
   );
 });
 
+test('PKI boundary rejects stylesheet, external identifier, and unresolved entity payloads', () => {
+  const certificate = localCertificate();
+  const cases = [
+    [
+      '<?xml-stylesheet type="text/xsl" href="file:///tmp/esocial.xsl"?><eSocial><evtInfoEmpregador Id="ID123" /></eSocial>',
+      'XML_STYLESHEET_FORBIDDEN',
+    ],
+    [
+      '<eSocial SYSTEM "file:///etc/passwd"><evtInfoEmpregador Id="ID123" /></eSocial>',
+      'XML_EXTERNAL_IDENTIFIER_FORBIDDEN',
+    ],
+    [
+      '<eSocial><evtInfoEmpregador Id="ID123">&tenantSecret;</evtInfoEmpregador></eSocial>',
+      'XML_ENTITY_REFERENCE_FORBIDDEN',
+    ],
+  ];
+
+  for (const [xml, code] of cases) {
+    assert.throws(
+      () =>
+        signXmlBytes({
+          xmlBytes: xml,
+          certificate,
+          now,
+        }),
+      (error) => error instanceof PkiSigningError && error.code === code,
+    );
+  }
+});
+
 function localCertificate() {
   const { privateKey, publicKey } = generateKeyPairSync('rsa', {
     modulusLength: 2048,

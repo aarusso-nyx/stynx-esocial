@@ -24,6 +24,10 @@ import type {
   SubmissionPublishers,
 } from '../transport/submission-publishers.js';
 
+import { dispatchByEventClass } from './submission-dispatcher.js';
+import type {
+  SubmissionDispatcher,
+} from './submission-dispatcher.js';
 import { routeSubmissionEventClass } from './submission-router.js';
 import type { SubmissionRoute } from './submission-router.js';
 
@@ -35,8 +39,19 @@ export type SubmissionRequestEnvelope =
 
 export type SubmissionPersistenceStatus = Extract<
   EsocialStatus,
-  'building' | 'validation_failed'
+  'building' | 'validation_failed' | 'sent' | 'failed'
 >;
+
+export type SubmissionTransportEvidence = Readonly<{
+  endpointUrl?: string | undefined;
+  endpointName?: string | undefined;
+  protocolNumber?: string | undefined;
+  requestSha256?: string | undefined;
+  signedPayloadSha256?: string | undefined;
+  soapRequestSha256?: string | undefined;
+  soapResponseSha256?: string | undefined;
+  responseSha256?: string | undefined;
+}>;
 
 export type SubmissionPersistenceRecord = Readonly<{
   inserted: boolean;
@@ -48,6 +63,7 @@ export type SubmissionPersistenceRecord = Readonly<{
   createdAt: string;
   updatedAt: string;
   errors?: readonly EsocialContractError[] | undefined;
+  transport?: SubmissionTransportEvidence | undefined;
 }>;
 
 export type PersistSubmissionCommand = Readonly<{
@@ -56,6 +72,7 @@ export type PersistSubmissionCommand = Readonly<{
   status: SubmissionPersistenceStatus;
   occurredAt: string;
   errors?: readonly EsocialContractError[] | undefined;
+  transport?: SubmissionTransportEvidence | undefined;
 }>;
 
 export type SubmissionRepository = Readonly<{
@@ -84,6 +101,7 @@ export type SubmissionIngressValidationResult =
 export type SubmissionProcessorOptions = Readonly<{
   repository: SubmissionRepository;
   publishers: SubmissionPublishers;
+  dispatcher?: SubmissionDispatcher | undefined;
   now?: (() => Date) | undefined;
 }>;
 
@@ -110,20 +128,26 @@ export class TerminalSubmissionError extends Error {
 export class SubmissionProcessor {
   private readonly repository: SubmissionRepository;
   private readonly publishers: SubmissionPublishers;
+  private readonly dispatcher: SubmissionDispatcher;
   private readonly now: () => Date;
 
   constructor(options: SubmissionProcessorOptions) {
     this.repository = options.repository;
     this.publishers = options.publishers;
+    this.dispatcher = options.dispatcher ?? dispatchByEventClass;
     this.now = options.now ?? (() => new Date());
   }
 
   async process(request: SubmissionRequestEnvelope): Promise<SubmissionProcessorResult> {
     const occurredAt = this.now().toISOString();
-    const route = routeSubmissionEventClass(request.event_class);
     const validationErrors = validateSubmissionPayload(request);
+    const dispatchResult = validationErrors.length > 0
+      ? undefined
+      : await this.dispatcher(request.payload, { request, occurredAt });
+    const route = dispatchResult?.route ?? routeSubmissionEventClass(request.event_class);
     const status: SubmissionPersistenceStatus =
-      validationErrors.length > 0 ? 'validation_failed' : 'building';
+      dispatchResult ? statusFromDispatch(dispatchResult) : 'validation_failed';
+    const transport = dispatchResult ? transportFromDispatch(dispatchResult) : undefined;
 
     const record = await this.repository.persist({
       envelope: request,
@@ -131,14 +155,12 @@ export class SubmissionProcessor {
       status,
       occurredAt,
       errors: validationErrors,
+      transport,
     });
 
     const response = buildResponseEnvelope(request, record, occurredAt);
     const auditEvent = buildAuditEnvelope(request, record, occurredAt);
-    const spoolUpdate =
-      record.status === 'building'
-        ? buildSpoolUpdateEnvelope(request, record, occurredAt)
-        : undefined;
+    const spoolUpdate = buildSpoolUpdateEnvelope(request, record, occurredAt);
 
     if (await this.publishResponse(request, response, occurredAt) === 'terminal') {
       return {
@@ -400,6 +422,34 @@ function validateSubmissionPayload(
   return errors;
 }
 
+function statusFromDispatch(dispatch: Readonly<{
+  stage?: string | undefined;
+}>): SubmissionPersistenceStatus {
+  if (dispatch.stage === 'sent') return 'sent';
+  if (dispatch.stage === 'failed') return 'failed';
+  return 'building';
+}
+
+function transportFromDispatch(dispatch: Readonly<{
+  protocolNumber?: string | undefined;
+  transport?: {
+    endpointUrl?: string | undefined;
+    endpointName?: string | undefined;
+    protocolNumber?: string | undefined;
+    requestSha256?: string | undefined;
+    signedPayloadSha256?: string | undefined;
+    soapRequestSha256?: string | undefined;
+    soapResponseSha256?: string | undefined;
+    responseSha256?: string | undefined;
+  } | undefined;
+}>): SubmissionTransportEvidence | undefined {
+  if (!dispatch.transport && !dispatch.protocolNumber) return undefined;
+  return {
+    ...dispatch.transport,
+    protocolNumber: dispatch.protocolNumber ?? dispatch.transport?.protocolNumber,
+  };
+}
+
 function dtoEnvironmentToEnvelope(candidate: unknown): SubmissionRequestEnvelope['environment'] | undefined {
   if (candidate === 'production') return 'PRODUCTION';
   if (candidate === 'qualification' || candidate === 'restricted_production') {
@@ -429,9 +479,13 @@ function buildResponseEnvelope(
     attempt: request.attempt,
     processed_at: occurredAt,
     hashes: {
-      request_sha256: request.payload_hash,
+      request_sha256: record.transport?.requestSha256 ?? request.payload_hash,
       payload_sha256: request.payload_hash,
+      signed_payload_sha256: record.transport?.signedPayloadSha256,
+      response_sha256:
+        record.transport?.responseSha256 ?? record.transport?.soapResponseSha256,
     },
+    protocol_number: record.transport?.protocolNumber,
     payload: {
       message_id: record.messageId,
       batch_id: record.batchId,
@@ -464,8 +518,9 @@ function buildSpoolUpdateEnvelope(
     kind: request.kind,
     status_transition: {
       from: 'pending',
-      to: 'building',
+      to: record.status,
     },
+    errors: record.errors,
     occurred_at: occurredAt,
   };
 }
@@ -498,6 +553,7 @@ function buildAuditEnvelope(
       batch_id: record.batchId,
       route: record.route.name,
       stage: record.route.stage,
+      transport: record.transport,
     },
     errors: record.errors,
     occurred_at: occurredAt,

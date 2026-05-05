@@ -1,0 +1,83 @@
+{
+  "eventClass": "S-1200",
+  "tenantId": "00000000-0000-0000-0000-000000000100",
+  "sourceEventId": "source-s1200-round0",
+  "employerCnpj": "12345678000199",
+  "competence": "2026-01",
+  "payrollRunId": "00000000-0000-4000-8000-000000001200",
+  "payrollRunStatus": "GENERATED",
+  "workers": [
+    {
+      "employeeId": "00000000-0000-4000-8000-000000000001",
+      "registration": "MAT-001",
+      "cpf": "11122233344",
+      "categoryCode": "101",
+      "establishmentRegistrationNumber": "12345678000199",
+      "lotationCode": "LOT01",
+      "rubrics": [
+        {
+          "rubricCode": "BASIC",
+          "rubricTableId": "SGP",
+          "ideDmDev": "DM00000000000000000000",
+          "amount": 300000,
+          "quantity": 1
+        },
+        {
+          "rubricCode": "RPPS",
+          "rubricTableId": "SGP",
+          "ideDmDev": "DM00000000000000000000",
+          "amount": 33000,
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "employeeId": "00000000-0000-4000-8000-000000000002",
+      "registration": "MAT-002",
+      "cpf": "22233344405",
+      "categoryCode": "101",
+      "establishmentRegistrationNumber": "12345678000199",
+      "lotationCode": "LOT01",
+      "rubrics": [
+        {
+          "rubricCode": "BASIC",
+          "rubricTableId": "SGP",
+          "ideDmDev": "DM00000000000000000000",
+          "amount": 420000,
+          "quantity": 1
+        },
+        {
+          "rubricCode": "IRRF",
+          "rubricTableId": "SGP",
+          "ideDmDev": "DM00000000000000000000",
+          "amount": 24550,
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "employeeId": "00000000-0000-4000-8000-000000000003",
+      "registration": "MAT-003",
+      "cpf": "33344455506",
+      "categoryCode": "101",
+      "establishmentRegistrationNumber": "12345678000199",
+      "lotationCode": "LOT01",
+      "rubrics": [
+        {
+          "rubricCode": "AUX",
+          "rubricTableId": "SGP",
+          "ideDmDev": "DM00000000000000000000",
+          "amount": 80000,
+          "quantity": 1
+        },
+        {
+          "rubricCode": "BASIC",
+          "rubricTableId": "SGP",
+          "ideDmDev": "DM00000000000000000000",
+          "amount": 280000,
+          "quantity": 1
+        }
+      ]
+    }
+  ]
+}

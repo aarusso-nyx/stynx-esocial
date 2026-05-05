@@ -40,6 +40,8 @@ export type {
   PersistReturnCommand,
   ReturnClassificationStatus,
   ReturnIngressValidationResult,
+  ReturnOriginLookup,
+  ReturnOriginRecord,
   ReturnPersistenceRecord,
   ReturnProcessorOptions,
   ReturnProcessorResult,

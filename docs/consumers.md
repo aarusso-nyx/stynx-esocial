@@ -255,20 +255,29 @@ synonyms or transport-only status values.
 
 Return processing maps official response codes through
 `esocial.response_classification`; the mapping is data, not hard-coded status
-logic. The currently seeded mappings are:
+logic. The handler-normalized SGP-facing mappings are:
 
 | Code | Canonical status | Retryable | Operator action |
 | --- | --- | --- | --- |
 | `201` | `accepted` | No | No |
+| `202` | `retry` | Yes | No |
+| `301` | `retry` | Yes | No |
 | `401` | `rejected` | No | Yes |
 | `402` | `rejected` | No | Yes |
+| `403` | `failed` | No | Yes |
+| `404` | `failed` | No | Yes |
+| `409` | `failed` | No | Yes |
+| `500` | `retry` | Yes | No |
 | `503` | `retry` | Yes | No |
 | `TIMEOUT` | `timeout` | Yes | No |
+| `SOAP_FAULT` | `failed` | No | Yes |
+| `MALFORMED_XML` | `failed` | No | Yes |
 
-SOAP faults are transport failures and are published as `retry` until Phase 8
-retry-budget logic decides whether they remain retryable or move to DLQ.
-Malformed or unsupported return XML is published as `dlq` with
-`totalizer_parse` errors.
+SOAP faults are transport failures and are published as `failed` return
+outcomes with `transport` errors. Malformed or unsupported return XML is
+published as `failed` with `schema` errors and no totalizer row. Unknown
+regulatory codes are published as `failed` with `regulatory` errors and
+`audit_flags: ["unknown_regulatory_code"]` so the mapping gap is explicit.
 
 ## Error Categories
 

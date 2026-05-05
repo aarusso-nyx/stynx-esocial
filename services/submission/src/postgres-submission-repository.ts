@@ -66,6 +66,7 @@ export class PostgresSubmissionRepository implements SubmissionRepository {
           createdAt: message.createdAt,
           updatedAt: message.updatedAt,
           errors: command.errors,
+          transport: command.transport,
         };
       }
 
@@ -92,8 +93,10 @@ export class PostgresSubmissionRepository implements SubmissionRepository {
           batch.batchId,
           'PENDING',
           statusToDatabase(command.status),
-          command.status === 'validation_failed' ? 'VALIDATION_FAILED' : 'ROUTED_TO_BUILD',
-          command.errors?.map((error) => error.message).join('; ') ?? command.route.stage,
+          statusReasonCode(command.status),
+          command.errors?.map((error) => error.message).join('; ') ??
+            command.transport?.protocolNumber ??
+            command.route.stage,
           command.envelope.payload_hash,
         ],
       );
@@ -125,6 +128,7 @@ export class PostgresSubmissionRepository implements SubmissionRepository {
             route: command.route.name,
             stage: command.route.stage,
             request_id: command.envelope['request-id'],
+            transport: command.transport,
             errors: command.errors ?? [],
           }),
           command.envelope.payload_hash,
@@ -143,6 +147,7 @@ export class PostgresSubmissionRepository implements SubmissionRepository {
         createdAt: message.createdAt,
         updatedAt: message.updatedAt,
         errors: command.errors,
+        transport: command.transport,
       };
     } catch (error) {
       await client.query('ROLLBACK');
@@ -163,7 +168,7 @@ async function persistSubmissionMessage(
 ): Promise<{
   inserted: boolean;
   messageId: string;
-  status: 'building' | 'validation_failed';
+  status: 'building' | 'validation_failed' | 'sent' | 'failed';
   createdAt: string;
   updatedAt: string;
 }> {
@@ -310,10 +315,16 @@ async function persistSubmissionBatch(
         attempt,
         max_attempts,
         endpoint_url,
+        endpoint_name,
+        protocol_number,
         request_sha256,
-        signed_payload_sha256
+        signed_payload_sha256,
+        soap_request_sha256,
+        soap_response_sha256,
+        submitted_at,
+        completed_at
       )
-      VALUES ($1, $2, $3, $4, $5, $6::jsonb, $7::uuid[], $8, $9, $10, $11, $12, $13, $14)
+      VALUES ($1, $2, $3, $4, $5, $6::jsonb, $7::uuid[], $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20)
       ON CONFLICT DO NOTHING
       RETURNING batch_id
     `,
@@ -329,9 +340,15 @@ async function persistSubmissionBatch(
       statusToDatabase(command.status),
       command.envelope.attempt,
       command.envelope['max-attempts'],
-      stringOrNull(payload.endpointUrl),
-      command.envelope.payload_hash,
-      signedPayloadSha256(payload),
+      command.transport?.endpointUrl ?? stringOrNull(payload.endpointUrl),
+      command.transport?.endpointName ?? null,
+      command.transport?.protocolNumber ?? null,
+      command.transport?.requestSha256 ?? command.envelope.payload_hash,
+      command.transport?.signedPayloadSha256 ?? signedPayloadSha256(payload),
+      command.transport?.soapRequestSha256 ?? null,
+      command.transport?.soapResponseSha256 ?? null,
+      command.status === 'sent' ? command.occurredAt : null,
+      command.status === 'sent' ? command.occurredAt : null,
     ],
   );
 
@@ -399,9 +416,12 @@ async function persistEventRecord(
         batch_id,
         request_sha256,
         signed_payload_sha256,
-        source_ref
+        source_ref,
+        protocol_number,
+        response_sha256,
+        processed_at
       )
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'ORIGINAL', $12, $13, $14, $15::jsonb)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'ORIGINAL', $12, $13, $14, $15::jsonb, $16, $17, $18)
       ON CONFLICT DO NOTHING
       RETURNING event_record_id
     `,
@@ -418,9 +438,12 @@ async function persistEventRecord(
       sourceEntityId,
       competenceFromSource(command.envelope.source),
       batchId,
-      command.envelope.payload_hash,
-      signedPayloadSha256(command.envelope.payload),
+      command.transport?.requestSha256 ?? command.envelope.payload_hash,
+      command.transport?.signedPayloadSha256 ?? signedPayloadSha256(command.envelope.payload),
       JSON.stringify(command.envelope.source),
+      command.transport?.protocolNumber ?? null,
+      command.transport?.responseSha256 ?? command.transport?.soapResponseSha256 ?? null,
+      command.status === 'sent' ? command.occurredAt : null,
     ],
   );
 
@@ -462,18 +485,36 @@ async function persistEventRecord(
   return { eventRecordId: row.event_record_id };
 }
 
-function statusToDatabase(status: 'building' | 'validation_failed'): string {
+function statusToDatabase(
+  status: 'building' | 'validation_failed' | 'sent' | 'failed',
+): string {
   return status.toUpperCase();
 }
 
-function statusFromDatabase(status: string): 'building' | 'validation_failed' {
+function statusFromDatabase(
+  status: string,
+): 'building' | 'validation_failed' | 'sent' | 'failed' {
   const normalized = status.toLowerCase();
 
-  if (normalized === 'building' || normalized === 'validation_failed') {
+  if (
+    normalized === 'building' ||
+    normalized === 'validation_failed' ||
+    normalized === 'sent' ||
+    normalized === 'failed'
+  ) {
     return normalized;
   }
 
   return 'building';
+}
+
+function statusReasonCode(
+  status: 'building' | 'validation_failed' | 'sent' | 'failed',
+): string {
+  if (status === 'validation_failed') return 'VALIDATION_FAILED';
+  if (status === 'sent') return 'SOAP_ACCEPTED';
+  if (status === 'failed') return 'SOAP_FAILED';
+  return 'ROUTED_TO_BUILD';
 }
 
 function competenceFromSource(source: { payroll_run_id?: string | undefined }): string | null {

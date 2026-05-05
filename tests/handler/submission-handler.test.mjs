@@ -4,6 +4,8 @@ import { test } from 'node:test';
 
 import { buildEsocialIdempotencyKey } from '../../packages/contracts/src/idempotency.ts';
 import {
+  dispatchByEventClass,
+  SubmissionProcessor,
   TerminalSubmissionError,
 } from '../../packages/domain/dist/index.js';
 import { createSubmissionHandler } from '../../services/submission/dist/handler.js';
@@ -33,6 +35,66 @@ test('accepted-shape request persists as building and emits no synthetic receipt
   assert.equal(published.spool[0].envelope.status_transition.to, 'building');
   assert.equal(published.spool[0].fifo.messageGroupId, `${envelope.tenant_id}:${envelope.event_class}`);
   assert.match(published.spool[0].fifo.messageDeduplicationId, /^[0-9a-f]{64}$/u);
+});
+
+test('submission dispatcher is invoked once for valid DTO ingress', async () => {
+  const repository = new InMemorySubmissionRepository();
+  const published = createRecordingPublishers();
+  const calls = [];
+  const handler = createSubmissionHandler({
+    processor: new SubmissionProcessor({
+      repository,
+      publishers: published.publishers,
+      now: () => fixedNow,
+      dispatcher: (dto, context) => {
+        calls.push({ dto, context });
+        return {
+          eventClass: context.request.event_class,
+          route: {
+            name: 'periodic',
+            eventClasses: [context.request.event_class],
+            stage: 'build.periodic',
+          },
+          stage: 'building',
+          builderReady: false,
+        };
+      },
+    }),
+  });
+  const envelope = submissionEnvelope();
+
+  assert.deepEqual(await handler(sqsEvent(envelope, 'msg-dispatch')), {
+    batchItemFailures: [],
+  });
+  assert.equal(calls.length, 1);
+  assert.equal(calls[0].dto.eventClass, 'S-1299');
+  assert.equal(repository.records[0].route.stage, 'build.periodic');
+});
+
+test('default dispatcher builds XML for promoted round-0 event families', async () => {
+  const envelope = submissionEnvelope({ event_class: 'S-1000' });
+  envelope.payload = {
+    eventClass: 'S-1000',
+    tenantId: envelope.tenant_id,
+    sourceEventId: envelope.source.source_event_id,
+    sourceEntityId: envelope.source.source_entity_id,
+    environment: 'qualification',
+    employerCnpj: '12345678000195',
+    validityStart: '2026-01',
+    legalName: 'Municipio Demo',
+    taxClassification: '85',
+  };
+
+  const result = await dispatchByEventClass(envelope.payload, {
+    request: envelope,
+    occurredAt: fixedNow.toISOString(),
+  });
+
+  assert.equal(result.builderReady, true);
+  assert.equal(result.builtXml.metadata.eventCode, 'S-1000');
+  assert.equal(result.builtXml.eventIds.length, 1);
+  assert.match(result.builtXml.xmlSha256, /^[0-9a-f]{64}$/u);
+  assert.match(result.builtXml.xml, /<evtInfoEmpregador Id="ID/u);
 });
 
 test('duplicate request re-emits the prior outcome without inserting twice', async () => {
@@ -110,7 +172,9 @@ test('contract-level payload validation is persisted as validation_failed and au
   assert.equal(published.response[0].envelope.status, 'validation_failed');
   assert.equal(published.audit.length, 1);
   assert.equal(published.audit[0].envelope.status, 'validation_failed');
-  assert.equal(published.spool.length, 0);
+  assert.equal(published.spool.length, 1);
+  assert.equal(published.spool[0].envelope.status_transition.to, 'validation_failed');
+  assert.equal(published.spool[0].envelope.errors[0].code, 'ESOCIAL_DTO_INVALID');
 });
 
 test('retry-classified outbound failure returns only the failed SQS item', async () => {
@@ -291,8 +355,8 @@ function submissionEnvelope(overrides = {}) {
       payrollRunId: 'payroll-2026-05',
       pendingPeriodicEvents: [],
       acceptedEventCounts: {
-        'S-1200': 25,
-        'S-1210': 25,
+        remuneration: 25,
+        payments: 25,
       },
     },
   };

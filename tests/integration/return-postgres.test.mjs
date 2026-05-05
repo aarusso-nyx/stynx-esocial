@@ -108,7 +108,8 @@ test('return processor persists status and totalizer evidence against the esocia
         payload_hash,
         status,
         operation,
-        batch_id
+        batch_id,
+        protocol_number
       )
       VALUES (
         ${quoteLiteral(eventRecordId)},
@@ -120,7 +121,8 @@ test('return processor persists status and totalizer evidence against the esocia
         'sha256:event',
         'SENT',
         'ORIGINAL',
-        ${quoteLiteral(batchId)}
+        ${quoteLiteral(batchId)},
+        '1.2.202605.000000000000000001'
       );
     `);
 
@@ -137,8 +139,7 @@ test('return processor persists status and totalizer evidence against the esocia
     const result = await processor.process(
       returnEnvelope({
         tenantId,
-        eventRecordId,
-        batchId,
+        protocolNumber: '1.2.202605.000000000000000001',
         rawResponseXml: liftedParserFixture('s5011-totalizer.golden.xml'),
       }),
     );
@@ -193,7 +194,7 @@ function returnEnvelope(input) {
     family: 'request',
     'request-id': randomUUID(),
     'correlation-id': randomUUID(),
-    'idempotency-key': `return:${input.batchId}:s5011`,
+    'idempotency-key': `return:${input.protocolNumber}:s5011`,
     created_at: fixedNow.toISOString(),
     tenant_id: input.tenantId,
     environment: 'QUALIFICATION',
@@ -210,10 +211,9 @@ function returnEnvelope(input) {
     'reply-to': 'sgp.esocial.spool.update',
     'dead-letter-topic': 'sgp.esocial.dlq',
     payload: {
-      eventRecordId: input.eventRecordId,
-      batchId: input.batchId,
       previousStatus: 'sent',
       sourceEventClass: 'S-1299',
+      protocolNumber: input.protocolNumber,
       rawResponseXml: input.rawResponseXml,
     },
   };

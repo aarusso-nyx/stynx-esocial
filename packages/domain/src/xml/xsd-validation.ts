@@ -1,5 +1,6 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
+import { resolve } from 'node:path';
 
 import {
   signXmlBytes,
@@ -183,7 +184,7 @@ export function validatePromotedTableXml(
   const eventClass = input.eventClass;
   const metadata = TABLE_EVENT_METADATA[eventClass];
   const payloadHash = sha256Prefixed(input.xml);
-  const xsdPath = metadata.xsdPath;
+  const xsdPath = activeXsdPathFor(metadata.xsdPath);
 
   try {
     assertHardenedXml(input.xml);
@@ -236,7 +237,7 @@ export function validatePromotedTableXml(
     : withValidationSignatureStub(input.xml);
   const xmllint = spawnSync(
     'xmllint',
-    ['--noout', '--nonet', '--schema', xsdPath, '-'],
+    ['--noout', '--nonet', '--schema', resolve(xsdPath), '-'],
     {
       encoding: 'utf8',
       input: candidate,
@@ -429,3 +430,28 @@ const SIGNATURE_STUB = [
   '</ds:KeyInfo>',
   '</ds:Signature>',
 ].join('');
+
+const ACTIVE_XSD_BINDINGS: Readonly<Record<string, string>> = {
+  'packages/domain/src/sgp-lifted/esocial-worker/xsd/evtInfoEmpregador.xsd':
+    'packages/domain/src/xml/xsd/tables/evtInfoEmpregador.xsd',
+  'packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabEstab.xsd':
+    'packages/domain/src/xml/xsd/tables/evtTabEstab.xsd',
+  'packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabRubrica.xsd':
+    'packages/domain/src/xml/xsd/tables/evtTabRubrica.xsd',
+  'packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabLotacao.xsd':
+    'packages/domain/src/xml/xsd/tables/evtTabLotacao.xsd',
+  'packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabJornada.xsd':
+    'packages/domain/src/xml/xsd/tables/evtTabJornada.xsd',
+  'packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabProcesso.xsd':
+    'packages/domain/src/xml/xsd/tables/evtTabProcesso.xsd',
+  'packages/domain/src/sgp-lifted/esocial-worker/xsd/evtRemun.xsd':
+    'packages/domain/src/xml/xsd/periodic/evtRemun.xsd',
+  'packages/domain/src/sgp-lifted/esocial-worker/xsd/evtFechaEvPer.xsd':
+    'packages/domain/src/xml/xsd/periodic/evtFechaEvPer.xsd',
+  'packages/domain/src/sgp-lifted/esocial-worker/xsd/evtAdmissao.xsd':
+    'packages/domain/src/xml/xsd/trabalhador/evtAdmissao.xsd',
+};
+
+function activeXsdPathFor(metadataPath: string): string {
+  return ACTIVE_XSD_BINDINGS[metadataPath] ?? metadataPath;
+}

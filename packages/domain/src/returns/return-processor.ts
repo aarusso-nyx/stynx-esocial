@@ -72,6 +72,7 @@ export type PersistReturnCommand = Readonly<{
   totalizerClass?: EsocialRelayEventClass | undefined;
   sourceEventClass?: EsocialRelayEventClass | undefined;
   errors: readonly EsocialContractError[];
+  auditFlags: readonly string[];
 }>;
 
 export type ReturnPersistenceRecord = Readonly<{
@@ -91,11 +92,27 @@ export type ReturnPersistenceRecord = Readonly<{
   updatedAt: string;
 }>;
 
+export type ReturnOriginLookup = Readonly<{
+  tenantId: string;
+  environment: string;
+  protocol?: string | undefined;
+  receipt?: string | undefined;
+}>;
+
+export type ReturnOriginRecord = Readonly<{
+  eventRecordId: string;
+  batchId: string;
+  previousStatus?: EsocialStatus | undefined;
+  sourceEventClass?: EsocialRelayEventClass | undefined;
+  competence?: string | undefined;
+}>;
+
 export type ReturnRepository = Readonly<{
   classifyResponseCode(input: Readonly<{
     environment: string;
     responseCode: string;
   }>): Promise<ReturnResponseClassification | undefined>;
+  resolveOrigin?(input: ReturnOriginLookup): Promise<ReturnOriginRecord | undefined>;
   persist(command: PersistReturnCommand): Promise<ReturnPersistenceRecord>;
 }>;
 
@@ -148,10 +165,6 @@ export class ReturnProcessor {
       ?? stringValue(payload.responseXml)
       ?? '';
     const responseHash = sha256Prefixed(rawResponseXml);
-    const eventRecordId = requiredString(payload.eventRecordId, 'payload.eventRecordId');
-    const batchId = requiredString(payload.batchId, 'payload.batchId');
-    const previousStatus = statusOrUndefined(payload.previousStatus);
-    const sourceEventClass = eventClassOrUndefined(payload.sourceEventClass);
     const parsedOutcome = await this.parseAndClassify(
       request.environment,
       rawResponseXml,
@@ -171,6 +184,13 @@ export class ReturnProcessor {
       parsedOutcome.parsed?.kind === 'totalizer'
         ? parsedOutcome.parsed.totalizer.competence
         : stringValue(payload.competence) ?? undefined;
+    const origin = await this.resolveOrigin({
+      request,
+      payload,
+      protocol,
+      receipt,
+      competence,
+    });
 
     const record = await this.repository.persist({
       envelope: request,
@@ -179,16 +199,17 @@ export class ReturnProcessor {
       parsed: parsedOutcome.parsed,
       classification: parsedOutcome.classification,
       status: parsedOutcome.status,
-      previousStatus,
+      previousStatus: origin.previousStatus,
       occurredAt,
-      eventRecordId,
-      batchId,
+      eventRecordId: origin.eventRecordId,
+      batchId: origin.batchId,
       protocol,
       receipt,
-      competence,
+      competence: origin.competence ?? competence,
       totalizerClass,
-      sourceEventClass,
+      sourceEventClass: origin.sourceEventClass,
       errors: parsedOutcome.errors,
+      auditFlags: parsedOutcome.auditFlags,
     });
     const spoolUpdate = buildReturnSpoolUpdateEnvelope(
       request,
@@ -252,20 +273,22 @@ export class ReturnProcessor {
     status: EsocialStatus;
     errors: readonly EsocialContractError[];
     operatorActionRequired: boolean;
+    auditFlags: readonly string[];
   }>> {
     try {
       const parsed = parseEsocialReturnXml(rawResponseXml);
       if (parsed.kind === 'soap_fault') {
         return {
           parsed,
-          status: 'retry',
-          operatorActionRequired: false,
+          status: 'failed',
+          operatorActionRequired: true,
+          auditFlags: [],
           errors: [
             {
               category: 'transport',
               code: 'ESOCIAL_SOAP_FAULT',
               message: parsed.fault,
-              retryable: true,
+              retryable: false,
               occurred_at: occurredAt,
             },
           ],
@@ -281,8 +304,9 @@ export class ReturnProcessor {
       if (!classification) {
         return {
           parsed,
-          status: 'dlq',
+          status: 'failed',
           operatorActionRequired: true,
+          auditFlags: ['unknown_regulatory_code'],
           errors: [
             {
               category: 'regulatory',
@@ -301,20 +325,22 @@ export class ReturnProcessor {
         classification,
         status: statusFromClassification(classification),
         operatorActionRequired: classification.operatorActionRequired,
+        auditFlags: [],
         errors: errorsFromParsedReturn(parsed, occurredAt, classification),
       };
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
       return {
         parsed: null,
-        status: 'dlq',
+        status: 'failed',
         operatorActionRequired: true,
+        auditFlags: [],
         errors: [
           {
-            category: 'totalizer_parse',
+            category: 'schema',
             code:
               error instanceof ReturnXmlParseError
-                ? error.code
+                ? 'MALFORMED_XML'
                 : 'ESOCIAL_RETURN_PARSE_FAILED',
             message,
             retryable: false,
@@ -323,6 +349,49 @@ export class ReturnProcessor {
         ],
       };
     }
+  }
+
+  private async resolveOrigin(input: Readonly<{
+    request: ReturnRequestEnvelope;
+    payload: Record<string, unknown>;
+    protocol?: string | undefined;
+    receipt?: string | undefined;
+    competence?: string | undefined;
+  }>): Promise<ReturnOriginRecord> {
+    const eventRecordId = stringValue(input.payload.eventRecordId);
+    const batchId = stringValue(input.payload.batchId);
+    const previousStatus = statusOrUndefined(input.payload.previousStatus);
+    const sourceEventClass = eventClassOrUndefined(input.payload.sourceEventClass);
+
+    if (eventRecordId && batchId) {
+      return {
+        eventRecordId,
+        batchId,
+        previousStatus,
+        sourceEventClass,
+        competence: input.competence,
+      };
+    }
+
+    const resolved = await this.repository.resolveOrigin?.({
+      tenantId: input.request.tenant_id,
+      environment: input.request.environment,
+      protocol: input.protocol,
+      receipt: input.receipt,
+    });
+
+    if (resolved) {
+      return {
+        ...resolved,
+        previousStatus: previousStatus ?? resolved.previousStatus,
+        sourceEventClass: sourceEventClass ?? resolved.sourceEventClass,
+        competence: input.competence ?? resolved.competence,
+      };
+    }
+
+    throw new Error(
+      'Return origin could not be resolved from payload.eventRecordId/payload.batchId or protocol/receipt.',
+    );
   }
 }
 
@@ -382,10 +451,22 @@ export function validateReturnIngressEnvelope(
   if (!isNonEmptyString(candidate.payload.rawResponseXml) && !isNonEmptyString(candidate.payload.responseXml)) {
     return ingressError('ESOCIAL_RETURN_XML_REQUIRED', 'payload.rawResponseXml is required.', candidate, rawBody);
   }
-  if (!isUuid(candidate.payload.eventRecordId)) {
+  const hasExplicitOrigin = isUuid(candidate.payload.eventRecordId) && isUuid(candidate.payload.batchId);
+  const hasLookupOrigin =
+    isNonEmptyString(candidate.payload.protocolNumber)
+    || isNonEmptyString(candidate.payload.receiptNumber);
+  if (!hasExplicitOrigin && !hasLookupOrigin) {
+    return ingressError(
+      'ESOCIAL_RETURN_ORIGIN_REQUIRED',
+      'payload must include eventRecordId and batchId or protocolNumber/receiptNumber for origin lookup.',
+      candidate,
+      rawBody,
+    );
+  }
+  if (candidate.payload.eventRecordId !== undefined && !isUuid(candidate.payload.eventRecordId)) {
     return ingressError('ESOCIAL_RETURN_EVENT_RECORD_REQUIRED', 'payload.eventRecordId must identify the esocial.event_record row.', candidate, rawBody);
   }
-  if (!isUuid(candidate.payload.batchId)) {
+  if (candidate.payload.batchId !== undefined && !isUuid(candidate.payload.batchId)) {
     return ingressError('ESOCIAL_RETURN_BATCH_REQUIRED', 'payload.batchId must identify the esocial.submission_batch row.', candidate, rawBody);
   }
 
@@ -403,6 +484,7 @@ function buildReturnSpoolUpdateEnvelope(
     classification?: ReturnResponseClassification | undefined;
     errors: readonly EsocialContractError[];
     operatorActionRequired: boolean;
+    auditFlags: readonly string[];
   }>,
   occurredAt: string,
 ): SpoolUpdateEnvelope {
@@ -432,6 +514,7 @@ function buildReturnSpoolUpdateEnvelope(
       response_description: parsedOutcome.parsed?.responseDescription,
       classification: parsedOutcome.classification,
       operator_action_required: parsedOutcome.operatorActionRequired,
+      audit_flags: parsedOutcome.auditFlags,
       batch_id: record.batchId,
       event_record_id: record.eventRecordId,
       totalizer_id: record.totalizerId,
@@ -450,6 +533,7 @@ function buildReturnAuditEnvelope(
     parsed: ParsedEsocialReturn | null;
     classification?: ReturnResponseClassification | undefined;
     errors: readonly EsocialContractError[];
+    auditFlags: readonly string[];
   }>,
   occurredAt: string,
   rawResponseXml: string,
@@ -484,7 +568,9 @@ function buildReturnAuditEnvelope(
       receipt_number: record.receipt,
       response_sha256: record.responseHash,
       classification: parsedOutcome.classification,
-      raw_response_xml: rawResponseXml,
+      audit_flags: parsedOutcome.auditFlags,
+      raw_response_ref: `local://esocial.submission_message/${record.messageId}/payload.raw_response_xml`,
+      raw_response_bytes: rawResponseXml.length,
     },
     errors: parsedOutcome.errors,
     occurred_at: occurredAt,
@@ -617,12 +703,6 @@ function ingressError(
     candidate: isRecord(candidate) ? candidate : undefined,
     rawBody,
   };
-}
-
-function requiredString(value: unknown, label: string): string {
-  const string = stringValue(value);
-  if (!string) throw new Error(`${label} is required.`);
-  return string;
 }
 
 function recordOrEmpty(value: unknown): Record<string, unknown> {

@@ -39,14 +39,7 @@ export type CreateSubmissionHandlerOptions = Readonly<{
 export function createSubmissionHandler(
   options: CreateSubmissionHandlerOptions = {},
 ): (event: SqsSubmissionEvent) => Promise<SqsBatchResponse> {
-  const publishers = options.publishers ?? createAwsSubmissionPublishersFromEnv();
-  const processor =
-    options.processor ??
-    new SubmissionProcessor({
-      repository: options.repository ?? createPostgresSubmissionRepositoryFromEnv(),
-      publishers,
-      now: options.now,
-    });
+  const processor = options.processor ?? createDefaultProcessor(options);
 
   return async (event: SqsSubmissionEvent): Promise<SqsBatchResponse> => {
     const batchItemFailures: { itemIdentifier: string }[] = [];
@@ -86,6 +79,15 @@ export function createSubmissionHandler(
 
     return { batchItemFailures };
   };
+}
+
+function createDefaultProcessor(options: CreateSubmissionHandlerOptions): SubmissionProcessor {
+  const publishers = options.publishers ?? createAwsSubmissionPublishersFromEnv();
+  return new SubmissionProcessor({
+    repository: options.repository ?? createPostgresSubmissionRepositoryFromEnv(),
+    publishers,
+    now: options.now,
+  });
 }
 
 let defaultHandler: ((event: SqsSubmissionEvent) => Promise<SqsBatchResponse>) | undefined;

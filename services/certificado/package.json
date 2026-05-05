@@ -6,7 +6,12 @@
   "main": "./dist/handler.js",
   "types": "./dist/handler.d.ts",
   "dependencies": {
+    "@aws-sdk/client-secrets-manager": "3.1043.0",
     "@esocial/pki-pades": "0.0.0-r6.0",
-    "@esocial/service-shared": "0.0.0-r6.0"
+    "@esocial/service-shared": "0.0.0-r6.0",
+    "pg": "8.20.0"
+  },
+  "devDependencies": {
+    "@types/pg": "8.20.0"
   }
 }

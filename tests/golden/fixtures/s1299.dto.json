@@ -1,0 +1,13 @@
+{
+  "eventClass": "S-1299",
+  "tenantId": "00000000-0000-0000-0000-000000001299",
+  "sourceEventId": "source-s1299-round0",
+  "employerCnpj": "12345678000199",
+  "competence": "2026-01",
+  "payrollRunId": "00000000-0000-4000-8000-000000001200",
+  "pendingPeriodicEvents": [],
+  "acceptedEventCounts": {
+    "remuneration": 2,
+    "payments": 2
+  }
+}
