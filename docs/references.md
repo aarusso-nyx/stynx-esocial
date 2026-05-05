@@ -1,7 +1,7 @@
 # References
 
 The `docs/references/` tree contains copied SGP reference material that informed
-the lift-out. It is retained here so stynx-esocial can evolve without reaching
+the lift-out. It is retained here so esocial can evolve without reaching
 back into SGP for regulatory anchors.
 
 ## Copied eSocial Reference Notes

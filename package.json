@@ -1,5 +1,5 @@
 {
-  "name": "stynx-esocial",
+  "name": "esocial",
   "version": "0.0.0",
   "private": true,
   "packageManager": "npm@11.12.1",
@@ -10,18 +10,26 @@
     "infra/cdk"
   ],
   "scripts": {
-    "lint": "node scripts/check.mjs lint",
-    "test": "node --test tests/contract/*.test.mjs",
-    "build": "node scripts/check.mjs build",
-    "coverage": "node scripts/check.mjs coverage",
-    "cdk:synth": "node scripts/cdk-synth.mjs",
-    "integration:localstack": "node scripts/check-migrations.mjs integration:localstack",
+    "lint": "eslint \"packages/**/*.ts\" \"services/**/*.ts\" \"infra/cdk/src/**/*.ts\" \"scripts/**/*.mjs\" \"tests/contract/*.mjs\" \"tests/certificado/*.mjs\" \"tests/db/*.mjs\" \"tests/golden/*.mjs\" \"tests/handler/*.mjs\" \"tests/integration/*.mjs\" \"tests/integration/localstack/*.mjs\" \"tests/integration/retry/*.mjs\" \"tests/pki/*.mjs\" \"tests/returns/*.mjs\" \"tests/soap/*.mjs\" \"tests/xml/*.mjs\" && node scripts/check.mjs lint && node scripts/check-migrations.mjs lint:migrations",
+    "lint:migrations": "node scripts/check-migrations.mjs lint:migrations",
+    "test": "npm run build --silent && node --test tests/contract/*.test.mjs tests/certificado/*.test.mjs tests/golden/*.test.mjs tests/handler/*.test.mjs tests/pki/*.test.mjs tests/returns/*.test.mjs tests/xml/*.test.mjs",
+    "build": "tsc -b",
+    "coverage": "npm run build --silent && node --test --experimental-test-coverage tests/contract/*.test.mjs tests/certificado/*.test.mjs tests/golden/*.test.mjs tests/handler/*.test.mjs tests/pki/*.test.mjs tests/returns/*.test.mjs tests/xml/*.test.mjs",
+    "templates:generate": "node scripts/templates-generate.mjs",
+    "templates:check": "node scripts/templates-generate.mjs --check",
+    "integration:localstack": "npm run build --silent && node tests/integration/localstack/harness.mjs",
     "migrate:dev": "node scripts/check-migrations.mjs migrate:dev",
-    "test:db": "node scripts/check-migrations.mjs test:db",
-    "test:integration": "node scripts/check-migrations.mjs test:integration"
+    "test:db": "node scripts/check-migrations.mjs lint:migrations && node --test tests/db/*.test.mjs",
+    "test:integration": "npm run build --silent && npm run templates:check --silent && node --test tests/integration/*.test.mjs tests/integration/localstack/*.test.mjs tests/integration/retry/*.test.mjs tests/soap/*.test.mjs"
   },
   "engines": {
     "node": ">=20.0.0 <25",
     "npm": ">=10.0.0 <12"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "eslint": "^9.39.1",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.3"
   }
 }

@@ -1,0 +1,10 @@
+{
+  "evidence": "Executable database assertion is owned by tests/integration/localstack/harness.mjs.",
+  "command": "npm run integration:localstack",
+  "expected": {
+    "submission_message_count": 1,
+    "submission_batch_count": 1,
+    "event_record_count": 1,
+    "event_record_status": "building"
+  }
+}

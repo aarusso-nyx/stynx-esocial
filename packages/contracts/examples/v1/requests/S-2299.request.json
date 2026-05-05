@@ -1,0 +1,40 @@
+{
+  "version": "v1",
+  "family": "request",
+  "request-id": "00000000-0000-4000-8000-000000020024",
+  "correlation-id": "00000000-0000-4000-8000-000000030024",
+  "idempotency-key": "esocial:v1:request:00000000-0000-4000-8000-000000009024:QUALIFICATION:S-2299:00000000-0000-4000-8000-000000010024:source-s-2299-24:-:2026-05:sha256%3Af09992332386206c882c95729db99540a6c35bb1c11e81dcc5cc91296e897370:-:-",
+  "created_at": "2026-05-05T12:00:00.000Z",
+  "tenant_id": "00000000-0000-4000-8000-000000009024",
+  "environment": "QUALIFICATION",
+  "event_class": "S-2299",
+  "source": {
+    "source_event_id": "00000000-0000-4000-8000-000000010024",
+    "source_entity_id": "source-s-2299-24",
+    "payroll_run_id": "payroll-2026-05-24",
+    "source_system": "SGP"
+  },
+  "kind": "submit",
+  "payload_hash": "sha256:f09992332386206c882c95729db99540a6c35bb1c11e81dcc5cc91296e897370",
+  "attempt": 1,
+  "max-attempts": 3,
+  "reply-to": "sgp.esocial.submit.response",
+  "dead-letter-topic": "sgp.esocial.dlq",
+  "payload": {
+    "batchId": "00000000-0000-4000-8000-000000040024",
+    "environment": "QUALIFICATION",
+    "endpointUrl": "https://sandbox.esocial.example.test/submit",
+    "eventIds": [
+      "00000000-0000-4000-8000-000000050024"
+    ],
+    "eventClass": "S-2299",
+    "signedEnvelope": {
+      "tenantId": "00000000-0000-4000-8000-000000009024",
+      "eventKind": "S-2299",
+      "payloadXml": "<eSocial />",
+      "payloadSha256": "sha256:f09992332386206c882c95729db99540a6c35bb1c11e81dcc5cc91296e897370",
+      "pkcs7Sha256": "sha256:e85e8cd4242ec9b6004abe79ce42072093240822e8194a3b3c88ace58417fd2f",
+      "signedAt": "2026-05-05T12:00:00.000Z"
+    }
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "version": "1.0.0",
+  "generated_at": "2026-05-05T12:00:00.000Z",
+  "commands": [
+    "npm run build",
+    "npm run lint",
+    "npm test",
+    "npm run test:db",
+    "npm run test:integration",
+    "npm run integration:localstack",
+    "npm run templates:check",
+    "node scripts/release-evidence.mjs --version 1.0.0"
+  ],
+  "restricted_production": {
+    "status": "deferred",
+    "owner": "release owner",
+    "review_date": "2026-06-05",
+    "reason": "No explicit owner authorization for restricted-production or real-service evidence."
+  },
+  "artifacts": [
+    "input-envelopes/submit-s1299.json",
+    "generated-xml/s1299.xml",
+    "signed-payload/s1299.signed.xml",
+    "signed-payload/metadata.json",
+    "soap/submit-request.xml",
+    "soap/submit-response.xml",
+    "soap/return-query-request.xml",
+    "soap/return-query-response.xml",
+    "returns/protocol.json",
+    "returns/processing.json",
+    "status/response-envelope.json",
+    "status/spool-envelope.json",
+    "status/audit-envelope.json",
+    "status/published.json",
+    "database/db-state-diff.json"
+  ],
+  "contract_artifacts": {
+    "schemas": [
+      "packages/contracts/schemas/v1/request.schema.json",
+      "packages/contracts/schemas/v1/response.schema.json",
+      "packages/contracts/schemas/v1/spool.schema.json",
+      "packages/contracts/schemas/v1/audit.schema.json",
+      "packages/contracts/schemas/v1/retry.schema.json",
+      "packages/contracts/schemas/v1/dlq.schema.json",
+      "packages/contracts/schemas/v1/replay.schema.json"
+    ],
+    "request_examples": 40,
+    "error_categories": [
+      "validation",
+      "schema",
+      "xml_build",
+      "signing",
+      "transport",
+      "regulatory",
+      "configuration",
+      "authentication",
+      "idempotency",
+      "totalizer_parse",
+      "internal"
+    ]
+  }
+}

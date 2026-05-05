@@ -1,4 +1,4 @@
-CREATE TABLE stynx_esocial.submission_batch (
+CREATE TABLE esocial.submission_batch (
   batch_id uuid PRIMARY KEY,
   tenant_id uuid NOT NULL,
   message_id uuid NOT NULL,
@@ -17,7 +17,7 @@ CREATE TABLE stynx_esocial.submission_batch (
   )
 );
 
-CREATE TABLE stynx_esocial.event_record (
+CREATE TABLE esocial.event_record (
   event_record_id uuid PRIMARY KEY,
   tenant_id uuid NOT NULL,
   source_event_id uuid,
@@ -30,9 +30,9 @@ CREATE TABLE stynx_esocial.event_record (
   updated_at timestamp with time zone NOT NULL DEFAULT now()
 );
 
-COMMENT ON COLUMN stynx_esocial.event_record.source_event_id IS
+COMMENT ON COLUMN esocial.event_record.source_event_id IS
   'Opaque SGP source public.esocial_event id during R6 shadow. No database FK is permitted.';
-COMMENT ON COLUMN stynx_esocial.event_record.payroll_run_id IS
+COMMENT ON COLUMN esocial.event_record.payroll_run_id IS
   'Opaque SGP payroll.payroll_run id. No database FK is permitted.';
-COMMENT ON COLUMN stynx_esocial.event_record.employee_id IS
+COMMENT ON COLUMN esocial.event_record.employee_id IS
   'Opaque SGP hr.employee id. No database FK is permitted.';

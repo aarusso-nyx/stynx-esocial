@@ -1,12 +1,27 @@
 {
-  "name": "@stynx/esocial-contracts",
-  "version": "0.0.0-r6.0",
+  "name": "@esocial/contracts",
+  "version": "1.0.0",
   "private": false,
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "schemas",
+    "examples",
+    "CHANGELOG.md"
+  ],
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./schemas/v1/*.schema.json": "./schemas/v1/*.schema.json",
+    "./examples/v1/requests/*.json": "./examples/v1/requests/*.json"
   },
   "publishConfig": {
-    "access": "restricted"
+    "access": "restricted",
+    "registry": "https://registry.npmjs.org/",
+    "tag": "v1"
   }
 }

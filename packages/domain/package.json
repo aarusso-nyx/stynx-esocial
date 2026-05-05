@@ -1,9 +1,18 @@
 {
-  "name": "@stynx/esocial-domain",
+  "name": "@esocial/domain",
   "version": "0.0.0-r6.0",
   "private": true,
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@esocial/contracts": "1.0.0",
+    "@esocial/pki-pades": "0.0.0-r6.0"
   }
 }

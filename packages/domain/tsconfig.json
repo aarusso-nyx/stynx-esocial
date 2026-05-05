@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
+  },
+  "references": [
+    { "path": "../contracts" },
+    { "path": "../pki-pades" }
+  ],
+  "include": ["src/**/*.ts"],
+  // Phase 1 fences the SGP lift-out evidence tree from the active build.
+  // Phase 5 promotes boundary-clean builders/parsers into production paths.
+  "exclude": ["src/sgp-lifted/**", "dist", "node_modules"]
+}

@@ -1,1 +1,18 @@
-{"name":"@stynx/esocial-service-submission","version":"0.0.0-r6.0","private":true,"type":"module"}
+{
+  "name": "@esocial/service-submission",
+  "version": "0.0.0-r6.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/handler.js",
+  "types": "./dist/handler.d.ts",
+  "dependencies": {
+    "@aws-sdk/client-eventbridge": "^3.1042.0",
+    "@aws-sdk/client-sqs": "^3.1042.0",
+    "@esocial/contracts": "1.0.0",
+    "@esocial/domain": "0.0.0-r6.0",
+    "pg": "^8.20.0"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.20.0"
+  }
+}

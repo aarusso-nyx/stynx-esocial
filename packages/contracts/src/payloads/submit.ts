@@ -1,4 +1,4 @@
-import type { EsocialRelayEventClass, EsocialRelayScenario } from '../kinds';
+import type { EsocialRelayEventClass, EsocialRelayScenario } from '../kinds.js';
 
 export type EsocialPadesPkcs7Envelope = Readonly<{
   tenantId: string;
@@ -20,7 +20,7 @@ export type EsocialRelayRequestPayload = Readonly<{
 }>;
 
 export type EsocialRelayResponsePayload = Readonly<{
-  relay: 'stynx-esocial';
+  relay: 'esocial';
   batchId: string;
   eventIds: string[];
   eventClass: EsocialRelayEventClass;

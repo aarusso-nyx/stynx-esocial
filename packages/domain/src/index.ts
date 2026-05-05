@@ -1,7 +1,176 @@
-export const STYNX_ESOCIAL_DOMAIN_VERSION = 'r6-skeleton';
+export const ESOCIAL_DOMAIN_VERSION = 'r6-skeleton';
 
-export type StynxEsocialDomainBoundary = Readonly<{
-  database: 'isolated-stynx-esocial';
+export {
+  DEFAULT_CIRCUIT_BREAKER_POLICY,
+  DEFAULT_RETRY_POLICY,
+  ESOCIAL_LOG_FIELD_NAMES,
+  ESOCIAL_METRIC_NAMES,
+  ReplaySchemaMismatchError,
+  buildMetricPayload,
+  buildReplayRequestFromDlq,
+  buildRetryAttemptEvidence,
+  buildRetryScheduleCommand,
+  buildStructuredLogEntry,
+  buildTerminalDlqPayload,
+  calculateBackoffDelayMs,
+  classifyRetryFailure,
+  contextFromEnvelope,
+  createMetricEmitter,
+  createNoopMetricEmitter,
+  createNoopStructuredLogger,
+  createStructuredLogger,
+  decideCircuitBreakerState,
+  decideRetry,
+  deriveReplayIdempotencyKey,
+  listDlqMessages,
+  recordCircuitBreakerOutcome,
+  withTraceSpan,
+} from './operations/index.js';
+export { SubmissionProcessor } from './submission/submission-processor.js';
+export {
+  RetryableSubmissionError,
+  TerminalSubmissionError,
+  validateIngressEnvelope,
+} from './submission/submission-processor.js';
+export {
+  SUBMISSION_ROUTES,
+  routeSubmissionEventClass,
+} from './submission/submission-router.js';
+export {
+  SUBMISSION_TOPICS,
+  buildSubmissionFifoMetadata,
+  buildSubmissionPublishCommand,
+} from './transport/submission-publishers.js';
+export {
+  ReturnProcessor,
+  parseEsocialReturnXml,
+  parseProcessingResponseXml,
+  parseProtocolResponseXml,
+  parseTotalizerXml,
+  protocolFromXml,
+  validateReturnIngressEnvelope,
+} from './returns/index.js';
+export {
+  PROMOTED_TABLE_EVENT_CLASSES,
+  TABLE_EVENT_METADATA,
+  TableBuilderValidationError,
+  buildEsocialEventId,
+  buildTableEvent,
+  buildTableEvents,
+  isPromotedTableEventClass,
+} from './xml/builders/tables/index.js';
+export {
+  InMemoryXsdValidationFailureSink,
+  XsdValidationError,
+  assertPromotedTableXmlValid,
+  signValidatedPromotedTableXml,
+  validateAndCapturePromotedTableXml,
+  validatePromotedTableXml,
+} from './xml/xsd-validation.js';
+export {
+  XmlSecurityError,
+  assertHardenedXml,
+  sha256Hex,
+  sha256Prefixed,
+} from './xml/security.js';
+export type {
+  CircuitBreakerDecision,
+  CircuitBreakerPolicy,
+  CircuitBreakerState,
+  DlqListFilters,
+  EndpointCircuitSnapshot,
+  EsocialMetricName,
+  MetricContext,
+  MetricEmitter,
+  MetricPayload,
+  MetricUnit,
+  ReplayRequestResult,
+  ReplayableDlqPayload,
+  RetryAttemptEvidence,
+  RetryDecision,
+  RetryDecisionInput,
+  RetryFailureClassification,
+  RetryPolicy,
+  RetrySchedulePersistenceCommand,
+  ScheduledRetryDecision,
+  StructuredLogContext,
+  StructuredLogEntry,
+  StructuredLogInput,
+  StructuredLogLevel,
+  StructuredLogger,
+  TerminalDlqPayload,
+  TraceSpanRecord,
+} from './operations/index.js';
+export type {
+  PersistSubmissionCommand,
+  SubmissionIngressValidationResult,
+  SubmissionPersistenceRecord,
+  SubmissionPersistenceStatus,
+  SubmissionProcessorResult,
+  SubmissionRepository,
+  SubmissionRequestEnvelope,
+} from './submission/submission-processor.js';
+export type {
+  SubmissionRoute,
+  SubmissionRouteName,
+} from './submission/submission-router.js';
+export type {
+  BatchProcessingReturn,
+  ESocialTotalizerKind,
+  EventProcessingReturn,
+  ParsedEsocialReturn,
+  ParsedIdentity,
+  ParsedTotalizerReturn,
+  PersistReturnCommand,
+  ProtocolParseResult,
+  ReturnClassificationStatus,
+  ReturnIngressValidationResult,
+  ReturnOccurrence,
+  ReturnPersistenceRecord,
+  ReturnProcessorOptions,
+  ReturnProcessorResult,
+  ReturnPublishers,
+  ReturnRepository,
+  ReturnRequestEnvelope,
+  ReturnResponseClassification,
+} from './returns/index.js';
+export type {
+  MalformedSubmissionDlqEnvelope,
+  SubmissionDlqEnvelope,
+  SubmissionFifoMetadata,
+  SubmissionPublisher,
+  SubmissionPublishCommand,
+  SubmissionPublishers,
+  SubmissionTopicFamily,
+} from './transport/submission-publishers.js';
+export type {
+  BuiltTableXmlEvent,
+  EsocialEnvironment,
+  EsocialTableOperation,
+  PromotedTableEventClass,
+  S1000TableDto,
+  S1005TableDto,
+  S1010TableDto,
+  S1020TableDto,
+  S1050TableDto,
+  S1070TableDto,
+  TableEventDto,
+  TableEventDtoBase,
+  TableEventMetadata,
+  TableSourceEntityKind,
+  TableVersionDependency,
+} from './xml/builders/tables/index.js';
+export type {
+  PromotedTableXsdValidationInput,
+  PromotedTableXsdValidationResult,
+  XsdValidationFailureRecord,
+  XsdValidationFailureSink,
+  XsdValidationIssue,
+  XsdValidationSeverity,
+} from './xml/xsd-validation.js';
+
+export type EsocialDomainBoundary = Readonly<{
+  database: 'isolated-esocial';
   sgpDatabaseAccess: false;
   allowedIngress: 'sqs' | 'sgp-backend-https';
 }>;

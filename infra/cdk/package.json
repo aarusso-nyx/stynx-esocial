@@ -1,6 +1,12 @@
 {
-  "name": "@stynx/esocial-cdk",
+  "name": "@esocial/cdk",
   "version": "0.0.0-r6.0",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "main": "./dist/esocial-stack.js",
+  "types": "./dist/esocial-stack.d.ts",
+  "scripts": {
+    "templates:generate": "node ../../scripts/templates-generate.mjs",
+    "templates:check": "node ../../scripts/templates-generate.mjs --check"
+  }
 }

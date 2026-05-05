@@ -5,7 +5,7 @@ import { join } from 'node:path';
 
 const root = new URL('../..', import.meta.url).pathname;
 
-test('contracts package uses locked stynx-esocial naming and class taxonomy', () => {
+test('contracts package uses locked esocial naming and class taxonomy', () => {
   const kinds = readFileSync(
     join(root, 'packages/contracts/src/kinds.ts'),
     'utf8',
@@ -26,7 +26,7 @@ test('contracts package uses locked stynx-esocial naming and class taxonomy', ()
 
 test('migrations do not reference SGP schemas or cross-database access', () => {
   const migration = readFileSync(
-    join(root, 'infra/migrations/001-stynx-esocial-core.sql'),
+    join(root, 'infra/migrations/001-esocial-core.sql'),
     'utf8',
   );
   assert.doesNotMatch(migration, /REFERENCES\s+(public|hr|payroll|esocial)\./i);

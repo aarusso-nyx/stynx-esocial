@@ -1,0 +1,34 @@
+{
+  "version": "v1",
+  "family": "response",
+  "request-id": "00000000-0000-4000-8000-000000021299",
+  "correlation-id": "00000000-0000-4000-8000-000000031299",
+  "idempotency-key": "esocial:v1:request:00000000-0000-4000-8000-000000010299:QUALIFICATION:S-1299:00000000-0000-4000-8000-000000011299:source-s-1299-1299:-:2026-05:sha256%3A263e1d584ceeca0eae0164a9a56aeabed22cc3b8aea14519851da04326a4137a:-:-",
+  "created_at": "2026-05-05T12:00:00.000Z",
+  "tenant_id": "00000000-0000-4000-8000-000000010299",
+  "environment": "QUALIFICATION",
+  "event_class": "S-1299",
+  "source": {
+    "source_event_id": "00000000-0000-4000-8000-000000011299",
+    "source_entity_id": "source-s-1299-1299",
+    "payroll_run_id": "payroll-2026-05-1299",
+    "source_system": "SGP"
+  },
+  "kind": "submit",
+  "status": "building",
+  "attempt": 1,
+  "processed_at": "2026-05-05T12:00:00.000Z",
+  "hashes": {
+    "request_sha256": "sha256:263e1d584ceeca0eae0164a9a56aeabed22cc3b8aea14519851da04326a4137a",
+    "payload_sha256": "sha256:263e1d584ceeca0eae0164a9a56aeabed22cc3b8aea14519851da04326a4137a"
+  },
+  "payload": {
+    "message_id": "00000000-0000-4000-8000-000000061001",
+    "batch_id": "00000000-0000-4000-8000-000000041299",
+    "event_record_id": "00000000-0000-4000-8000-000000062001",
+    "route": "periodic",
+    "stage": "build.periodic",
+    "duplicate": false
+  },
+  "errors": []
+}

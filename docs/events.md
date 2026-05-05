@@ -7,28 +7,118 @@ payload shape without walking source fixtures.
 
 ## Table Events
 
-| Event | Purpose | Lifted implementation | XML example |
-| --- | --- | --- | --- |
-| S-1000 | Employer/contributor information | `builders/s1000.builder.ts` | `templates/golden/builders/s1000.golden.xml` |
-| S-1005 | Establishment/workplace table | `builders/s1005.builder.ts` | `templates/golden/builders/s1005.golden.xml` |
-| S-1010 | Rubric table | `builders/s1010.builder.ts` | `templates/golden/builders/s1010.golden.xml` |
-| S-1020 | Tax lotation table | `builders/s1020.builder.ts` | `templates/golden/builders/s1020.golden.xml` |
-| S-1030 | Job/cargo table | `builders/s1030.builder.ts` | `templates/golden/builders/s1030.golden.xml` |
-| S-1040 | Function table | `builders/s1040.builder.ts` | `templates/golden/builders/s1040.golden.xml` |
-| S-1050 | Work schedule table | `builders/s1050.builder.ts` | `templates/golden/builders/s1050.golden.xml` |
-| S-1060 | Work environment table | `builders/s1060.builder.ts` | `templates/golden/builders/s1060.golden.xml` |
-| S-1070 | Administrative/judicial process table | `builders/s1070.builder.ts` | `templates/golden/builders/s1070.golden.xml` |
+Promoted table builders live in
+`packages/domain/src/xml/builders/tables/index.ts`. They accept normalized DTOs
+from the bus and never read SGP databases, SGP schemas, or SGP modules. The
+lifted `sgp-lifted` builder files remain migration evidence only when the
+family has not yet been promoted.
+
+| Event | Purpose | Production implementation | Status | XML example |
+| --- | --- | --- | --- | --- |
+| S-1000 | Employer/contributor information | `xml/builders/tables` | Promoted in Phase 5 | `templates/golden/builders/s1000.golden.xml` |
+| S-1005 | Establishment/workplace table | `xml/builders/tables` | Promoted in Phase 5 | `templates/golden/builders/s1005.golden.xml` |
+| S-1010 | Rubric table | `xml/builders/tables` | Promoted in Phase 5 | `templates/golden/builders/s1010.golden.xml` |
+| S-1020 | Tax lotation table | `xml/builders/tables` | Promoted in Phase 5 | `templates/golden/builders/s1020.golden.xml` |
+| S-1030 | Job/cargo table | `builders/s1030.builder.ts` | Deferred: lifted golden exists, but no active XSD binding is present in `packages/domain/src/sgp-lifted/esocial-worker/xsd/` | `templates/golden/builders/s1030.golden.xml` |
+| S-1040 | Function table | `builders/s1040.builder.ts` | Deferred: lifted golden exists, but no active XSD binding is present in `packages/domain/src/sgp-lifted/esocial-worker/xsd/` | `templates/golden/builders/s1040.golden.xml` |
+| S-1050 | Work schedule table | `xml/builders/tables` | Promoted in Phase 5 | `templates/golden/builders/s1050.golden.xml` |
+| S-1060 | Work environment table | `builders/s1060.builder.ts` | Deferred: lifted golden uses legacy `evtTabAmbiente/v02_05_00`, and no active XSD binding is present in the current bundle | `templates/golden/builders/s1060.golden.xml` |
+| S-1070 | Administrative/judicial process table | `xml/builders/tables` | Promoted in Phase 5 | `templates/golden/builders/s1070.golden.xml` |
+
+### Promoted Table DTOs
+
+Common DTO fields for every promoted table event:
+
+| Field | Required | Meaning |
+| --- | --- | --- |
+| `eventClass` | Yes | One of `S-1000`, `S-1005`, `S-1010`, `S-1020`, `S-1050`, or `S-1070`. |
+| `tenantId` | Yes | Opaque eSocial tenant identifier from the ingress contract. |
+| `sourceEntityId` | Yes | Opaque SGP source entity id. The eSocial service does not dereference it. |
+| `sourceEventId` | No | Opaque producer event id used for traceability when present. |
+| `competence` | Yes | Table validity start in `YYYY-MM` format. |
+| `operation` | No | Currently `inclusao`; alteration/exclusion DTOs are a follow-up contract decision. |
+| `environment` | No | eSocial environment code; defaults to `2` for qualification/sandbox. |
+| `processEmitter` | No | eSocial `procEmi`; defaults to `1`. |
+| `processVersion` | No | eSocial `verProc`; defaults to the lifted golden value `SGP-0.0.1` until Phase 10 product-version finalization. |
+| `eventId` | No | Optional precomputed eSocial `Id`; otherwise derived deterministically from `eventClass`, `tenantId`, and `sourceEntityId`. |
+
+Event-specific DTO fields:
+
+| Event | DTO branch | Required event-specific fields |
+| --- | --- | --- |
+| S-1000 | `employer` | `registrationNumber`; optional `classTrib`, `cooperativeIndicator`, `constructionIndicator`, `payrollExemptionIndicator`, `electronicRecordOption`. |
+| S-1005 | `establishment` | `registrationNumber`, `employerRegistrationNumber`; optional `cnaePreponderante`. |
+| S-1010 | `rubric` | `code`, `description`, `type`, `employerRegistrationNumber`; optional `tableId`, `natureCode`, `incidences`, `remunerationCeiling`. |
+| S-1020 | `taxLotation` | `code`, `employerRegistrationNumber`; optional `typeCode`, `fpasCode`, `thirdPartyCode`. |
+| S-1050 | `workSchedule` | `code`, `description`, `dailyHours`, `employerRegistrationNumber`. |
+| S-1070 | `process` | `processNumber`, `subject`, `employerRegistrationNumber`; optional `processType`, `matterIndicator`. |
+
+### Promoted Table Metadata
+
+| Event | Root | Event element | Namespace | XSD binding | Table dependencies |
+| --- | --- | --- | --- | --- | --- |
+| S-1000 | `eSocial` | `evtInfoEmpregador` | `http://www.esocial.gov.br/schema/evt/evtInfoEmpregador/v_S_01_03_00` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtInfoEmpregador.xsd` | None |
+| S-1005 | `eSocial` | `evtTabEstab` | `http://www.esocial.gov.br/schema/evt/evtTabEstab/v_S_01_03_00` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabEstab.xsd` | S-1000 |
+| S-1010 | `eSocial` | `evtTabRubrica` | `http://www.esocial.gov.br/schema/evt/evtTabRubrica/v_S_01_03_00` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabRubrica.xsd` | S-1000 |
+| S-1020 | `eSocial` | `evtTabLotacao` | `http://www.esocial.gov.br/schema/evt/evtTabLotacao/v_S_01_03_00` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabLotacao.xsd` | S-1000 |
+| S-1050 | `eSocial` | `evtTabJornada` | `http://www.esocial.gov.br/schema/evt/evtTabJornada/v_S_01_03_00` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabJornada.xsd` | S-1000 |
+| S-1070 | `eSocial` | `evtTabProcesso` | `http://www.esocial.gov.br/schema/evt/evtTabProcesso/v_S_01_03_00` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabProcesso.xsd` | S-1000 |
 
 ## Periodic Payroll Events
 
-| Event | Purpose | Lifted implementation | XML example |
-| --- | --- | --- | --- |
-| S-1200 | Worker remuneration | `builders/s1200.builder.ts` | `templates/golden/builders/s1200-three-workers.golden.xml` |
-| S-1202 | RPPS remuneration | `builders/s1202.builder.ts` | `templates/golden/builders/s1202-rpps-workers.golden.xml` |
-| S-1207 | RPPS benefit payment | `builders/s1207.builder.ts` | `templates/golden/builders/s1207-rpps-benefit.golden.xml` |
-| S-1210 | Labor income payment | `builders/s1210.builder.ts` | `templates/golden/builders/s1210-confirmed-payments.golden.xml` |
-| S-1298 | Reopening periodic events | `builders/s1298.builder.ts` | `templates/golden/builders/s1298.golden.xml` |
-| S-1299 | Periodic closure | `builders/s1299.builder.ts` | `templates/golden/builders/s1299.golden.xml` |
+Promoted periodic builders live in
+`packages/domain/src/xml/builders/periodic/index.ts`. They accept normalized
+DTOs from the bus, use SGP ids only as opaque source identifiers, and do not
+read payroll, HR, eSocial state, or SGP database tables.
+
+| Event | Purpose | Production implementation | Status | XML example |
+| --- | --- | --- | --- | --- |
+| S-1200 | Worker remuneration | `xml/builders/periodic` | Promoted in Phase 5 | `templates/golden/builders/s1200-three-workers.golden.xml` |
+| S-1202 | RPPS remuneration | `xml/builders/periodic` | Promoted in Phase 5 | `templates/golden/builders/s1202-rpps-workers.golden.xml` |
+| S-1207 | RPPS benefit payment | `xml/builders/periodic` | Promoted in Phase 5 | `templates/golden/builders/s1207-rpps-benefit.golden.xml` |
+| S-1210 | Labor income payment | `xml/builders/periodic` | Promoted in Phase 5 | `templates/golden/builders/s1210-confirmed-payments.golden.xml` |
+| S-1298 | Reopening periodic events | `xml/builders/periodic` | Promoted in Phase 5 | `templates/golden/builders/s1298.golden.xml` |
+| S-1299 | Periodic closure | `xml/builders/periodic` | Promoted in Phase 5 | `templates/golden/builders/s1299.golden.xml` |
+
+No preferred periodic payroll event is deferred in this batch.
+
+### Promoted Periodic DTOs
+
+Common DTO fields for every promoted periodic event:
+
+| Field | Required | Meaning |
+| --- | --- | --- |
+| `eventClass` | Yes | One of `S-1200`, `S-1202`, `S-1207`, `S-1210`, `S-1298`, or `S-1299`. |
+| `tenantId` | Yes | Opaque eSocial tenant identifier from the ingress contract. |
+| `sourceEventId` | No | Opaque producer event id used for traceability when present. |
+| `competence` | Yes | Monthly apuracao period in `YYYY-MM` format. |
+| `employerRegistrationNumber` | Yes | Employer registration number used to fill `ideEmpregador`; the builder does not resolve it. |
+| `operation` | No | Currently `original`; rectification/exclusion DTOs remain separate contract work. |
+| `environment` | No | eSocial environment code; defaults to `2` for qualification/sandbox. |
+| `processEmitter` | No | eSocial `procEmi`; defaults to `1`. |
+| `processVersion` | No | eSocial `verProc`; defaults to the lifted golden value `SGP-0.0.1` until Phase 10 product-version finalization. |
+
+Event-specific DTO fields:
+
+| Event | DTO branch | Required event-specific fields |
+| --- | --- | --- |
+| S-1200 | `workers[]` | `payrollRunId`, `payrollRunStatus=GENERATED`; each worker carries `employeeId`, `registration`, `cpf`, `categoryCode`, and `rubrics[]` with `code`, `kind`, and `amount`; optional `tableCode`, `quantity`, `establishmentRegistrationNumber`, `lotationCode`, `ideDmDev`, `eventId`. |
+| S-1202 | `workers[]` | `payrollRunId`, `payrollRunStatus=GENERATED`; each RPPS worker carries `employeeId`, `registration`, `cpf`, `categoryCode`, and `rubrics[]`; optional `tableCode`, `quantity`, `establishmentRegistrationNumber`, `ideDmDev`, `eventId`. |
+| S-1207 | `benefits[]` | `payrollRunId`, `payrollRunStatus=GENERATED`; each benefit carries `employeeId`, `beneficiaryCpf`, `benefitSourceKind`, `benefitSourceId`, `benefitNumber`, `activeBenefitCount=1`, and `rubrics[]`; optional `establishmentRegistrationNumber`, `ideDmDev`, `eventId`. |
+| S-1210 | `payments[]` | `paymentBatchId`, `paymentBatchStatus=PAID`, `confirmedTotal`; each payment carries `employeeId`, `cpf`, `amount`, and `paymentDate`; optional `payrollRunId`, `ideDmDev`, `eventId`. |
+| S-1298 | Reopening closure evidence | `acceptedClosureReceipt`, `acceptedClosureAt`; optional `sourceEntityId`, `eventId`. The builder fails before XML if the accepted S-1299 receipt is absent. |
+| S-1299 | Closure acceptance summary | `pendingPeriodicEvents[]`, `acceptedEventCounts.remuneration`, `acceptedEventCounts.payments`; `pendingPeriodicEvents` must be empty before XML is built; optional `sourceEntityId`, `eventId`. |
+
+### Promoted Periodic Metadata
+
+| Event | Root | Event element | Namespace | XSD binding | Table dependencies | Receipt dependencies |
+| --- | --- | --- | --- | --- | --- | --- |
+| S-1200 | `eSocial` | `evtRemun` | `http://www.esocial.gov.br/schema/evt/evtRemun/v_S_01_03_00` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtRemun.xsd` | S-1000, S-1005, S-1010, S-1020 | None |
+| S-1202 | `eSocial` | `evtRmnRPPS` | `http://www.esocial.gov.br/schema/evt/evtRmnRPPS/v_S_01_03_00` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtRmnRPPS.xsd` | S-1000, S-1005, S-1010 | None |
+| S-1207 | `eSocial` | `evtBenPrRP` | `http://www.esocial.gov.br/schema/evt/evtBenPrRP/v_S_01_03_00` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtBenPrRP.xsd` | S-1000, S-1010 | S-2410 |
+| S-1210 | `eSocial` | `evtPgtos` | `http://www.esocial.gov.br/schema/evt/evtPgtos/v_S_01_03_00` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtPgtos.xsd` | S-1000 | S-1200, S-1202, S-1207 |
+| S-1298 | `eSocial` | `evtReabreEvPer` | `http://www.esocial.gov.br/schema/evt/evtReabreEvPer/v_S_01_03_00` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtReabreEvPer.xsd` | S-1000 | S-1299 |
+| S-1299 | `eSocial` | `evtFechaEvPer` | `http://www.esocial.gov.br/schema/evt/evtFechaEvPer/v_S_01_03_00` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtFechaEvPer.xsd` | S-1000 | S-1200, S-1202, S-1207, S-1210 |
 
 ## Non-Periodic Labor, SST, and TS-V Events
 
@@ -68,16 +158,25 @@ category variants, and S-2399 category variants.
 | --- | --- | --- | --- |
 | S-2501 | Labor process tax information | `builders/s2501.builder.ts` | `templates/golden/builders/s2501.golden.xml` |
 | S-3000 | Event exclusion | `builders/s3000.builder.ts` | `templates/golden/builders/s3000.golden.xml` |
-| S-5001 | Social-security contribution totalizer | `parsers/s5001-totalizer.parser.ts` | `templates/golden/returns/s5001-totalizer.golden.xml` |
-| S-5002 | IRRF totalizer | `parsers/s5002-totalizer.parser.ts` | `templates/golden/returns/s5002-totalizer.golden.xml` |
-| S-5011 | Employer contribution totalizer | `parsers/s5011-totalizer.parser.ts` | `templates/golden/returns/s5011-totalizer.golden.xml` |
-| S-5012 | IRRF consolidation totalizer | `parsers/s5012-totalizer.parser.ts` | `templates/golden/returns/s5012-totalizer.golden.xml` |
-| S-5013 | FGTS totalizer | `parsers/s5013-totalizer.parser.ts` | `templates/golden/returns/s5013-totalizer.golden.xml` |
+| S-5001 | Social-security contribution totalizer | `packages/domain/src/returns/parsers.ts` | `packages/domain/src/sgp-lifted/esocial-worker/parsers/__fixtures__/s5001-totalizer.golden.xml` |
+| S-5002 | IRRF totalizer | `packages/domain/src/returns/parsers.ts` | `packages/domain/src/sgp-lifted/esocial-worker/parsers/__fixtures__/s5002-totalizer.golden.xml` |
+| S-5011 | Employer contribution totalizer | `packages/domain/src/returns/parsers.ts` | `packages/domain/src/sgp-lifted/esocial-worker/parsers/__fixtures__/s5011-totalizer.golden.xml` |
+| S-5012 | IRRF consolidation totalizer | `packages/domain/src/returns/parsers.ts` | `packages/domain/src/sgp-lifted/esocial-worker/parsers/__fixtures__/s5012-totalizer.golden.xml` |
+| S-5013 | FGTS totalizer | `packages/domain/src/returns/parsers.ts` | `packages/domain/src/sgp-lifted/esocial-worker/parsers/__fixtures__/s5013-totalizer.golden.xml` |
 
 ## Template Custody
 
-Builder XML examples are copied from
-`packages/domain/src/sgp-lifted/esocial-worker/builders/__fixtures__/`.
+Promoted table builder XML examples are canonicalized under
+`docs/templates/golden/builders/` and covered by active tests in
+`tests/golden/`.
+
+Unpromoted builder XML examples are copied from
+`packages/domain/src/sgp-lifted/esocial-worker/builders/__fixtures__/` until
+their families move into active production builders.
 Return XML examples are copied from
 `packages/domain/src/sgp-lifted/esocial-worker/parsers/__fixtures__/`.
 They should be changed only with intentional contract updates and matching tests.
+The S-50xx fixture set is exercised by `tests/returns/return-parser.test.mjs`;
+status publication and PostgreSQL totalizer traceability are covered by
+`tests/returns/return-processor.test.mjs` and
+`tests/integration/return-postgres.test.mjs`.

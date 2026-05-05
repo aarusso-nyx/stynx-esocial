@@ -1,0 +1,15 @@
+{
+  "kind": "protocol",
+  "responseCode": null,
+  "responseDescription": null,
+  "protocol": "LOCAL-889F46D4B04488BB162C5B03",
+  "receipt": null,
+  "protocolReturn": {
+    "protocol": "LOCAL-889F46D4B04488BB162C5B03",
+    "responseCode": null,
+    "responseDescription": null,
+    "receivedAt": null,
+    "employer": null,
+    "transmitter": null
+  }
+}

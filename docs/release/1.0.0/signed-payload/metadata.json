@@ -1,0 +1,15 @@
+{
+  "requestXmlSha256": "175f510a7cc2bb5e540ca4e79a3a01e58ff723e98ec569da1f9599191888b3dd",
+  "signedPayloadSha256": "f53d54c2e225ea3cc925e17a868c37afbd18e82030981c39c388824199f53276",
+  "signatureHash": "e74b534f94f0f35200fd6c443494537e7d5e5e2de6f8e2bec20f74ca0c9f0c52",
+  "certificateFingerprintSha256": "365816d974f98f56c2f943953f8b49bfc83037705235bc0da0f15f755404f0c3",
+  "algorithm": "LOCAL-DETERMINISTIC-SHA256",
+  "signedAt": "2026-05-05T12:00:00.000Z",
+  "certificateRef": {
+    "tenantId": "00000000-0000-4000-8000-000000000901",
+    "environment": "QUALIFICATION",
+    "label": "release-evidence-local",
+    "secretRef": "local-test://release-evidence",
+    "version": "local-v1"
+  }
+}

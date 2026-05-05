@@ -1,5 +1,5 @@
-import { handlerResult } from '../../shared/src/handler-result';
+import { handlerResult } from '@esocial/service-shared';
 
 export async function handler(event: { Records?: unknown[] }) {
-  return handlerResult('stynx-esocial-trabalhador', event.Records?.length ?? 0);
+  return handlerResult('esocial-trabalhador', event.Records?.length ?? 0);
 }

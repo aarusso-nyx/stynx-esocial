@@ -1,28 +1,19 @@
-import type { EsocialClass } from './kinds';
+import type { EsocialContractError, EsocialEnvelopeBase } from './envelope.js';
+import type { EsocialClass } from './kinds.js';
+import type { EsocialStatus } from './kinds.js';
 
-export type EsocialSpoolStatus =
-  | 'PENDING'
-  | 'SENT'
-  | 'RECEIVED'
-  | 'ACCEPTED'
-  | 'REJECTED'
-  | 'RETRY'
-  | 'DLQ';
+export type EsocialSpoolStatus = EsocialStatus;
 
-export type SpoolUpdateEnvelope = Readonly<{
-  message_id: string;
-  tenant_id: string;
-  kind: EsocialClass;
-  status_transition: {
-    from?: EsocialSpoolStatus;
-    to: EsocialSpoolStatus;
-  };
-  response_payload?: unknown;
-  response_hash?: string;
-  error?: {
-    code?: string;
-    message: string;
-    details?: unknown;
-  };
-  occurred_at: string;
-}>;
+export type SpoolUpdateEnvelope = EsocialEnvelopeBase<'spool'> &
+  Readonly<{
+    message_id: string;
+    kind: EsocialClass;
+    status_transition: {
+      from?: EsocialSpoolStatus;
+      to: EsocialSpoolStatus;
+    };
+    response_payload?: unknown;
+    response_hash?: string;
+    errors?: readonly EsocialContractError[];
+    occurred_at: string;
+  }>;

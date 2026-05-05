@@ -1,0 +1,34 @@
+{
+  "kind": "processing",
+  "responseCode": "201",
+  "responseDescription": "Sucesso.",
+  "protocol": "LOCAL-889F46D4B04488BB162C5B03",
+  "receipt": "1.1.0000000000000000001",
+  "processingReturn": {
+    "protocol": "LOCAL-889F46D4B04488BB162C5B03",
+    "responseCode": "201",
+    "responseDescription": "Lote Processado com Sucesso.",
+    "estimatedConclusionSeconds": null,
+    "receivedAt": "2026-05-05T12:00:00.000Z",
+    "processedAt": "2026-05-05T12:00:00.000Z",
+    "employer": {
+      "type": "CNPJ",
+      "registration": "12345678",
+      "cnpj": "12345678"
+    },
+    "transmitter": null,
+    "occurrences": [],
+    "events": [
+      {
+        "eventReference": "IDES1299RELEASE00000000000000000001",
+        "duplicate": false,
+        "responseCode": "201",
+        "responseDescription": "Sucesso.",
+        "receipt": "1.1.0000000000000000001",
+        "processedAt": "2026-05-05T12:00:00.000Z",
+        "errors": [],
+        "rawXml": "<retornoEvento>\n            \n          <eSocial>\n              \n            <retornoEvento>\n                \n                \n              <processamento><cdResposta>201</cdResposta><descResposta>Sucesso.</descResposta><dhProcessamento>2026-05-05T12:00:00.000Z</dhProcessamento></processamento><recibo><nrRecibo>1.1.0000000000000000001</nrRecibo></recibo></retornoEvento></eSocial></retornoEvento>"
+      }
+    ]
+  }
+}

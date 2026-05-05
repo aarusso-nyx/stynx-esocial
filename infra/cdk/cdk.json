@@ -1,6 +1,6 @@
 {
-  "app": "node ../../scripts/cdk-synth.mjs",
+  "app": "node ../../scripts/templates-generate.mjs",
   "context": {
-    "service": "stynx-esocial"
+    "service": "esocial"
   }
 }
