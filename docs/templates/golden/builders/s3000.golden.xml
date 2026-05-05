@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtExclusao/v_S_01_03_00">
+  <evtExclusao Id="ID4714054028237643314468303617434830">
+    <ideEvento><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+    <infoExclusao>
+      <tpEvento>S-2200</tpEvento>
+      <nrRecEvt>1.1.0000000000000000000</nrRecEvt>
+      <ideTrabalhador><cpfTrab>11122233344</cpfTrab></ideTrabalhador>
+      
+    </infoExclusao>
+  </evtExclusao>
+</eSocial>

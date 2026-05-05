@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtBasesTrab/v_S_01_03_00">
+  <evtBasesTrab Id="ID5001000000000000000000000000000001">
+    <ideEvento>
+      <perApur>2026-01</perApur>
+    </ideEvento>
+    <infoTotal>
+      <nrRecArqBase>1.1.0000000000000001299</nrRecArqBase>
+    </infoTotal>
+  </evtBasesTrab>
+</eSocial>

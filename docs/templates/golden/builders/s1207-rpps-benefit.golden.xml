@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtBenPrRP/v_S_01_03_00">
+  <evtBenPrRP Id="ID0607764447991303425170125046256529">
+    <ideEvento><indRetif>1</indRetif><indApuracao>1</indApuracao><perApur>2026-05</perApur><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+    <ideBenef><cpfBenef>11144477735</cpfBenef></ideBenef>
+    <dmDev>
+      <ideDmDev>DM00000000000000000000</ideDmDev>
+      <nrBeneficio>RET08000000000002413</nrBeneficio>
+      <infoPerApur>
+        <ideEstab>
+          <tpInsc>1</tpInsc>
+          <nrInsc>12345678000199</nrInsc>
+          <itensRemun><codRubr>PROV</codRubr><ideTabRubr>SGP</ideTabRubr><qtdRubr>1.0000</qtdRubr><vrRubr>5200.00</vrRubr><indApurIR>0</indApurIR></itensRemun><itensRemun><codRubr>RPPS</codRubr><ideTabRubr>SGP</ideTabRubr><qtdRubr>1.0000</qtdRubr><vrRubr>572.00</vrRubr><indApurIR>0</indApurIR></itensRemun>
+        </ideEstab>
+      </infoPerApur>
+    </dmDev>
+  </evtBenPrRP>
+</eSocial>

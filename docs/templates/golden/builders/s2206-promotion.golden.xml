@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtAltContratual/v_S_01_03_00">
+  <evtAltContratual Id="ID3827423928032022144544346520603422">
+    <ideEvento><indRetif>1</indRetif><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+    <ideVinculo><cpfTrab>11122233344</cpfTrab><matricula>MAT-2206</matricula></ideVinculo>
+    <altContratual>
+      <dtAlteracao>2026-05-02</dtAlteracao>
+      <dtEf>2026-05-01</dtEf>
+      <dscAlt>Promocao por merecimento</dscAlt>
+      <vinculo>
+        <tpRegPrev>2</tpRegPrev>
+        <infoRegimeTrab><infoEstatutario><tpPlanRP>0</tpPlanRP><indTetoRGPS>N</indTetoRGPS><indAbonoPerm>N</indAbonoPerm></infoEstatutario></infoRegimeTrab>
+        <infoContrato><nmCargo>Analista Municipal II</nmCargo><nmFuncao>Coordenador de Cadastro</nmFuncao><acumCargo>N</acumCargo><codCateg>301</codCateg><localTrabalho><localTrabGeral><tpInsc>1</tpInsc><nrInsc>12345678000199</nrInsc><descComp>Secretaria de Administracao</descComp></localTrabGeral></localTrabalho></infoContrato>
+      </vinculo>
+    </altContratual>
+  </evtAltContratual>
+</eSocial>

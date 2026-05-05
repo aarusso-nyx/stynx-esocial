@@ -50,7 +50,7 @@ describe('EsocialSpoolService', () => {
     );
     expect(query).toHaveBeenNthCalledWith(
       2,
-      expect.stringContaining('INSERT INTO public.esocial_spool'),
+      expect.stringContaining('INSERT INTO public.esocial_events'),
       expect.arrayContaining([
         tenantId,
         'submit',

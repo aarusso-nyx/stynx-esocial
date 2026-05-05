@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtAfastTemp/v_S_01_03_00">
+  <evtAfastTemp Id="ID2906133534625112291642107144168881">
+    <ideEvento><indRetif>1</indRetif><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+    <ideVinculo><cpfTrab>11122233344</cpfTrab><matricula>MAT-2200</matricula></ideVinculo>
+    <infoAfastamento><iniAfastamento><dtIniAfast>2026-05-04</dtIniAfast><codMotAfast>15</codMotAfast><perAquis><dtInicio>2025-01-10</dtInicio><dtFim>2026-01-09</dtFim></perAquis></iniAfastamento></infoAfastamento>
+  </evtAfastTemp>
+</eSocial>

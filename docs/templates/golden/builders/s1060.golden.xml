@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtTabAmbiente/v02_05_00">
+  <evtTabAmbiente Id="ID5924130700631941157058615006017651">
+    <ideEvento><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678000199</nrInsc></ideEmpregador>
+    <infoAmbiente>
+      <inclusao>
+        <ideAmbiente><codAmb>AMB01</codAmb><iniValid>2026-01</iniValid></ideAmbiente>
+        <dadosAmbiente><nmAmb>Oficina de maquinas</nmAmb><dscAmb>Setor de manutencao com exposicao controlada</dscAmb><localAmb>1</localAmb><tpInsc>1</tpInsc><nrInsc>12345678000199</nrInsc></dadosAmbiente>
+      </inclusao>
+    </infoAmbiente>
+  </evtTabAmbiente>
+</eSocial>

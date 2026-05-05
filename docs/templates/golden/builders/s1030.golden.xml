@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtTabCargo/v_S_01_03_00">
+  <evtTabCargo Id="ID4671535046235302951345051415472563">
+    <ideEvento><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+    <infoCargo>
+      <inclusao>
+        <ideCargo><codCargo>ANL</codCargo><iniValid>2026-01</iniValid></ideCargo>
+        <dadosCargo>
+          <nmCargo>Analista Administrativo</nmCargo><codCBO>252105</codCBO>
+          <cargoPublico><acumCargo>1</acumCargo><contagemEsp>1</contagemEsp><dedicExcl>N</dedicExcl><leiCargo><nrLei>Lei 1/2026</nrLei><dtLei>2026-01-01</dtLei><sitCargo>1</sitCargo></leiCargo></cargoPublico>
+        </dadosCargo>
+      </inclusao>
+    </infoCargo>
+  </evtTabCargo>
+</eSocial>

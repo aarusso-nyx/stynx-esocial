@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtCdBenIn/v_S_01_03_00">
+  <evtCdBenIn Id="ID3298240164574502672166721415325243">
+    <ideEvento><indRetif>1</indRetif><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+    <beneficiario><cpfBenef>11144477735</cpfBenef><matricula>RPPS-001</matricula></beneficiario>
+    <infoBenInicio>
+      <cadIni>N</cadIni>
+      <indSitBenef>1</indSitBenef>
+      <nrBeneficio>PEN08000000000002414</nrBeneficio>
+      <dtIniBeneficio>2026-05-02</dtIniBeneficio>
+      <dadosBeneficio>
+        <tpBeneficio>0601</tpBeneficio>
+        <tpPlanRP>0</tpPlanRP>
+        <dsc>Lei Municipal 2/2026 - PENSION_DEATH - VITALICIA</dsc>
+        <indDecJud>N</indDecJud>
+        <infoPenMorte><tpPenMorte>1</tpPenMorte></infoPenMorte>
+      </dadosBeneficio>
+    </infoBenInicio>
+  </evtCdBenIn>
+</eSocial>
