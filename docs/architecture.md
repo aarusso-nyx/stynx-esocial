@@ -98,8 +98,11 @@ rejected by role grants and append-only triggers.
 
 ## Production-Grade Gaps
 
-The current repository contains the lifted SGP implementation and structural
-checks. Production readiness still needs service wiring, executable integration
-tests against sandbox adapters, certificate lifecycle implementation, deployment
-evidence, observability, DLQ/retry runbooks, and explicit homologation evidence
-for the official eSocial restricted-production environment.
+The active repository now has executable service wiring, deterministic
+integration/e2e tests against sandbox adapters, certificate-custody boundaries,
+deployment synthesis evidence, observability, DLQ/retry runbooks, and blocked
+artifact lifecycle checks. Remaining production gaps are explicit owner-blocked
+items: real certificates, real restricted-production endpoint calls, package
+publication authorization, and production-like DR/multi-region drills. These
+are routed through `docs/release/1.1.0/blocked-artifacts.json` and the Round 6
+/ Round 7 plans.

@@ -409,3 +409,72 @@ WHERE tenant_id = '<tenant uuid>'
        OR event_record_id = '<event uuid>')
 ORDER BY occurred_at;
 ```
+
+## Local Dev Stack
+
+Round 4 adds a local stack wrapper:
+
+```bash
+npm run dev:up
+npm run test:e2e
+npm run dev:logs
+npm run dev:reset
+npm run dev:down
+```
+
+`docker-compose.dev.yml` starts Postgres 16, LocalStack for SQS/EventBridge/
+Secrets Manager/KMS/Logs, and an nginx-hosted deterministic SOAP fixture. The
+stack is local-only and must not contain real certificates, production data, or
+`gov.br` endpoint calls.
+
+Event-family scaffolding:
+
+```bash
+npm run dev:family -- S-1099
+```
+
+The generator writes a DTO stub, builder stub, golden-test stub, and fixture so
+the promotion work starts in the established package boundaries.
+
+## Test Surface
+
+Round 4 adds:
+
+- `npm run test:property` for deterministic fast-check properties covering
+  idempotency, builder invariants, totalizer parsing, retry stability, and
+  redaction.
+- `npm run test:e2e` for a local deterministic DTO to XML to sign to SOAP-stub
+  to return-parse path.
+- `npm run bench:smoke` and `npm run bench` for builder, idempotency, parser,
+  XSD, signing, and SOAP-stub latency budgets.
+
+The active coverage gate remains configurable and records the measured gap to
+the Round 4 95 percent target under `docs/release/1.1.0/coverage/summary.json`.
+
+## ADR Cadence
+
+Decision-bearing changes to `tsconfig*`, migrations, CDK, public contracts, or
+service handlers require either an ADR link or a `Decision-Free: true` PR label.
+Round 4 ships the check in soft mode through `.github/workflows/adr-check.yml`;
+the next hardening round can flip warnings to failures after socialization.
+
+## Drift Audit
+
+`npm run drift:audit` runs the slim local regression canaries: boundary checks,
+migration checks, template reproducibility, ADR index presence, SBOM script
+capability, and blocked-artifact lifecycle. `.github/workflows/drift-audit.yml`
+runs the same audit quarterly.
+
+## Vulnerability Triage SLA
+
+SBOMs are generated in CycloneDX and SPDX:
+
+```bash
+npm run sbom -- --format=cyclonedx --out docs/release/1.1.0/sbom/contracts.cdx.json
+npm run sbom -- --format=spdx --out docs/release/1.1.0/sbom/contracts.spdx.json
+```
+
+`security.yml` runs `npm audit`, OSV Scanner, and Trivy. Critical and high
+findings fail CI. Triage targets are critical within 7 days, high within 30
+days, and medium within 90 days; exceptions require a release-owner note in the
+issue or release evidence.

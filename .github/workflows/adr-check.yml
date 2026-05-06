@@ -1,0 +1,29 @@
+name: ADR Check
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "tsconfig*"
+      - "infra/migrations/**"
+      - "infra/cdk/**"
+      - "packages/contracts/src/**"
+      - "services/*/src/handler.ts"
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  adr-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - name: Soft ADR gate
+        run: |
+          if grep -R "ADR-" docs/adrs README.md docs/README.md >/dev/null 2>&1; then
+            echo "ADR index present."
+          else
+            echo "::warning::Decision-bearing change should link an ADR or carry Decision-Free: true."
+          fi

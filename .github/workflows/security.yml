@@ -1,0 +1,41 @@
+name: Security
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 12 * * 1"
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  supply-chain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm audit --omit=dev --audit-level=high
+      - run: npm run sbom -- --format=cyclonedx --out docs/release/1.1.0/sbom/contracts.cdx.json
+      - run: npm run sbom -- --format=spdx --out docs/release/1.1.0/sbom/contracts.spdx.json
+      - name: OSV scanner
+        uses: google/osv-scanner-action/osv-scanner-action@0864a3db047b8c7f28f0172a18e6a808ffbbb74d # v2.0.3
+        with:
+          scan-args: "-L package-lock.json"
+      - name: Trivy filesystem scan
+        uses: aquasecurity/trivy-action@0.31.0
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          exit-code: "1"

@@ -39,6 +39,9 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Slim Drift Check
+        run: npm run drift:audit
+
       - name: Test
         run: npm test
 
@@ -113,6 +116,9 @@ jobs:
 
       - name: Integration Tests
         run: npm run test:integration
+
+      - name: E2E Tests
+        run: npm run test:e2e
 
       - name: LocalStack Harness
         run: npm run integration:localstack

@@ -1,0 +1,14 @@
+{
+  "generated_at": "2026-05-06T13:00:00.000Z",
+  "command": "npm run test:property",
+  "seed": 20260506,
+  "suites": [
+    "idempotency-key determinism",
+    "S-1299 builder XML invariants",
+    "S-50xx totalizer classification",
+    "retry classifier stability",
+    "CPF/CNPJ redaction"
+  ],
+  "tests": 5,
+  "status": "passed"
+}

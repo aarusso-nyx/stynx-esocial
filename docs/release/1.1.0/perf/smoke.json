@@ -1,0 +1,65 @@
+{
+  "generatedAt": "2026-05-05T12:00:00.000Z",
+  "mode": "smoke",
+  "iterations": 50,
+  "budgets": {
+    "builder": 50,
+    "idempotencyKey": 1,
+    "parseReturn": 25,
+    "soapStub": 500,
+    "sign": 50,
+    "xsd": 100,
+    "dtoValidation": 10
+  },
+  "suites": {
+    "builder": {
+      "name": "builder",
+      "p50Ms": 0.009,
+      "p95Ms": 0.023,
+      "p99Ms": 0.377,
+      "maxMs": 0.377
+    },
+    "idempotencyKey": {
+      "name": "idempotencyKey",
+      "p50Ms": 0.004,
+      "p95Ms": 0.008,
+      "p99Ms": 0.01,
+      "maxMs": 0.01
+    },
+    "parseReturn": {
+      "name": "parseReturn",
+      "p50Ms": 0.021,
+      "p95Ms": 0.037,
+      "p99Ms": 0.86,
+      "maxMs": 0.86
+    },
+    "sign": {
+      "name": "sign",
+      "p50Ms": 0.998,
+      "p95Ms": 5.529,
+      "p99Ms": 13.439,
+      "maxMs": 13.439
+    },
+    "xsd": {
+      "name": "xsd",
+      "p50Ms": 6.315,
+      "p95Ms": 8.867,
+      "p99Ms": 10.52,
+      "maxMs": 10.52
+    },
+    "soapStub": {
+      "name": "soapStub",
+      "p50Ms": 0.031,
+      "p95Ms": 0.043,
+      "p99Ms": 0.056,
+      "maxMs": 0.056
+    },
+    "dtoValidation": {
+      "name": "dtoValidation",
+      "p50Ms": 0.001,
+      "p95Ms": 0.001,
+      "p99Ms": 0.003,
+      "maxMs": 0.003
+    }
+  }
+}
