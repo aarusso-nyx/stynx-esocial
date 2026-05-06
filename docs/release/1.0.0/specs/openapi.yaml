@@ -1,0 +1,318 @@
+openapi: 3.1.0
+info:
+  title: eSocial Gateway API
+  version: 1.0.0
+  summary: Operator and integration routes for the standalone eSocial service.
+servers:
+  - url: https://api.esocial.example.local
+    description: Stage-specific API Gateway base URL.
+security:
+  - sigv4: []
+  - oidc: []
+paths:
+  /dlq:
+    get:
+      operationId: listDlq
+      summary: List replayable DLQ items.
+      parameters:
+        - name: tenantId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: eventClass
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/EventClass"
+      responses:
+        "200":
+          description: DLQ items visible to the caller.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [items]
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/DlqItem"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /dlq/{id}/replay:
+    post:
+      operationId: replayDlq
+      summary: Request operator replay for a DLQ item.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  minLength: 1
+            examples:
+              replay:
+                value:
+                  reason: operator verified duplicate-safe replay
+      responses:
+        "202":
+          description: Replay was accepted for asynchronous dispatch.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status, dlqItemId, requestId, correlationId, idempotencyKey]
+                properties:
+                  status:
+                    const: replay_requested
+                  dlqItemId:
+                    type: string
+                  requestId:
+                    type: string
+                  correlationId:
+                    type: string
+                  idempotencyKey:
+                    type: string
+                  clashRule:
+                    type: string
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          $ref: "#/components/responses/Conflict"
+  /lgpd/access:
+    post:
+      operationId: requestLgpdAccess
+      summary: Request an LGPD subject-access export for audit/status data.
+      requestBody:
+        $ref: "#/components/requestBodies/LgpdRequest"
+      responses:
+        "202":
+          $ref: "#/components/responses/AcceptedJob"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /lgpd/erase:
+    post:
+      operationId: requestLgpdErase
+      summary: Request legal review for erasable non-regulatory metadata.
+      requestBody:
+        $ref: "#/components/requestBodies/LgpdRequest"
+      responses:
+        "202":
+          $ref: "#/components/responses/AcceptedJob"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /lgpd/export:
+    post:
+      operationId: requestLgpdExport
+      summary: Export tenant-scoped audit data for a data-subject request.
+      requestBody:
+        $ref: "#/components/requestBodies/LgpdRequest"
+      responses:
+        "202":
+          $ref: "#/components/responses/AcceptedJob"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+  /audit/verify:
+    get:
+      operationId: verifyAuditAnchor
+      summary: Verify audit-chain hashes for a tenant and period.
+      parameters:
+        - name: tenantId
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        "200":
+          description: Audit verification result.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [verified, checkedEvents]
+                properties:
+                  verified:
+                    type: boolean
+                  checkedEvents:
+                    type: integer
+                    minimum: 0
+                  merkleRoot:
+                    type: string
+        "403":
+          $ref: "#/components/responses/Forbidden"
+components:
+  securitySchemes:
+    sigv4:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: AWS IAM SigV4 authorization for in-account operators.
+    oidc:
+      type: openIdConnect
+      openIdConnectUrl: https://auth.esocial.example.local/.well-known/openid-configuration
+  requestBodies:
+    LgpdRequest:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [tenantId, subjectRef, reason]
+            properties:
+              tenantId:
+                type: string
+                format: uuid
+              subjectRef:
+                type: string
+              reason:
+                type: string
+                minLength: 1
+  responses:
+    AcceptedJob:
+      description: Request accepted for asynchronous operator workflow.
+      content:
+        application/json:
+          schema:
+            type: object
+            required: [jobId, status]
+            properties:
+              jobId:
+                type: string
+              status:
+                const: accepted
+    Unauthorized:
+      description: Authentication required.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Forbidden:
+      description: Caller lacks tenant or operation permission.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    NotFound:
+      description: Resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    Conflict:
+      description: Request conflicts with idempotency or replay state.
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+  schemas:
+    EventClass:
+      enum:
+        - S-1000
+        - S-1005
+        - S-1010
+        - S-1020
+        - S-1030
+        - S-1040
+        - S-1050
+        - S-1060
+        - S-1070
+        - S-1200
+        - S-1202
+        - S-1207
+        - S-1210
+        - S-1298
+        - S-1299
+        - S-2200
+        - S-2205
+        - S-2206
+        - S-2210
+        - S-2220
+        - S-2230
+        - S-2240
+        - S-2298
+        - S-2299
+        - S-2300
+        - S-2306
+        - S-2399
+        - S-2400
+        - S-2405
+        - S-2410
+        - S-2416
+        - S-2418
+        - S-2420
+        - S-2501
+        - S-3000
+        - S-5001
+        - S-5002
+        - S-5011
+        - S-5012
+        - S-5013
+    Error:
+      type: object
+      required: [category, code, message]
+      properties:
+        category:
+          enum:
+            - validation
+            - schema
+            - xml_build
+            - signing
+            - transport
+            - regulatory
+            - configuration
+            - authentication
+            - idempotency
+            - totalizer_parse
+            - internal
+        code:
+          type: string
+        message:
+          type: string
+        retryable:
+          type: boolean
+    DlqItem:
+      type: object
+      required: [id, tenantId, eventClass, status]
+      properties:
+        id:
+          type: string
+        tenantId:
+          type: string
+          format: uuid
+        eventClass:
+          $ref: "#/components/schemas/EventClass"
+        status:
+          enum: [OPEN, REPLAY_REQUESTED, CLOSED]
+        failedAt:
+          type: string
+          format: date-time

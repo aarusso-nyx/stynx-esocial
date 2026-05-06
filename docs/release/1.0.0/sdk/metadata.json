@@ -1,0 +1,8 @@
+{
+  "package": "@esocial/sdk",
+  "version": "1.0.0-rc.0",
+  "examples": [
+    "packages/sdk/examples/s1299.ts"
+  ],
+  "publish": "blocked until explicit release authorization"
+}

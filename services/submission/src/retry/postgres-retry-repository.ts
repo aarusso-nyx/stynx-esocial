@@ -2,6 +2,7 @@ import type { EsocialContractError } from '@esocial/contracts';
 import {
   buildDlqItemPersistenceCommand,
   buildRetryScheduleCommand,
+  loadSubmissionServiceConfig,
 } from '@esocial/domain';
 import type {
   DlqItemPersistenceCommand,
@@ -39,11 +40,9 @@ export type ClosableRetryRepository = RetrySchedulePollerRepository<SubmissionRe
   }>;
 
 export function createPostgresRetryRepositoryFromEnv(): ClosableRetryRepository {
-  const connectionString = process.env.ESOCIAL_DATABASE_URL;
-  if (!connectionString) {
-    throw new Error('ESOCIAL_DATABASE_URL is required for retry scheduling.');
-  }
-  return createPostgresRetryRepository({ connectionString });
+  return createPostgresRetryRepository({
+    connectionString: loadSubmissionServiceConfig().databaseUrl,
+  });
 }
 
 export function createPostgresRetryRepository(

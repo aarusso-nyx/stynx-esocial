@@ -12,6 +12,8 @@ import type {
   S3000ExclusionDto,
 } from '@esocial/contracts';
 
+import { assertNever } from '../internal/exhaustive.js';
+
 import {
   type BuilderContext,
   type BuilderMetadata,
@@ -509,8 +511,4 @@ function positiveMoney(value: string | number, fieldPath: string): string {
     throw new DtoValidationError([fieldPath]);
   }
   return amount.toFixed(2);
-}
-
-function assertNever(value: never): never {
-  throw new Error(`Unhandled benefit/process DTO ${(value as { eventClass?: string }).eventClass}`);
 }

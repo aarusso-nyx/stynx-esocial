@@ -15,7 +15,7 @@
     "source_system": "SGP"
   },
   "kind": "submit",
-  "status": "building",
+  "status": "validation_failed",
   "attempt": 1,
   "processed_at": "2026-05-05T12:00:00.000Z",
   "hashes": {
@@ -30,5 +30,54 @@
     "stage": "build.periodic",
     "duplicate": false
   },
-  "errors": []
+  "errors": [
+    {
+      "category": "validation",
+      "code": "ESOCIAL_DTO_INVALID",
+      "message": "DTO must not contain signedEnvelope; eSocial builds XML and signatures.",
+      "retryable": false
+    },
+    {
+      "category": "validation",
+      "code": "ESOCIAL_DTO_INVALID",
+      "message": "tenantId is required.",
+      "retryable": false
+    },
+    {
+      "category": "validation",
+      "code": "ESOCIAL_DTO_INVALID",
+      "message": "sourceEventId is required.",
+      "retryable": false
+    },
+    {
+      "category": "validation",
+      "code": "ESOCIAL_DTO_INVALID",
+      "message": "employerCnpj is required.",
+      "retryable": false
+    },
+    {
+      "category": "validation",
+      "code": "ESOCIAL_DTO_INVALID",
+      "message": "competence is required.",
+      "retryable": false
+    },
+    {
+      "category": "validation",
+      "code": "ESOCIAL_DTO_INVALID",
+      "message": "payrollRunId is required.",
+      "retryable": false
+    },
+    {
+      "category": "validation",
+      "code": "ESOCIAL_DTO_INVALID",
+      "message": "pendingPeriodicEvents must be an array.",
+      "retryable": false
+    },
+    {
+      "category": "validation",
+      "code": "ESOCIAL_DTO_INVALID",
+      "message": "acceptedEventCounts is required.",
+      "retryable": false
+    }
+  ]
 }

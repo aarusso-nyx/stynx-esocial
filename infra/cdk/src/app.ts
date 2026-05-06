@@ -10,7 +10,7 @@ const app = new App();
 const requestedStage = app.node.tryGetContext('stage') as string | undefined;
 const stages = requestedStage
   ? STAGES.filter((stage) => stage === requestedStage)
-  : STAGES.filter((stage) => stage !== 'production' || process.env.ESOCIAL_PROD_CONFIRM === '1');
+  : STAGES.filter((stage) => stage !== 'production' || process.env['ESOCIAL_PROD_CONFIRM'] === '1');
 
 if (requestedStage && stages.length === 0) {
   throw new Error(`Unknown eSocial CDK stage: ${requestedStage}`);

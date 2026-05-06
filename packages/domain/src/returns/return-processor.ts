@@ -161,8 +161,8 @@ export class ReturnProcessor {
   async process(request: ReturnRequestEnvelope): Promise<ReturnProcessorResult> {
     const occurredAt = this.now().toISOString();
     const payload = recordOrEmpty(request.payload);
-    const rawResponseXml = stringValue(payload.rawResponseXml)
-      ?? stringValue(payload.responseXml)
+    const rawResponseXml = stringValue(payload['rawResponseXml'])
+      ?? stringValue(payload['responseXml'])
       ?? '';
     const responseHash = sha256Prefixed(rawResponseXml);
     const parsedOutcome = await this.parseAndClassify(
@@ -171,10 +171,10 @@ export class ReturnProcessor {
       occurredAt,
     );
     const protocol = parsedOutcome.parsed?.protocol
-      ?? stringValue(payload.protocolNumber)
+      ?? stringValue(payload['protocolNumber'])
       ?? undefined;
     const receipt = parsedOutcome.parsed?.receipt
-      ?? stringValue(payload.receiptNumber)
+      ?? stringValue(payload['receiptNumber'])
       ?? undefined;
     const totalizerClass =
       parsedOutcome.parsed?.kind === 'totalizer'
@@ -183,7 +183,7 @@ export class ReturnProcessor {
     const competence =
       parsedOutcome.parsed?.kind === 'totalizer'
         ? parsedOutcome.parsed.totalizer.competence
-        : stringValue(payload.competence) ?? undefined;
+        : stringValue(payload['competence']) ?? undefined;
     const origin = await this.resolveOrigin({
       request,
       payload,
@@ -358,10 +358,10 @@ export class ReturnProcessor {
     receipt?: string | undefined;
     competence?: string | undefined;
   }>): Promise<ReturnOriginRecord> {
-    const eventRecordId = stringValue(input.payload.eventRecordId);
-    const batchId = stringValue(input.payload.batchId);
-    const previousStatus = statusOrUndefined(input.payload.previousStatus);
-    const sourceEventClass = eventClassOrUndefined(input.payload.sourceEventClass);
+    const eventRecordId = stringValue(input.payload['eventRecordId']);
+    const batchId = stringValue(input.payload['batchId']);
+    const previousStatus = statusOrUndefined(input.payload['previousStatus']);
+    const sourceEventClass = eventClassOrUndefined(input.payload['sourceEventClass']);
 
     if (eventRecordId && batchId) {
       return {
@@ -390,7 +390,7 @@ export class ReturnProcessor {
     }
 
     throw new Error(
-      'Return origin could not be resolved from payload.eventRecordId/payload.batchId or protocol/receipt.',
+      "Return origin could not be resolved from payload['eventRecordId']/payload['batchId'] or protocol/receipt.",
     );
   }
 }
@@ -403,10 +403,10 @@ export function validateReturnIngressEnvelope(
     return ingressError('ESOCIAL_RETURN_NOT_OBJECT', 'Return body must be a JSON object.', candidate, rawBody);
   }
 
-  if (candidate.version !== ESOCIAL_CONTRACT_VERSION) {
+  if (candidate['version'] !== ESOCIAL_CONTRACT_VERSION) {
     return ingressError('ESOCIAL_UNSUPPORTED_VERSION', 'Unsupported eSocial envelope version.', candidate, rawBody);
   }
-  if (candidate.family !== 'request') {
+  if (candidate['family'] !== 'request') {
     return ingressError('ESOCIAL_UNSUPPORTED_FAMILY', 'Return handler accepts request envelopes only.', candidate, rawBody);
   }
   if (!isNonEmptyString(candidate['request-id'])) {
@@ -418,22 +418,22 @@ export function validateReturnIngressEnvelope(
   if (!isNonEmptyString(candidate['idempotency-key'])) {
     return ingressError('ESOCIAL_IDEMPOTENCY_KEY_REQUIRED', 'idempotency-key is required.', candidate, rawBody);
   }
-  if (!isUuid(candidate.tenant_id)) {
+  if (!isUuid(candidate['tenant_id'])) {
     return ingressError('ESOCIAL_TENANT_UUID_REQUIRED', 'tenant_id must be a UUID for the current esocial schema.', candidate, rawBody);
   }
-  if (!includesString(ESOCIAL_ENVIRONMENTS, candidate.environment)) {
+  if (!includesString(ESOCIAL_ENVIRONMENTS, candidate['environment'])) {
     return ingressError('ESOCIAL_ENVIRONMENT_INVALID', 'environment is not supported.', candidate, rawBody);
   }
-  if (!includesString(ESOCIAL_RELAY_EVENT_CLASSES, candidate.event_class)) {
+  if (!includesString(ESOCIAL_RELAY_EVENT_CLASSES, candidate['event_class'])) {
     return ingressError('ESOCIAL_EVENT_CLASS_INVALID', 'event_class is not supported.', candidate, rawBody);
   }
-  if (!includesString(ESOCIAL_CLASSES, candidate.kind) || candidate.kind !== 'retorno') {
+  if (!includesString(ESOCIAL_CLASSES, candidate['kind']) || candidate['kind'] !== 'retorno') {
     return ingressError('ESOCIAL_RETURN_KIND_INVALID', 'return handler accepts kind retorno only.', candidate, rawBody);
   }
-  if (!isRecord(candidate.source)) {
+  if (!isRecord(candidate['source'])) {
     return ingressError('ESOCIAL_SOURCE_REQUIRED', 'source object is required.', candidate, rawBody);
   }
-  if (!Number.isInteger(candidate.attempt) || Number(candidate.attempt) < 0) {
+  if (!Number.isInteger(candidate['attempt']) || Number(candidate['attempt']) < 0) {
     return ingressError('ESOCIAL_ATTEMPT_INVALID', 'attempt must be a non-negative integer.', candidate, rawBody);
   }
   if (!Number.isInteger(candidate['max-attempts']) || Number(candidate['max-attempts']) < 1) {
@@ -442,19 +442,19 @@ export function validateReturnIngressEnvelope(
   if (!isNonEmptyString(candidate['reply-to']) || !isNonEmptyString(candidate['dead-letter-topic'])) {
     return ingressError('ESOCIAL_TOPICS_REQUIRED', 'reply-to and dead-letter-topic are required.', candidate, rawBody);
   }
-  if (!isNonEmptyString(candidate.payload_hash)) {
+  if (!isNonEmptyString(candidate['payload_hash'])) {
     return ingressError('ESOCIAL_PAYLOAD_HASH_REQUIRED', 'payload_hash is required.', candidate, rawBody);
   }
-  if (!isRecord(candidate.payload)) {
+  if (!isRecord(candidate['payload'])) {
     return ingressError('ESOCIAL_RETURN_PAYLOAD_REQUIRED', 'payload object is required.', candidate, rawBody);
   }
-  if (!isNonEmptyString(candidate.payload.rawResponseXml) && !isNonEmptyString(candidate.payload.responseXml)) {
-    return ingressError('ESOCIAL_RETURN_XML_REQUIRED', 'payload.rawResponseXml is required.', candidate, rawBody);
+  if (!isNonEmptyString(candidate['payload']['rawResponseXml']) && !isNonEmptyString(candidate['payload']['responseXml'])) {
+    return ingressError('ESOCIAL_RETURN_XML_REQUIRED', "payload['rawResponseXml'] is required.", candidate, rawBody);
   }
-  const hasExplicitOrigin = isUuid(candidate.payload.eventRecordId) && isUuid(candidate.payload.batchId);
+  const hasExplicitOrigin = isUuid(candidate['payload']['eventRecordId']) && isUuid(candidate['payload']['batchId']);
   const hasLookupOrigin =
-    isNonEmptyString(candidate.payload.protocolNumber)
-    || isNonEmptyString(candidate.payload.receiptNumber);
+    isNonEmptyString(candidate['payload']['protocolNumber'])
+    || isNonEmptyString(candidate['payload']['receiptNumber']);
   if (!hasExplicitOrigin && !hasLookupOrigin) {
     return ingressError(
       'ESOCIAL_RETURN_ORIGIN_REQUIRED',
@@ -463,11 +463,11 @@ export function validateReturnIngressEnvelope(
       rawBody,
     );
   }
-  if (candidate.payload.eventRecordId !== undefined && !isUuid(candidate.payload.eventRecordId)) {
-    return ingressError('ESOCIAL_RETURN_EVENT_RECORD_REQUIRED', 'payload.eventRecordId must identify the esocial.event_record row.', candidate, rawBody);
+  if (candidate['payload']['eventRecordId'] !== undefined && !isUuid(candidate['payload']['eventRecordId'])) {
+    return ingressError('ESOCIAL_RETURN_EVENT_RECORD_REQUIRED', "payload['eventRecordId'] must identify the esocial.event_record row.", candidate, rawBody);
   }
-  if (candidate.payload.batchId !== undefined && !isUuid(candidate.payload.batchId)) {
-    return ingressError('ESOCIAL_RETURN_BATCH_REQUIRED', 'payload.batchId must identify the esocial.submission_batch row.', candidate, rawBody);
+  if (candidate['payload']['batchId'] !== undefined && !isUuid(candidate['payload']['batchId'])) {
+    return ingressError('ESOCIAL_RETURN_BATCH_REQUIRED', "payload['batchId'] must identify the esocial.submission_batch row.", candidate, rawBody);
   }
 
   return {
@@ -585,8 +585,8 @@ function buildReturnDlqEnvelope(
 ): EsocialDlqEnvelope & Readonly<{ malformed_body?: string | undefined }> {
   const requestId = stringValue(candidate?.['request-id']) ?? `malformed-return-${occurredAt}`;
   const correlationId = stringValue(candidate?.['correlation-id']) ?? requestId;
-  const eventClass = includesString(ESOCIAL_RELAY_EVENT_CLASSES, candidate?.event_class)
-    ? candidate.event_class
+  const eventClass = includesString(ESOCIAL_RELAY_EVENT_CLASSES, candidate?.['event_class'])
+    ? candidate['event_class']
     : FALLBACK_EVENT_CLASS;
 
   return {
@@ -596,15 +596,15 @@ function buildReturnDlqEnvelope(
     'correlation-id': correlationId,
     'idempotency-key': stringValue(candidate?.['idempotency-key']) ?? `malformed-return:${requestId}`,
     created_at: occurredAt,
-    tenant_id: isUuid(candidate?.tenant_id) ? candidate.tenant_id : NIL_TENANT_ID,
-    environment: includesString(ESOCIAL_ENVIRONMENTS, candidate?.environment)
-      ? candidate.environment
+    tenant_id: isUuid(candidate?.['tenant_id']) ? candidate['tenant_id'] : NIL_TENANT_ID,
+    environment: includesString(ESOCIAL_ENVIRONMENTS, candidate?.['environment'])
+      ? candidate['environment']
       : 'QUALIFICATION',
     event_class: eventClass,
-    source: isRecord(candidate?.source) ? candidate.source : {},
+    source: isRecord(candidate?.['source']) ? candidate['source'] : {},
     kind: 'retorno',
     status: 'dlq',
-    final_attempt: Number.isInteger(candidate?.attempt) ? Number(candidate?.attempt) : 0,
+    final_attempt: Number.isInteger(candidate?.['attempt']) ? Number(candidate?.['attempt']) : 0,
     dlq_reason: error.message,
     failed_at: occurredAt,
     errors: [error],

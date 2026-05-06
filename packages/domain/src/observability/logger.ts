@@ -2,6 +2,10 @@ import pino from 'pino';
 import type { Logger as PinoLogger } from 'pino';
 
 import {
+  readNodeEnvironment,
+} from '../config/index.js';
+
+import {
   ESOCIAL_LOG_FIELD_NAMES,
 } from './constants.js';
 import { redactForLog } from './redaction.js';
@@ -173,28 +177,28 @@ export function contextFromEnvelope(
   extra: StructuredLogContext = {},
 ): StructuredLogContext {
   const record = recordOrEmpty(envelope);
-  const payload = recordOrEmpty(record.payload);
+  const payload = recordOrEmpty(record['payload']);
 
   return compactObject({
     requestId: stringValue(record['request-id']),
     correlationId: stringValue(record['correlation-id']),
-    tenantId: stringValue(record.tenant_id),
-    environment: stringValue(record.environment),
-    eventClass: stringValue(record.event_class),
+    tenantId: stringValue(record['tenant_id']),
+    environment: stringValue(record['environment']),
+    eventClass: stringValue(record['event_class']),
     batchId:
-      stringValue(record.batch_id)
-      ?? stringValue(payload.batchId)
-      ?? stringValue(payload.batch_id),
+      stringValue(record['batch_id'])
+      ?? stringValue(payload['batchId'])
+      ?? stringValue(payload['batch_id']),
     protocol:
-      stringValue(record.protocol_number)
-      ?? stringValue(payload.protocolNumber)
-      ?? stringValue(payload.protocol),
+      stringValue(record['protocol_number'])
+      ?? stringValue(payload['protocolNumber'])
+      ?? stringValue(payload['protocol']),
     receipt:
-      stringValue(record.receipt_number)
-      ?? stringValue(payload.receiptNumber)
-      ?? stringValue(payload.receipt),
+      stringValue(record['receipt_number'])
+      ?? stringValue(payload['receiptNumber'])
+      ?? stringValue(payload['receipt']),
     idempotencyKey: stringValue(record['idempotency-key']),
-    attempt: numberOrString(record.attempt),
+    attempt: numberOrString(record['attempt']),
     ...extra,
   }) as StructuredLogContext;
 }
@@ -208,7 +212,7 @@ export function assertRequiredLogFields(entry: Record<string, unknown>): void {
 }
 
 function defaultLogLevel(): StructuredLogLevel {
-  return process.env.NODE_ENV === 'production' ? 'info' : 'debug';
+  return readNodeEnvironment() === 'production' ? 'info' : 'debug';
 }
 
 function writePino(

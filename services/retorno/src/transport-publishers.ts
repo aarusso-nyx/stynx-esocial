@@ -6,6 +6,9 @@ import {
   SendMessageCommand,
   SQSClient,
 } from '@aws-sdk/client-sqs';
+import {
+  loadReturnServiceConfig,
+} from '@esocial/domain';
 import type {
   ReturnPublishers,
   SubmissionPublishCommand,
@@ -19,10 +22,11 @@ export type AwsReturnPublisherOptions = Readonly<{
 }>;
 
 export function createAwsReturnPublishersFromEnv(): ReturnPublishers {
+  const config = loadReturnServiceConfig();
   return createAwsReturnPublishers({
-    spoolQueueUrl: requiredEnv('ESOCIAL_SPOOL_QUEUE_URL'),
-    dlqQueueUrl: requiredEnv('ESOCIAL_DLQ_QUEUE_URL'),
-    eventBusName: requiredEnv('ESOCIAL_EVENT_BUS_NAME'),
+    spoolQueueUrl: config.spoolQueueUrl,
+    dlqQueueUrl: config.dlqQueueUrl,
+    eventBusName: config.eventBusName,
   });
 }
 
@@ -93,14 +97,4 @@ function stringAttribute(value: string) {
     DataType: 'String',
     StringValue: value,
   };
-}
-
-function requiredEnv(name: string): string {
-  const value = process.env[name];
-
-  if (!value) {
-    throw new Error(`${name} is required for the return handler.`);
-  }
-
-  return value;
 }

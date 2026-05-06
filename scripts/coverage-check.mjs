@@ -7,6 +7,7 @@ const COVERAGE_TESTS = [
   'tests/certificado/*.test.mjs',
   'tests/golden/*.test.mjs',
   'tests/handler/*.test.mjs',
+  'tests/operations/*.test.mjs',
   'tests/pki/*.test.mjs',
   'tests/returns/*.test.mjs',
   'tests/xml/*.test.mjs',

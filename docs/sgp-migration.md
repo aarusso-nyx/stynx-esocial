@@ -181,3 +181,15 @@ Rollback:
 Restricted-production or real-service evidence requires explicit owner
 authorization, redaction rules, and a named release window. Until then, only
 deterministic qualification fixtures and sandbox adapters are allowed.
+
+## SDK And Codemod
+
+Round 3 adds the local-safe `@esocial/sdk` scaffold under `packages/sdk`.
+SGP callers use `EsocialClient.submit(dto, opts)` with branded tenant and
+correlation identifiers from `@esocial/contracts`; the SDK builds the v1 request
+envelope and idempotency key before handing it to a pluggable transport.
+
+The migration codemod scaffold lives at
+`tools/codemods/sgp-1.0-to-1.x/transform.cjs`. It rewrites historical helper
+names to the SDK entry points for synthetic fixtures; production SGP application
+requires a follow-up codemod pass against the real SGP call sites.

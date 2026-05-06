@@ -1,0 +1,27 @@
+[
+  {
+    "area": "restricted-production",
+    "status": "blocked",
+    "reason": "Owner approval and deployed round-2 infrastructure are not recorded."
+  },
+  {
+    "area": "real certificates",
+    "status": "blocked",
+    "reason": "Certificate custody owner approval is not recorded."
+  },
+  {
+    "area": "official eSocial endpoint calls",
+    "status": "blocked",
+    "reason": "Real-service tests require explicit owner authorization and redaction rules."
+  },
+  {
+    "area": "DR and multi-region drills",
+    "status": "blocked",
+    "reason": "Requires deployed production-like infrastructure."
+  },
+  {
+    "area": "SDK publish",
+    "status": "blocked",
+    "reason": "Publishing packages requires explicit release authorization."
+  }
+]

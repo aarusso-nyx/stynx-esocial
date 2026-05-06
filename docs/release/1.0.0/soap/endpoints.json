@@ -1,0 +1,4 @@
+{
+  "submit": "http://127.0.0.1:9001/esocial/qualification/enviar-lote-eventos",
+  "returnQuery": "http://127.0.0.1:9001/esocial/qualification/consultar-retorno"
+}

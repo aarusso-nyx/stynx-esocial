@@ -1,5 +1,7 @@
 import { createHash } from 'node:crypto';
 
+import { assertNever } from '../../../internal/exhaustive.js';
+
 export const PROMOTED_PERIODIC_EVENT_CLASSES = [
   'S-1200',
   'S-1202',
@@ -1045,10 +1047,4 @@ function sha256(value: string): string {
 
 function withFinalNewline(value: string): string {
   return value.endsWith('\n') ? value : `${value}\n`;
-}
-
-function assertNever(value: never): never {
-  throw new PeriodicBuilderValidationError(
-    `Unhandled periodic DTO: ${JSON.stringify(value)}`,
-  );
 }

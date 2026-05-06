@@ -66,7 +66,7 @@ export function createDlqReplayHandler(
     if (!replayedBy) {
       return json(403, { error: 'iam_sigv4_required' });
     }
-    const dlqItemId = event.pathParameters?.id ?? dlqIdFromPath(event.path);
+    const dlqItemId = event.pathParameters?.['id'] ?? dlqIdFromPath(event.path);
     if (!dlqItemId) {
       return json(400, { error: 'dlq_id_required' });
     }
@@ -145,7 +145,7 @@ function parseReplayBody(body: string | null | undefined): { reason: string } {
 }
 
 function forceReplay(event: HttpGatewayEvent): boolean {
-  return event.queryStringParameters?.force === 'true';
+  return event.queryStringParameters?.['force'] === 'true';
 }
 
 function sigv4Actor(event: HttpGatewayEvent): string | undefined {

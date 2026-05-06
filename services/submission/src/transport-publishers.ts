@@ -6,6 +6,9 @@ import {
   SendMessageCommand,
   SQSClient,
 } from '@aws-sdk/client-sqs';
+import {
+  loadSubmissionServiceConfig,
+} from '@esocial/domain';
 import type {
   SubmissionPublishCommand,
   SubmissionPublisher,
@@ -21,12 +24,13 @@ export type AwsSubmissionPublisherOptions = Readonly<{
 }>;
 
 export function createAwsSubmissionPublishersFromEnv(): SubmissionPublishers {
+  const config = loadSubmissionServiceConfig();
   return createAwsSubmissionPublishers({
-    responseQueueUrl: requiredEnv('ESOCIAL_RESPONSE_QUEUE_URL'),
-    spoolQueueUrl: requiredEnv('ESOCIAL_SPOOL_QUEUE_URL'),
-    retryQueueUrl: requiredEnv('ESOCIAL_RETRY_QUEUE_URL'),
-    dlqQueueUrl: requiredEnv('ESOCIAL_DLQ_QUEUE_URL'),
-    eventBusName: requiredEnv('ESOCIAL_EVENT_BUS_NAME'),
+    responseQueueUrl: config.responseQueueUrl,
+    spoolQueueUrl: config.spoolQueueUrl,
+    retryQueueUrl: config.retryQueueUrl,
+    dlqQueueUrl: config.dlqQueueUrl,
+    eventBusName: config.eventBusName,
   });
 }
 
@@ -99,14 +103,4 @@ function stringAttribute(value: string) {
     DataType: 'String',
     StringValue: value,
   };
-}
-
-function requiredEnv(name: string): string {
-  const value = process.env[name];
-
-  if (!value) {
-    throw new Error(`${name} is required for the submission handler.`);
-  }
-
-  return value;
 }

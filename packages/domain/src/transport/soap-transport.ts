@@ -2,6 +2,11 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 import {
+  loadConfig,
+  loadSoapEndpointConfig,
+  readNodeEnvironment,
+} from '../config/index.js';
+import {
   assertHardenedXml,
   sha256Hex,
 } from '../xml/security.js';
@@ -363,7 +368,9 @@ export function transportFactory(
   options: TransportFactoryOptions = {},
 ): SoapTransport {
   const normalized = normalizeSoapEnvironment(environment);
-  const nodeEnv = options.nodeEnv ?? process.env.NODE_ENV ?? 'development';
+  const runtimeConfig = loadConfig();
+  const nodeEnv = options.nodeEnv ?? runtimeConfig.nodeEnv;
+  const ci = options.ci ?? runtimeConfig.ci;
   const mode = options.mode ?? 'auto';
   if (mode === 'sandbox' && normalized !== 'qualification') {
     throw new SoapTransportGuardError(
@@ -376,7 +383,7 @@ export function transportFactory(
     (mode === 'sandbox' ||
     (mode === 'auto' &&
       normalized === 'qualification' &&
-      (nodeEnv === 'test' || options.ci === true || process.env.CI === 'true')));
+      (nodeEnv === 'test' || ci)));
 
   if (useSandbox) {
     return new DeterministicSandboxTransport({
@@ -408,7 +415,7 @@ export function resolveEsocialSoapEndpoints(
   options: ResolveSoapEndpointOptions = {},
 ): SoapEndpointSet {
   const normalized = normalizeSoapEnvironment(environment);
-  const nodeEnv = options.nodeEnv ?? process.env.NODE_ENV ?? 'development';
+  const nodeEnv = options.nodeEnv ?? readNodeEnvironment();
   if (normalized === 'production' && nodeEnv !== 'production') {
     throw new SoapTransportGuardError(
       'Production eSocial SOAP endpoints cannot be resolved outside production.',
@@ -436,7 +443,7 @@ export function assertSoapEndpointAllowed(
   endpointUrl: string,
   options: SoapEndpointGuardOptions = {},
 ): void {
-  const nodeEnv = options.nodeEnv ?? process.env.NODE_ENV ?? 'development';
+  const nodeEnv = options.nodeEnv ?? readNodeEnvironment();
   const parsed = new URL(endpointUrl);
 
   if (options.requireHttps && parsed.protocol !== 'https:') {
@@ -495,11 +502,7 @@ export function normalizeSoapEnvironment(
 }
 
 function endpointFromEnv(environment: SoapEnvironment): SoapEndpointSet | undefined {
-  const prefix = `ESOCIAL_${environment.toUpperCase()}`;
-  const submit = process.env[`${prefix}_SOAP_SUBMIT_URL`];
-  const returnQuery = process.env[`${prefix}_SOAP_RETURN_URL`];
-  if (!submit || !returnQuery) return undefined;
-  return { submit, returnQuery };
+  return loadSoapEndpointConfig()[environment];
 }
 
 function assertEndpointSetConfigured(

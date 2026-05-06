@@ -1,0 +1,121 @@
+asyncapi: 3.0.0
+info:
+  title: eSocial Service Bus Contracts
+  version: 1.0.0
+  summary: Queue and event contracts for DTO ingress, returns, status, audit, retry, DLQ, and replay.
+defaultContentType: application/json
+servers:
+  qualification:
+    host: sqs.local/qualification
+    protocol: sqs
+  auditBus:
+    host: eventbridge.local/qualification
+    protocol: eventbridge
+channels:
+  esocial.request.v1:
+    address: esocial.request.v1
+    messages:
+      request:
+        $ref: "#/components/messages/RequestEnvelope"
+    bindings:
+      sqs:
+        queue:
+          name: esocial-request-qualification.fifo
+  esocial.response.v1:
+    address: esocial.response.v1
+    messages:
+      response:
+        $ref: "#/components/messages/ResponseEnvelope"
+    bindings:
+      sqs:
+        queue:
+          name: esocial-response-qualification.fifo
+  esocial.spool.v1:
+    address: esocial.spool.v1
+    messages:
+      spool:
+        $ref: "#/components/messages/SpoolEnvelope"
+    bindings:
+      eventbridge:
+        detailType: esocial.spool.v1
+  esocial.audit.v1:
+    address: esocial.audit.v1
+    messages:
+      audit:
+        $ref: "#/components/messages/AuditEnvelope"
+    bindings:
+      eventbridge:
+        detailType: esocial.audit.v1
+  esocial.retry.v1:
+    address: esocial.retry.v1
+    messages:
+      retry:
+        $ref: "#/components/messages/RetryEnvelope"
+    bindings:
+      sqs:
+        queue:
+          name: esocial-retry-qualification.fifo
+  esocial.dlq.v1:
+    address: esocial.dlq.v1
+    messages:
+      dlq:
+        $ref: "#/components/messages/DlqEnvelope"
+    bindings:
+      sqs:
+        queue:
+          name: esocial-dlq-qualification.fifo
+  esocial.replay.v1:
+    address: esocial.replay.v1
+    messages:
+      replay:
+        $ref: "#/components/messages/ReplayEnvelope"
+    bindings:
+      sqs:
+        queue:
+          name: esocial-replay-qualification.fifo
+operations:
+  submitRequest:
+    action: send
+    channel:
+      $ref: "#/channels/esocial.request.v1"
+    messages:
+      - $ref: "#/channels/esocial.request.v1/messages/request"
+  publishResponse:
+    action: receive
+    channel:
+      $ref: "#/channels/esocial.response.v1"
+    messages:
+      - $ref: "#/channels/esocial.response.v1/messages/response"
+components:
+  messages:
+    RequestEnvelope:
+      name: RequestEnvelope
+      payload:
+        $ref: "./schemas/v1/request.schema.json"
+    ResponseEnvelope:
+      name: ResponseEnvelope
+      payload:
+        $ref: "./schemas/v1/response.schema.json"
+    SpoolEnvelope:
+      name: SpoolEnvelope
+      payload:
+        $ref: "./schemas/v1/spool.schema.json"
+    AuditEnvelope:
+      name: AuditEnvelope
+      payload:
+        $ref: "./schemas/v1/audit.schema.json"
+    RetryEnvelope:
+      name: RetryEnvelope
+      payload:
+        $ref: "./schemas/v1/retry.schema.json"
+    DlqEnvelope:
+      name: DlqEnvelope
+      payload:
+        $ref: "./schemas/v1/dlq.schema.json"
+    ReplayEnvelope:
+      name: ReplayEnvelope
+      payload:
+        $ref: "./schemas/v1/replay.schema.json"
+x-versioning-policy:
+  compatibility: additive-only within v1
+  breakingChange: publish a new major contract package and new channel suffix

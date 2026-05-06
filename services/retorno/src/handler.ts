@@ -74,7 +74,7 @@ export function createReturnHandler(
 
       try {
         logStage(logger, 'ingress', 'Return SQS record received.', baseContext);
-        const parsed = JSON.parse(body) as unknown;
+        const parsed: unknown = JSON.parse(body);
         const validation = validateReturnIngressEnvelope(parsed, body);
         const context = validation.ok
           ? contextFromEnvelope(validation.envelope, { requestId: itemIdentifier })

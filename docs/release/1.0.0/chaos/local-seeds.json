@@ -1,0 +1,30 @@
+{
+  "generatedAt": "2026-05-05T12:00:00.000Z",
+  "scope": "local deterministic chaos only",
+  "blocked": [
+    "restricted-production chaos drills require owner approval and deployed round-2 infrastructure",
+    "real eSocial endpoint fault injection is out of local-safe scope"
+  ],
+  "scenarios": [
+    {
+      "name": "publisher transient failure",
+      "seed": 24051,
+      "command": "npm run test:chaos"
+    },
+    {
+      "name": "SOAP timeout circuit transition",
+      "seed": 0,
+      "command": "npm run test:chaos"
+    },
+    {
+      "name": "cert expiry race classification",
+      "seed": 0,
+      "command": "npm run test:chaos"
+    },
+    {
+      "name": "partial batch survivor dispatch",
+      "seed": 0,
+      "command": "npm run test:chaos"
+    }
+  ]
+}

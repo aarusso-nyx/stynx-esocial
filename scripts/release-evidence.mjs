@@ -1,14 +1,19 @@
+import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  existsSync,
+  mkdirSync,
+  readFileSync,
+  readdirSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
 import { dirname, join } from 'node:path';
 
 import {
-  ESOCIAL_CLASSES,
-  ESOCIAL_CONTRACT_VERSION,
-  ESOCIAL_ENVIRONMENTS,
   ESOCIAL_ERROR_CATEGORIES,
   ESOCIAL_RELAY_EVENT_CLASSES,
-  ESOCIAL_STATUSES,
   ESOCIAL_TRANSPORT_FAMILIES,
   buildEsocialIdempotencyKey,
 } from '../packages/contracts/dist/index.js';
@@ -34,6 +39,10 @@ async function main(releaseVersion) {
   generateContractArtifacts();
 
   const releaseDir = join(root, 'docs/release', releaseVersion);
+  const preserved = preserveReleaseArtifacts(releaseDir, [
+    'perf-baselines/builder.json',
+    'chaos/local-seeds.json',
+  ]);
   rmSync(releaseDir, { recursive: true, force: true });
   mkdirSync(releaseDir, { recursive: true });
 
@@ -47,19 +56,21 @@ async function main(releaseVersion) {
   const endpoints = resolveEsocialSoapEndpoints('qualification', {
     nodeEnv: 'test',
   });
-  const soapTransport = new SandboxSoapTransport();
-  const submitExchange = await soapTransport.submit({
-    endpointUrl: endpoints.submit,
-    signedBatchXml: signed.signedXml,
-    now,
-    protocolSeed: `release-${releaseVersion}-s1299`,
-  });
-  const returnExchange = await soapTransport.queryReturn({
-    endpointUrl: endpoints.returnQuery,
-    protocol: submitExchange.protocol,
+  const soapTransport = new SandboxSoapTransport({ root });
+  const submitExchange = await soapTransport.submit('EnviarLoteEventos', signed.signedXml, {
+    tenantId: inputEnvelope.tenant_id,
+    environment: inputEnvelope.environment,
+    eventClass: inputEnvelope.event_class,
+    requestXml: sourceXml,
     now,
   });
-  const protocolReturn = parseEsocialReturnXml(submitExchange.soapResponse);
+  const returnExchange = await soapTransport.consultProtocol(submitExchange.protocol, {
+    tenantId: inputEnvelope.tenant_id,
+    environment: inputEnvelope.environment,
+    eventClass: inputEnvelope.event_class,
+    now,
+  });
+  const protocolReturn = parseEsocialReturnXml(submitExchange.rawResponse);
   const processingReturn = parseEsocialReturnXml(
     processingReturnXml(submitExchange.protocol, now),
   );
@@ -83,10 +94,11 @@ async function main(releaseVersion) {
     signedAt: signed.signedAt,
     certificateRef: signed.certificateRef,
   });
-  writeText(join(releaseDir, 'soap/submit-request.xml'), submitExchange.soapRequest);
-  writeText(join(releaseDir, 'soap/submit-response.xml'), submitExchange.soapResponse);
-  writeText(join(releaseDir, 'soap/return-query-request.xml'), returnExchange.soapRequest);
-  writeText(join(releaseDir, 'soap/return-query-response.xml'), returnExchange.soapResponse);
+  writeJson(join(releaseDir, 'soap/endpoints.json'), endpoints);
+  writeText(join(releaseDir, 'soap/submit-request.xml'), submitExchange.rawRequest);
+  writeText(join(releaseDir, 'soap/submit-response.xml'), submitExchange.rawResponse);
+  writeText(join(releaseDir, 'soap/return-query-request.xml'), returnExchange.rawRequest);
+  writeText(join(releaseDir, 'soap/return-query-response.xml'), returnExchange.rawResponse);
   writeJson(join(releaseDir, 'returns/protocol.json'), protocolReturn);
   writeJson(join(releaseDir, 'returns/processing.json'), processingReturn);
   writeJson(join(releaseDir, 'status/response-envelope.json'), processorResult.response);
@@ -107,155 +119,19 @@ async function main(releaseVersion) {
       event_record_status: 'building',
     },
   });
-  writeJson(join(releaseDir, 'evidence-manifest.json'), evidenceManifest(releaseVersion));
+  restoreReleaseArtifacts(releaseDir, preserved);
+  ensureLocalSafeRound3Artifacts(releaseDir);
   writeText(join(releaseDir, 'README.md'), releaseReadme(releaseVersion, submitExchange.protocol));
+  writeJson(join(releaseDir, 'evidence-manifest.json'), evidenceManifest(releaseVersion, releaseDir));
 
   console.log(`[release-evidence] wrote docs/release/${releaseVersion}`);
 }
 
 function generateContractArtifacts() {
-  const schemaDir = join(root, 'packages/contracts/schemas/v1');
-  const exampleDir = join(root, 'packages/contracts/examples/v1/requests');
-  rmSync(schemaDir, { recursive: true, force: true });
-  rmSync(exampleDir, { recursive: true, force: true });
-  mkdirSync(schemaDir, { recursive: true });
-  mkdirSync(exampleDir, { recursive: true });
-
-  for (const family of ESOCIAL_TRANSPORT_FAMILIES) {
-    writeJson(join(schemaDir, `${family}.schema.json`), schemaForFamily(family));
-  }
-
-  for (const [index, eventClass] of ESOCIAL_RELAY_EVENT_CLASSES.entries()) {
-    writeJson(
-      join(exampleDir, `${eventClass}.request.json`),
-      exampleRequestEnvelope(eventClass, index + 1, new Date('2026-05-05T12:00:00.000Z')),
-    );
-  }
-}
-
-function schemaForFamily(family) {
-  const schema = {
-    $schema: 'https://json-schema.org/draft/2020-12/schema',
-    $id: `https://schemas.sistematech.local/esocial/v1/${family}.schema.json`,
-    title: `eSocial ${family} envelope v1`,
-    type: 'object',
-    additionalProperties: true,
-    properties: {
-      version: { const: ESOCIAL_CONTRACT_VERSION },
-      family: { const: family },
-      'request-id': { type: 'string', minLength: 1 },
-      'correlation-id': { type: 'string', minLength: 1 },
-      'idempotency-key': { type: 'string', minLength: 1 },
-      created_at: { type: 'string', format: 'date-time' },
-      tenant_id: { type: 'string', format: 'uuid' },
-      environment: { enum: ESOCIAL_ENVIRONMENTS },
-      event_class: { enum: ESOCIAL_RELAY_EVENT_CLASSES },
-      source: { type: 'object' },
-    },
-    required: [
-      'version',
-      'family',
-      'request-id',
-      'correlation-id',
-      'idempotency-key',
-      'created_at',
-      'tenant_id',
-      'environment',
-      'event_class',
-      'source',
-    ],
-  };
-
-  addFamilyFields(schema, family);
-  return schema;
-}
-
-function addFamilyFields(schema, family) {
-  if (family === 'request') {
-    Object.assign(schema.properties, {
-      kind: { enum: ESOCIAL_CLASSES },
-      payload_hash: { type: 'string', minLength: 1 },
-      attempt: { type: 'integer', minimum: 0 },
-      'max-attempts': { type: 'integer', minimum: 1 },
-      'reply-to': { type: 'string', minLength: 1 },
-      'dead-letter-topic': { type: 'string', minLength: 1 },
-      payload: { type: 'object' },
-    });
-    schema.required.push('kind', 'payload_hash', 'attempt', 'max-attempts', 'reply-to', 'dead-letter-topic', 'payload');
-    return;
-  }
-
-  if (family === 'response') {
-    Object.assign(schema.properties, {
-      kind: { enum: ESOCIAL_CLASSES },
-      status: { enum: ESOCIAL_STATUSES },
-      attempt: { type: 'integer', minimum: 0 },
-      processed_at: { type: 'string', format: 'date-time' },
-      errors: { type: 'array' },
-    });
-    schema.required.push('kind', 'status', 'attempt', 'processed_at');
-    return;
-  }
-
-  if (family === 'spool') {
-    Object.assign(schema.properties, {
-      message_id: { type: 'string', minLength: 1 },
-      kind: { enum: ESOCIAL_CLASSES },
-      status_transition: { type: 'object' },
-      occurred_at: { type: 'string', format: 'date-time' },
-    });
-    schema.required.push('message_id', 'kind', 'status_transition', 'occurred_at');
-    return;
-  }
-
-  if (family === 'audit') {
-    Object.assign(schema.properties, {
-      action: { type: 'string', minLength: 1 },
-      status: { enum: ESOCIAL_STATUSES },
-      target: { type: 'object' },
-      occurred_at: { type: 'string', format: 'date-time' },
-    });
-    schema.required.push('action', 'target', 'occurred_at');
-    return;
-  }
-
-  if (family === 'retry') {
-    Object.assign(schema.properties, {
-      kind: { enum: ESOCIAL_CLASSES },
-      status: { enum: ['retry', 'timeout'] },
-      attempt: { type: 'integer', minimum: 1 },
-      'max-attempts': { type: 'integer', minimum: 1 },
-      next_attempt_at: { type: 'string', format: 'date-time' },
-      retry_reason: { type: 'string', minLength: 1 },
-    });
-    schema.required.push('kind', 'status', 'attempt', 'max-attempts', 'next_attempt_at', 'retry_reason');
-    return;
-  }
-
-  if (family === 'dlq') {
-    Object.assign(schema.properties, {
-      kind: { enum: ESOCIAL_CLASSES },
-      status: { enum: ['dlq', 'failed'] },
-      final_attempt: { type: 'integer', minimum: 0 },
-      dlq_reason: { type: 'string', minLength: 1 },
-      failed_at: { type: 'string', format: 'date-time' },
-      errors: { type: 'array' },
-    });
-    schema.required.push('kind', 'status', 'final_attempt', 'dlq_reason', 'failed_at', 'errors');
-    return;
-  }
-
-  if (family === 'replay') {
-    Object.assign(schema.properties, {
-      kind: { enum: ESOCIAL_CLASSES },
-      status: { const: 'pending' },
-      original_request_id: { type: 'string', minLength: 1 },
-      replay_request_id: { type: 'string', minLength: 1 },
-      replayed_by: { type: 'string', minLength: 1 },
-      replay_reason: { type: 'string', minLength: 1 },
-    });
-    schema.required.push('kind', 'status', 'original_request_id', 'replay_request_id', 'replayed_by', 'replay_reason');
-  }
+  execFileSync('npm', ['run', 'schemas:generate', '--workspace', '@esocial/contracts', '--silent'], {
+    cwd: root,
+    stdio: 'inherit',
+  });
 }
 
 function exampleRequestEnvelope(eventClass, index, now) {
@@ -428,10 +304,12 @@ function processingReturnXml(protocol, now) {
   </eSocial>`;
 }
 
-function evidenceManifest(releaseVersion) {
+function evidenceManifest(releaseVersion, releaseDir) {
+  const artifacts = collectArtifactEntries(releaseDir);
   return {
     version: releaseVersion,
     generated_at: '2026-05-05T12:00:00.000Z',
+    source_commit: sourceCommit(),
     commands: [
       'npm run build',
       'npm run lint',
@@ -440,6 +318,10 @@ function evidenceManifest(releaseVersion) {
       'npm run test:integration',
       'npm run integration:localstack',
       'npm run templates:check',
+      'npm run bench:smoke',
+      'npm run test:chaos',
+      'npm run specs:check',
+      'npm run build --workspace @esocial/sdk',
       `node scripts/release-evidence.mjs --version ${releaseVersion}`,
     ],
     restricted_production: {
@@ -448,27 +330,19 @@ function evidenceManifest(releaseVersion) {
       review_date: '2026-06-05',
       reason: 'No explicit owner authorization for restricted-production or real-service evidence.',
     },
-    artifacts: [
-      'input-envelopes/submit-s1299.json',
-      'generated-xml/s1299.xml',
-      'signed-payload/s1299.signed.xml',
-      'signed-payload/metadata.json',
-      'soap/submit-request.xml',
-      'soap/submit-response.xml',
-      'soap/return-query-request.xml',
-      'soap/return-query-response.xml',
-      'returns/protocol.json',
-      'returns/processing.json',
-      'status/response-envelope.json',
-      'status/spool-envelope.json',
-      'status/audit-envelope.json',
-      'status/published.json',
-      'database/db-state-diff.json',
-    ],
+    artifacts,
+    blocked_artifacts: blockedArtifacts(),
     contract_artifacts: {
       schemas: ESOCIAL_TRANSPORT_FAMILIES.map((family) => `packages/contracts/schemas/v1/${family}.schema.json`),
       request_examples: ESOCIAL_RELAY_EVENT_CLASSES.length,
       error_categories: ESOCIAL_ERROR_CATEGORIES,
+      openapi: 'packages/contracts/openapi.yaml',
+      asyncapi: 'packages/contracts/asyncapi.yaml',
+    },
+    sdk: {
+      package: '@esocial/sdk',
+      version: packageVersion('packages/sdk/package.json'),
+      status: 'local scaffold; publish requires explicit release authorization',
     },
   };
 }
@@ -498,10 +372,134 @@ Captured flow:
    1.1.0000000000000000001.
 6. Response, spool, and audit envelopes emitted by the submission processor.
 7. Database expectations proven by \`npm run integration:localstack\`.
+8. Local-safe Round 3 artifacts for perf, chaos, SDK, and OpenAPI/AsyncAPI
+   are indexed when present. Real-service, restricted-production, and owner-gated
+   artifacts are reported as blocked rather than fabricated.
 
 Restricted-production evidence is deferred until the owner explicitly
 authorizes real-service testing and provides redaction rules.
 `;
+}
+
+function preserveReleaseArtifacts(releaseDir, relativePaths) {
+  const preserved = new Map();
+  for (const relativePath of relativePaths) {
+    const fileName = join(releaseDir, relativePath);
+    if (existsSync(fileName)) {
+      preserved.set(relativePath, readFileSync(fileName, 'utf8'));
+    }
+  }
+  return preserved;
+}
+
+function restoreReleaseArtifacts(releaseDir, preserved) {
+  for (const [relativePath, contents] of preserved.entries()) {
+    writeText(join(releaseDir, relativePath), contents);
+  }
+}
+
+function ensureLocalSafeRound3Artifacts(releaseDir) {
+  if (!existsSync(join(releaseDir, 'perf-baselines/builder.json'))) {
+    writeJson(join(releaseDir, 'perf-baselines/builder.json'), {
+      status: 'missing',
+      command: 'npm run bench:baseline',
+    });
+  }
+  if (!existsSync(join(releaseDir, 'chaos/local-seeds.json'))) {
+    writeJson(join(releaseDir, 'chaos/local-seeds.json'), {
+      status: 'missing',
+      command: 'npm run test:chaos',
+    });
+  }
+  writeText(
+    join(releaseDir, 'specs/openapi.yaml'),
+    readFileSync(join(root, 'packages/contracts/openapi.yaml'), 'utf8'),
+  );
+  writeText(
+    join(releaseDir, 'specs/asyncapi.yaml'),
+    readFileSync(join(root, 'packages/contracts/asyncapi.yaml'), 'utf8'),
+  );
+  writeJson(join(releaseDir, 'sdk/metadata.json'), {
+    package: '@esocial/sdk',
+    version: packageVersion('packages/sdk/package.json'),
+    examples: ['packages/sdk/examples/s1299.ts'],
+    publish: 'blocked until explicit release authorization',
+  });
+  writeJson(join(releaseDir, 'blocked-artifacts.json'), blockedArtifacts());
+}
+
+function collectArtifactEntries(releaseDir) {
+  return listFiles(releaseDir)
+    .filter((fileName) => !fileName.endsWith('/evidence-manifest.json'))
+    .sort()
+    .map((relativePath) => {
+      const absolutePath = join(releaseDir, relativePath);
+      return {
+        path: relativePath,
+        sha256: sha256(readFileSync(absolutePath)),
+        bytes: statSync(absolutePath).size,
+      };
+    });
+}
+
+function listFiles(dir, prefix = '') {
+  const files = [];
+  for (const entry of readdirSync(dir, { withFileTypes: true })) {
+    const relativePath = prefix ? `${prefix}/${entry.name}` : entry.name;
+    const absolutePath = join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...listFiles(absolutePath, relativePath));
+    } else if (entry.isFile()) {
+      files.push(relativePath);
+    }
+  }
+  return files;
+}
+
+function blockedArtifacts() {
+  return [
+    {
+      area: 'restricted-production',
+      status: 'blocked',
+      reason: 'Owner approval and deployed round-2 infrastructure are not recorded.',
+    },
+    {
+      area: 'real certificates',
+      status: 'blocked',
+      reason: 'Certificate custody owner approval is not recorded.',
+    },
+    {
+      area: 'official eSocial endpoint calls',
+      status: 'blocked',
+      reason: 'Real-service tests require explicit owner authorization and redaction rules.',
+    },
+    {
+      area: 'DR and multi-region drills',
+      status: 'blocked',
+      reason: 'Requires deployed production-like infrastructure.',
+    },
+    {
+      area: 'SDK publish',
+      status: 'blocked',
+      reason: 'Publishing packages requires explicit release authorization.',
+    },
+  ];
+}
+
+function packageVersion(relativePath) {
+  return JSON.parse(readFileSync(join(root, relativePath), 'utf8')).version;
+}
+
+function sourceCommit() {
+  try {
+    return execFileSync('git', ['rev-parse', 'HEAD'], {
+      cwd: root,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim();
+  } catch {
+    return 'unknown';
+  }
 }
 
 function writeJson(fileName, value) {

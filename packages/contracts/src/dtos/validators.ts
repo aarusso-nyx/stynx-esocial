@@ -64,48 +64,48 @@ export function validateEsocialSgpRequestDto(
     }
   }
 
-  if (!includesString(ESOCIAL_RELAY_EVENT_CLASSES, candidate.eventClass)) {
+  if (!includesString(ESOCIAL_RELAY_EVENT_CLASSES, candidate['eventClass'])) {
     errors.push('eventClass is not supported.');
   }
 
-  if (!isNonEmptyString(candidate.tenantId)) {
+  if (!isNonEmptyString(candidate['tenantId'])) {
     errors.push('tenantId is required.');
   }
 
-  if (!isNonEmptyString(candidate.sourceEventId)) {
+  if (!isNonEmptyString(candidate['sourceEventId'])) {
     errors.push('sourceEventId is required.');
   }
 
-  if (includesString(ESOCIAL_ROUND0_DTO_EVENT_CLASSES, candidate.eventClass)) {
-    validateRound0Dto(candidate, candidate.eventClass, errors);
+  if (includesString(ESOCIAL_ROUND0_DTO_EVENT_CLASSES, candidate['eventClass'])) {
+    validateRound0Dto(candidate, candidate['eventClass'], errors);
   } else if (
-    includesString(ESOCIAL_PROMOTED_TABLE_DTO_EVENT_CLASSES, candidate.eventClass)
+    includesString(ESOCIAL_PROMOTED_TABLE_DTO_EVENT_CLASSES, candidate['eventClass'])
   ) {
-    validatePromotedTableDto(candidate, candidate.eventClass, errors);
+    validatePromotedTableDto(candidate, candidate['eventClass'], errors);
   } else if (
     includesString(
       ESOCIAL_PROMOTED_PERIODIC_DTO_EVENT_CLASSES,
-      candidate.eventClass,
+      candidate['eventClass'],
     )
   ) {
-    validatePromotedPeriodicDto(candidate, candidate.eventClass, errors);
+    validatePromotedPeriodicDto(candidate, candidate['eventClass'], errors);
   } else if (
     includesString(
       ESOCIAL_PROMOTED_WORKER_DTO_EVENT_CLASSES,
-      candidate.eventClass,
+      candidate['eventClass'],
     )
   ) {
-    validatePromotedWorkerDto(candidate, candidate.eventClass, errors);
+    validatePromotedWorkerDto(candidate, candidate['eventClass'], errors);
   } else if (
     includesString(
       ESOCIAL_PROMOTED_BENEFIT_PROCESS_DTO_EVENT_CLASSES,
-      candidate.eventClass,
+      candidate['eventClass'],
     )
   ) {
-    validatePromotedBenefitProcessDto(candidate, candidate.eventClass, errors);
+    validatePromotedBenefitProcessDto(candidate, candidate['eventClass'], errors);
   } else if (
-    includesString(ESOCIAL_RELAY_EVENT_CLASSES, candidate.eventClass) &&
-    candidate.round1Pending !== true
+    includesString(ESOCIAL_RELAY_EVENT_CLASSES, candidate['eventClass']) &&
+    candidate['round1Pending'] !== true
   ) {
     errors.push('round1Pending must be true for deferred event DTO stubs.');
   }
@@ -185,7 +185,7 @@ function validatePromotedBenefitProcessDto(
   if (eventClass === 'S-2501') {
     requireStrings(candidate, errors, ['processNumber', 'paymentPeriod']);
     requireArray(candidate, errors, 'processTaxBases');
-    const bases = candidate.processTaxBases;
+    const bases = candidate['processTaxBases'];
     if (Array.isArray(bases) && bases.length === 0) {
       errors.push('processTaxBases must contain at least one item.');
     }
@@ -326,7 +326,7 @@ function validatePromotedPeriodicDto(
 
   if (eventClass === 'S-1210') {
     requireStrings(candidate, errors, ['paymentBatchId', 'paymentBatchStatus']);
-    if (candidate.confirmedTotal === undefined || candidate.confirmedTotal === '') {
+    if (candidate['confirmedTotal'] === undefined || candidate['confirmedTotal'] === '') {
       errors.push('confirmedTotal is required.');
     }
     requireArray(candidate, errors, 'payments');
@@ -400,7 +400,7 @@ function validateRound0Dto(
       'payrollRunId',
     ]);
     requireArray(candidate, errors, 'pendingPeriodicEvents');
-    if (!isRecord(candidate.acceptedEventCounts)) {
+    if (!isRecord(candidate['acceptedEventCounts'])) {
       errors.push('acceptedEventCounts is required.');
     }
   }
@@ -443,9 +443,9 @@ function validatePromotedTableDto(
   if (eventClass === 'S-1050') {
     requireStrings(candidate, errors, ['workScheduleCode', 'description']);
     if (
-      candidate.dailyHours === undefined ||
-      candidate.dailyHours === null ||
-      candidate.dailyHours === ''
+      candidate['dailyHours'] === undefined ||
+      candidate['dailyHours'] === null ||
+      candidate['dailyHours'] === ''
     ) {
       errors.push('dailyHours is required.');
     }

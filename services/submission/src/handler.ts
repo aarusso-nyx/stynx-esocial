@@ -71,7 +71,7 @@ export function createSubmissionHandler(
 
       try {
         logStage(logger, 'ingress', 'Submission SQS record received.', baseContext);
-        const parsed = JSON.parse(body) as unknown;
+        const parsed: unknown = JSON.parse(body);
         const validation = validateIngressEnvelope(parsed, body);
         const context = validation.ok
           ? contextFromEnvelope(validation.envelope, { requestId: itemIdentifier })

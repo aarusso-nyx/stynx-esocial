@@ -4,6 +4,9 @@ import {
   ESOCIAL_RELAY_EVENT_CLASSES,
 } from '@esocial/contracts';
 import type { EsocialStatus } from '@esocial/contracts';
+import {
+  loadReturnServiceConfig,
+} from '@esocial/domain';
 import type {
   PersistReturnCommand,
   ReturnOriginLookup,
@@ -28,13 +31,9 @@ export type ClosableReturnRepository = ReturnRepository &
   }>;
 
 export function createPostgresReturnRepositoryFromEnv(): ClosableReturnRepository {
-  const connectionString = process.env.ESOCIAL_DATABASE_URL;
-
-  if (!connectionString) {
-    throw new Error('ESOCIAL_DATABASE_URL is required for the return handler.');
-  }
-
-  return createPostgresReturnRepository({ connectionString });
+  return createPostgresReturnRepository({
+    connectionString: loadReturnServiceConfig().databaseUrl,
+  });
 }
 
 export function createPostgresReturnRepository(

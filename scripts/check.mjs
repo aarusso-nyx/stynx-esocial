@@ -154,6 +154,16 @@ const activeSourceFiles = [
 
 for (const file of activeSourceFiles) {
   const source = readFileSync(join(root, file), 'utf8');
+  if (/\bprocess\.env\b/u.test(source) && !file.startsWith('packages/domain/src/config/')) {
+    throw new Error(
+      `[${mode}] active source must read environment through packages/domain/src/config/: ${file}`,
+    );
+  }
+  if (/\b(?:as\s+any|as\s+unknown|:\s*any|<any>)/u.test(source)) {
+    throw new Error(
+      `[${mode}] active source must not use any/as unknown casts: ${file}`,
+    );
+  }
   const liftedImports = activeImportSpecifiers(source).filter((specifier) =>
     specifier.includes('sgp-lifted/'),
   );

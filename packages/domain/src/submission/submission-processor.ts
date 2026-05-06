@@ -408,11 +408,11 @@ export function validateIngressEnvelope(
     return ingressError('ESOCIAL_REQUEST_NOT_OBJECT', 'Request body must be a JSON object.', candidate, rawBody);
   }
 
-  if (candidate.version !== ESOCIAL_CONTRACT_VERSION) {
+  if (candidate['version'] !== ESOCIAL_CONTRACT_VERSION) {
     return ingressError('ESOCIAL_UNSUPPORTED_VERSION', 'Unsupported eSocial envelope version.', candidate, rawBody);
   }
 
-  if (candidate.family !== 'request') {
+  if (candidate['family'] !== 'request') {
     return ingressError('ESOCIAL_UNSUPPORTED_FAMILY', 'Submission handler accepts request envelopes only.', candidate, rawBody);
   }
 
@@ -428,27 +428,27 @@ export function validateIngressEnvelope(
     return ingressError('ESOCIAL_IDEMPOTENCY_KEY_REQUIRED', 'idempotency-key is required.', candidate, rawBody);
   }
 
-  if (!isUuid(candidate.tenant_id)) {
+  if (!isUuid(candidate['tenant_id'])) {
     return ingressError('ESOCIAL_TENANT_UUID_REQUIRED', 'tenant_id must be a UUID for the current esocial schema.', candidate, rawBody);
   }
 
-  if (!includesString(ESOCIAL_ENVIRONMENTS, candidate.environment)) {
+  if (!includesString(ESOCIAL_ENVIRONMENTS, candidate['environment'])) {
     return ingressError('ESOCIAL_ENVIRONMENT_INVALID', 'environment is not supported.', candidate, rawBody);
   }
 
-  if (!includesString(ESOCIAL_RELAY_EVENT_CLASSES, candidate.event_class)) {
+  if (!includesString(ESOCIAL_RELAY_EVENT_CLASSES, candidate['event_class'])) {
     return ingressError('ESOCIAL_EVENT_CLASS_INVALID', 'event_class is not supported.', candidate, rawBody);
   }
 
-  if (!includesString(ESOCIAL_CLASSES, candidate.kind)) {
+  if (!includesString(ESOCIAL_CLASSES, candidate['kind'])) {
     return ingressError('ESOCIAL_KIND_INVALID', 'kind is not supported.', candidate, rawBody);
   }
 
-  if (!isRecord(candidate.source)) {
+  if (!isRecord(candidate['source'])) {
     return ingressError('ESOCIAL_SOURCE_REQUIRED', 'source object is required.', candidate, rawBody);
   }
 
-  if (!Number.isInteger(candidate.attempt) || Number(candidate.attempt) < 0) {
+  if (!Number.isInteger(candidate['attempt']) || Number(candidate['attempt']) < 0) {
     return ingressError('ESOCIAL_ATTEMPT_INVALID', 'attempt must be a non-negative integer.', candidate, rawBody);
   }
 
@@ -460,7 +460,7 @@ export function validateIngressEnvelope(
     return ingressError('ESOCIAL_TOPICS_REQUIRED', 'reply-to and dead-letter-topic are required.', candidate, rawBody);
   }
 
-  if (!isNonEmptyString(candidate.payload_hash)) {
+  if (!isNonEmptyString(candidate['payload_hash'])) {
     return ingressError('ESOCIAL_PAYLOAD_HASH_REQUIRED', 'payload_hash is required.', candidate, rawBody);
   }
 
@@ -480,10 +480,10 @@ export function validateIngressIdempotencyKey(
     tenant_id: request.tenant_id,
     environment: request.environment,
     event_class: request.event_class,
-    source_event_id: stringValue(source.source_event_id),
-    source_entity_id: stringValue(source.source_entity_id),
-    source_entity_ids: stringArray(source.source_entity_ids),
-    competence: stringValue(payload.competence) ?? stringValue(payload.validityStart),
+    source_event_id: stringValue(source['source_event_id']),
+    source_entity_id: stringValue(source['source_entity_id']),
+    source_entity_ids: stringArray(source['source_entity_ids']),
+    competence: stringValue(payload['competence']) ?? stringValue(payload['validityStart']),
     payload_hash: request.payload_hash,
   });
 
@@ -522,18 +522,18 @@ function validateSubmissionPayload(
     );
   }
 
-  const dtoEnvironment = dtoEnvironmentToEnvelope(payload.environment);
+  const dtoEnvironment = dtoEnvironmentToEnvelope(payload['environment']);
   if (dtoEnvironment && dtoEnvironment !== request.environment) {
     errors.push(
       validationError(
         'ESOCIAL_PAYLOAD_ENVIRONMENT_MISMATCH',
-        'payload.environment must match envelope.environment.',
+        "payload.environment must match envelope['environment'].",
       ),
     );
   }
 
-  if (payload.eventClass !== request.event_class) {
-    errors.push(validationError('ESOCIAL_PAYLOAD_EVENT_CLASS_MISMATCH', 'payload.eventClass must match envelope.event_class.'));
+  if (payload['eventClass'] !== request.event_class) {
+    errors.push(validationError('ESOCIAL_PAYLOAD_EVENT_CLASS_MISMATCH', "payload.eventClass must match envelope['event_class']."));
   }
 
   return errors;
@@ -711,9 +711,9 @@ function buildDlqEnvelopeFromCandidate(
 ): SubmissionDlqEnvelope {
   const requestId = stringOr(candidate?.['request-id'], `malformed-${occurredAt}`);
   const correlationId = stringOr(candidate?.['correlation-id'], requestId);
-  const tenantId = isUuid(candidate?.tenant_id) ? candidate.tenant_id : NIL_TENANT_ID;
-  const eventClass = includesString(ESOCIAL_RELAY_EVENT_CLASSES, candidate?.event_class)
-    ? candidate.event_class
+  const tenantId = isUuid(candidate?.['tenant_id']) ? candidate['tenant_id'] : NIL_TENANT_ID;
+  const eventClass = includesString(ESOCIAL_RELAY_EVENT_CLASSES, candidate?.['event_class'])
+    ? candidate['event_class']
     : FALLBACK_EVENT_CLASS;
 
   return {
@@ -724,14 +724,14 @@ function buildDlqEnvelopeFromCandidate(
     'idempotency-key': stringOr(candidate?.['idempotency-key'], `malformed:${requestId}`),
     created_at: occurredAt,
     tenant_id: tenantId,
-    environment: includesString(ESOCIAL_ENVIRONMENTS, candidate?.environment)
-      ? candidate.environment
+    environment: includesString(ESOCIAL_ENVIRONMENTS, candidate?.['environment'])
+      ? candidate['environment']
       : 'QUALIFICATION',
     event_class: eventClass,
-    source: isRecord(candidate?.source) ? candidate.source : {},
-    kind: includesString(ESOCIAL_CLASSES, candidate?.kind) ? candidate.kind : 'submit',
+    source: isRecord(candidate?.['source']) ? candidate['source'] : {},
+    kind: includesString(ESOCIAL_CLASSES, candidate?.['kind']) ? candidate['kind'] : 'submit',
     status: 'dlq',
-    final_attempt: Number.isInteger(candidate?.attempt) ? Number(candidate?.attempt) : 0,
+    final_attempt: Number.isInteger(candidate?.['attempt']) ? Number(candidate?.['attempt']) : 0,
     dlq_reason: error.message,
     failed_at: occurredAt,
     errors: [error],

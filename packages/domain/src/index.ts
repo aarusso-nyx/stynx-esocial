@@ -1,5 +1,19 @@
 export const ESOCIAL_DOMAIN_VERSION = 'r6-skeleton';
 
+export { assertNever } from './internal/exhaustive.js';
+
+export {
+  ConfigurationError,
+  loadCertificateServiceConfig,
+  loadConfig,
+  loadReturnServiceConfig,
+  loadSoapEndpointConfig,
+  loadSubmissionServiceConfig,
+  readCiFlag,
+  readNodeEnvironment,
+  redactConfig,
+  requireConfigValue,
+} from './config/index.js';
 export {
   DEFAULT_CIRCUIT_BREAKER_POLICY,
   DEFAULT_RETRY_POLICY,
@@ -153,6 +167,16 @@ export {
   sha256Hex,
   sha256Prefixed,
 } from './xml/security.js';
+export type {
+  AwsConfig,
+  CertificateServiceConfig,
+  EnvReader,
+  EsocialConfig,
+  NodeEnvironment,
+  QueueConfig,
+  ReturnServiceConfig,
+  SubmissionServiceConfig,
+} from './config/index.js';
 export type {
   CircuitBreakerDecision,
   CircuitBreakerAuditCommand,

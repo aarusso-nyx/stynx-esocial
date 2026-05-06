@@ -18,10 +18,13 @@ Captured flow:
    RSA signing behavior is proven by `npm test` and does not commit private
    keys.
 4. SOAP sandbox submit and return query exchanges.
-5. Return parser evidence for protocol LOCAL-889F46D4B04488BB162C5B03 and receipt
+5. Return parser evidence for protocol LOCAL-11828F10D23A438A87ACA97A and receipt
    1.1.0000000000000000001.
 6. Response, spool, and audit envelopes emitted by the submission processor.
 7. Database expectations proven by `npm run integration:localstack`.
+8. Local-safe Round 3 artifacts for perf, chaos, SDK, and OpenAPI/AsyncAPI
+   are indexed when present. Real-service, restricted-production, and owner-gated
+   artifacts are reported as blocked rather than fabricated.
 
 Restricted-production evidence is deferred until the owner explicitly
 authorizes real-service testing and provides redaction rules.

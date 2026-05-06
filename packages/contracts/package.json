@@ -9,6 +9,8 @@
     "dist",
     "schemas",
     "examples",
+    "openapi.yaml",
+    "asyncapi.yaml",
     "CHANGELOG.md"
   ],
   "exports": {
@@ -21,7 +23,8 @@
   },
   "scripts": {
     "build": "tsc -b && npm run schemas:generate",
-    "schemas:generate": "node src/schema-generation/write-schemas.mjs"
+    "schemas:generate": "node src/schema-generation/write-schemas.mjs",
+    "specs:check": "node src/spec-generation/check-specs.mjs"
   },
   "publishConfig": {
     "access": "restricted",

@@ -2,10 +2,10 @@
   "kind": "processing",
   "responseCode": "201",
   "responseDescription": "Sucesso.",
-  "protocol": "LOCAL-889F46D4B04488BB162C5B03",
+  "protocol": "LOCAL-11828F10D23A438A87ACA97A",
   "receipt": "1.1.0000000000000000001",
   "processingReturn": {
-    "protocol": "LOCAL-889F46D4B04488BB162C5B03",
+    "protocol": "LOCAL-11828F10D23A438A87ACA97A",
     "responseCode": "201",
     "responseDescription": "Lote Processado com Sucesso.",
     "estimatedConclusionSeconds": null,

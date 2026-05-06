@@ -587,13 +587,13 @@ function signedPayloadSha256(payload: unknown): string | undefined {
   const record = typeof payload === 'object' && payload !== null && !Array.isArray(payload)
     ? payload as Record<string, unknown>
     : {};
-  const signedEnvelope = typeof record.signedEnvelope === 'object' &&
-    record.signedEnvelope !== null &&
-    !Array.isArray(record.signedEnvelope)
-    ? record.signedEnvelope as Record<string, unknown>
+  const signedEnvelope = typeof record['signedEnvelope'] === 'object' &&
+    record['signedEnvelope'] !== null &&
+    !Array.isArray(record['signedEnvelope'])
+    ? record['signedEnvelope'] as Record<string, unknown>
     : {};
 
-  return typeof signedEnvelope.pkcs7Sha256 === 'string'
-    ? signedEnvelope.pkcs7Sha256
+  return typeof signedEnvelope['pkcs7Sha256'] === 'string'
+    ? signedEnvelope['pkcs7Sha256']
     : undefined;
 }

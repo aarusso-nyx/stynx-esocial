@@ -1,5 +1,7 @@
 import { createHash } from 'node:crypto';
 
+import { assertNever } from '../../../internal/exhaustive.js';
+
 export const PROMOTED_TABLE_EVENT_CLASSES = [
   'S-1000',
   'S-1005',
@@ -663,10 +665,4 @@ function sha256(value: string): string {
 
 function withFinalNewline(xml: string): string {
   return `${xml}\n`;
-}
-
-function assertNever(value: never): never {
-  throw new TableBuilderValidationError(
-    `Unsupported table builder input: ${JSON.stringify(value)}`,
-  );
 }

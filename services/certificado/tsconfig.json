@@ -6,6 +6,7 @@
     "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo"
   },
   "references": [
+    { "path": "../../packages/domain" },
     { "path": "../../packages/pki-pades" },
     { "path": "../shared" }
   ],

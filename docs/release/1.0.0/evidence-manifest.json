@@ -1,6 +1,7 @@
 {
   "version": "1.0.0",
   "generated_at": "2026-05-05T12:00:00.000Z",
+  "source_commit": "a0a2741d7a42bbf1fa944629a9b766ea6395ba83",
   "commands": [
     "npm run build",
     "npm run lint",
@@ -9,6 +10,10 @@
     "npm run test:integration",
     "npm run integration:localstack",
     "npm run templates:check",
+    "npm run bench:smoke",
+    "npm run test:chaos",
+    "npm run specs:check",
+    "npm run build --workspace @esocial/sdk",
     "node scripts/release-evidence.mjs --version 1.0.0"
   ],
   "restricted_production": {
@@ -18,21 +23,148 @@
     "reason": "No explicit owner authorization for restricted-production or real-service evidence."
   },
   "artifacts": [
-    "input-envelopes/submit-s1299.json",
-    "generated-xml/s1299.xml",
-    "signed-payload/s1299.signed.xml",
-    "signed-payload/metadata.json",
-    "soap/submit-request.xml",
-    "soap/submit-response.xml",
-    "soap/return-query-request.xml",
-    "soap/return-query-response.xml",
-    "returns/protocol.json",
-    "returns/processing.json",
-    "status/response-envelope.json",
-    "status/spool-envelope.json",
-    "status/audit-envelope.json",
-    "status/published.json",
-    "database/db-state-diff.json"
+    {
+      "path": "README.md",
+      "sha256": "5ae01ca6eaad5b456d7c56aa32244c250e61ce27d8f3a2cf6c2631ae0229ff35",
+      "bytes": 1196
+    },
+    {
+      "path": "blocked-artifacts.json",
+      "sha256": "fe795b5866adb736eac31c375d041f562ccfdc7b7c2d8cb94bd9c9ab8a81d9dd",
+      "bytes": 748
+    },
+    {
+      "path": "chaos/local-seeds.json",
+      "sha256": "440032e9b40e06645fc2a3fbfe09b6ba4faae5c80a87e9519768fc4fec20a1d6",
+      "bytes": 774
+    },
+    {
+      "path": "database/db-state-diff.json",
+      "sha256": "09e0c33d4291bbd07dad5482e74faab73668d7b87c9f11bcabb093329d6109af",
+      "bytes": 307
+    },
+    {
+      "path": "generated-xml/s1299.xml",
+      "sha256": "175f510a7cc2bb5e540ca4e79a3a01e58ff723e98ec569da1f9599191888b3dd",
+      "bytes": 642
+    },
+    {
+      "path": "input-envelopes/submit-s1299.json",
+      "sha256": "e1a452fa98beb158c14c7ab305988d829b6866db5f84718bd9c4ae1b12b4c724",
+      "bytes": 1670
+    },
+    {
+      "path": "perf-baselines/builder.json",
+      "sha256": "904d54069c4c37082b26f1e1f53a4ace799007e6b8cbfc2566a312c327424a93",
+      "bytes": 932
+    },
+    {
+      "path": "returns/processing.json",
+      "sha256": "821690ac98fcd13998422db3a9ad758dee05498a3f34210750bbbd5c4198a562",
+      "bytes": 1379
+    },
+    {
+      "path": "returns/protocol.json",
+      "sha256": "e73f721a1e1261cb279b3d46881cfa6d412cf8926602863f740296bc2ec5b90b",
+      "bytes": 353
+    },
+    {
+      "path": "sdk/metadata.json",
+      "sha256": "4b52833f34cfb5cc842d4cefca0598ed9d50282429db7766ea51112d5cbf2a7f",
+      "bytes": 178
+    },
+    {
+      "path": "signed-payload/metadata.json",
+      "sha256": "0e1877da74338e57583054660869b3331c769762cbaf142a8cc6f6a7873a7b97",
+      "bytes": 696
+    },
+    {
+      "path": "signed-payload/s1299.signed.xml",
+      "sha256": "f53d54c2e225ea3cc925e17a868c37afbd18e82030981c39c388824199f53276",
+      "bytes": 1293
+    },
+    {
+      "path": "soap/endpoints.json",
+      "sha256": "e76fc6d875f0f33e91672317e34d9c3ebda7db34df2c3f0b0ab230fd18c30730",
+      "bytes": 164
+    },
+    {
+      "path": "soap/return-query-request.xml",
+      "sha256": "03f8b905fc66eda460ba317a67d1dbf12080d840230c7f2e066b4af4285c4afa",
+      "bytes": 275
+    },
+    {
+      "path": "soap/return-query-response.xml",
+      "sha256": "0010a421f3ee9030ad44f1b6640efdf17915022914af67cf4187638a75ff6d07",
+      "bytes": 393
+    },
+    {
+      "path": "soap/submit-request.xml",
+      "sha256": "0efaaccf66f6722d42d48bcc5e83a0172de4fa34bea1963ef1d68535a017d313",
+      "bytes": 1625
+    },
+    {
+      "path": "soap/submit-response.xml",
+      "sha256": "85564e276817190abfe66540bf9af508dd1e41c2e417f1c6e891130925f6437f",
+      "bytes": 516
+    },
+    {
+      "path": "specs/asyncapi.yaml",
+      "sha256": "febb7f8b864ccda7acd521bdb9d61e350a068f05ef517b539cd956433603b669",
+      "bytes": 3174
+    },
+    {
+      "path": "specs/openapi.yaml",
+      "sha256": "c877ec8df28755b7f59be8d1656764e3816fb800513ce418b2060ea33ac50593",
+      "bytes": 8439
+    },
+    {
+      "path": "status/audit-envelope.json",
+      "sha256": "ce95da8f5c0f9801864350bd40bdf06256ca8f2f487b8a12e92e05c25e01f53a",
+      "bytes": 2521
+    },
+    {
+      "path": "status/published.json",
+      "sha256": "70b2b1a2ce72f558e88eb78a6184a3b3edefbd2d80f5e7ea7c1eae1d40a1d2be",
+      "bytes": 10018
+    },
+    {
+      "path": "status/response-envelope.json",
+      "sha256": "b76af73f9592aeb846c63527a069509f223fa5f6037cd8066f7a08b12ca813d3",
+      "bytes": 2675
+    },
+    {
+      "path": "status/spool-envelope.json",
+      "sha256": "65036736c43827c9c7bb40c088b177879e3adfdd4236a6b544b61972aae3f97b",
+      "bytes": 2273
+    }
+  ],
+  "blocked_artifacts": [
+    {
+      "area": "restricted-production",
+      "status": "blocked",
+      "reason": "Owner approval and deployed round-2 infrastructure are not recorded."
+    },
+    {
+      "area": "real certificates",
+      "status": "blocked",
+      "reason": "Certificate custody owner approval is not recorded."
+    },
+    {
+      "area": "official eSocial endpoint calls",
+      "status": "blocked",
+      "reason": "Real-service tests require explicit owner authorization and redaction rules."
+    },
+    {
+      "area": "DR and multi-region drills",
+      "status": "blocked",
+      "reason": "Requires deployed production-like infrastructure."
+    },
+    {
+      "area": "SDK publish",
+      "status": "blocked",
+      "reason": "Publishing packages requires explicit release authorization."
+    }
   ],
   "contract_artifacts": {
     "schemas": [
@@ -57,6 +189,13 @@
       "idempotency",
       "totalizer_parse",
       "internal"
-    ]
+    ],
+    "openapi": "packages/contracts/openapi.yaml",
+    "asyncapi": "packages/contracts/asyncapi.yaml"
+  },
+  "sdk": {
+    "package": "@esocial/sdk",
+    "version": "1.0.0-rc.0",
+    "status": "local scaffold; publish requires explicit release authorization"
   }
 }

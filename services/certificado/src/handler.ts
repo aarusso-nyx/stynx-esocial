@@ -3,6 +3,10 @@ import {
   SecretsManagerClient,
 } from '@aws-sdk/client-secrets-manager';
 import {
+  loadCertificateServiceConfig,
+  loadConfig,
+} from '@esocial/domain';
+import {
   sha256Hex,
 } from '@esocial/pki-pades';
 import type {
@@ -197,11 +201,9 @@ export type ClosableTenantCertificateRepository = TenantCertificateRepository &
   }>;
 
 export function createPostgresTenantCertificateRepositoryFromEnv(): ClosableTenantCertificateRepository {
-  const connectionString = process.env.ESOCIAL_DATABASE_URL;
-  if (!connectionString) {
-    throw new Error('ESOCIAL_DATABASE_URL is required for certificate custody.');
-  }
-  return createPostgresTenantCertificateRepository({ connectionString });
+  return createPostgresTenantCertificateRepository({
+    connectionString: loadCertificateServiceConfig().databaseUrl,
+  });
 }
 
 export function createPostgresTenantCertificateRepository(
@@ -326,12 +328,10 @@ export class SecretsManagerCertificateSecretProvider implements CertificateSecre
   private readonly client: Pick<SecretsManagerClient, 'send'>;
 
   constructor(options: SecretsManagerProviderOptions = {}) {
-    const endpoint =
-      options.endpoint ??
-      process.env.AWS_ENDPOINT_URL_SECRETS_MANAGER ??
-      process.env.AWS_ENDPOINT_URL;
+    const config = loadConfig();
+    const endpoint = options.endpoint ?? config.aws.secretsManagerEndpoint;
     this.client = options.client ?? new SecretsManagerClient({
-      region: options.region ?? process.env.AWS_REGION ?? 'us-east-1',
+      region: options.region ?? config.aws.region,
       ...(endpoint ? { endpoint } : {}),
     });
   }

@@ -16,6 +16,8 @@ import type {
   S2399TsvTerminationDto,
 } from '@esocial/contracts';
 
+import { assertNever } from '../internal/exhaustive.js';
+
 import {
   type BuilderContext,
   type BuilderMetadata,
@@ -446,8 +448,4 @@ function tsvComplement(dto: S2300TsvStartDto): string {
 function money(value: string | number): string {
   const numeric = typeof value === 'number' ? value : Number(value);
   return Number.isFinite(numeric) ? numeric.toFixed(2) : String(value);
-}
-
-function assertNever(value: never): never {
-  throw new DtoValidationError([`Unhandled worker DTO ${JSON.stringify(value)}`]);
 }

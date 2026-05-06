@@ -1,5 +1,8 @@
 import { randomUUID } from 'node:crypto';
 
+import {
+  loadSubmissionServiceConfig,
+} from '@esocial/domain';
 import type {
   PersistSubmissionCommand,
   SubmissionPersistenceRecord,
@@ -21,13 +24,9 @@ export type ClosableSubmissionRepository = SubmissionRepository &
   }>;
 
 export function createPostgresSubmissionRepositoryFromEnv(): ClosableSubmissionRepository {
-  const connectionString = process.env.ESOCIAL_DATABASE_URL;
-
-  if (!connectionString) {
-    throw new Error('ESOCIAL_DATABASE_URL is required for the submission handler.');
-  }
-
-  return createPostgresSubmissionRepository({ connectionString });
+  return createPostgresSubmissionRepository({
+    connectionString: loadSubmissionServiceConfig().databaseUrl,
+  });
 }
 
 export function createPostgresSubmissionRepository(
@@ -295,9 +294,9 @@ async function persistSubmissionBatch(
   messageId: string,
 ): Promise<{ batchId: string }> {
   const payload = recordOrEmpty(command.envelope.payload);
-  const batchId = uuidOrRandom(payload.batchId);
-  const eventIds = Array.isArray(payload.eventIds)
-    ? payload.eventIds.filter(isUuid)
+  const batchId = uuidOrRandom(payload['batchId']);
+  const eventIds = Array.isArray(payload['eventIds'])
+    ? payload['eventIds'].filter(isUuid)
     : [];
 
   const inserted = await client.query<{ batch_id: string }>(
@@ -340,7 +339,7 @@ async function persistSubmissionBatch(
       statusToDatabase(command.status),
       command.envelope.attempt,
       command.envelope['max-attempts'],
-      command.transport?.endpointUrl ?? stringOrNull(payload.endpointUrl),
+      command.transport?.endpointUrl ?? stringOrNull(payload['endpointUrl']),
       command.transport?.endpointName ?? null,
       command.transport?.protocolNumber ?? null,
       command.transport?.requestSha256 ?? command.envelope.payload_hash,
@@ -536,8 +535,8 @@ function isUuid(value: unknown): value is string {
 }
 
 function signedPayloadSha256(payload: unknown): string | null {
-  const signedEnvelope = recordOrEmpty(recordOrEmpty(payload).signedEnvelope);
-  return stringOrNull(signedEnvelope.pkcs7Sha256);
+  const signedEnvelope = recordOrEmpty(recordOrEmpty(payload)['signedEnvelope']);
+  return stringOrNull(signedEnvelope['pkcs7Sha256']);
 }
 
 function stringOrNull(value: unknown): string | null {
