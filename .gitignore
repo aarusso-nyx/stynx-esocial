@@ -4,6 +4,7 @@ coverage/
 .turbo/
 .cache/
 .nyc_output/
+*.tsbuildinfo
 infra/cdk/cdk.synth.out/
 
 *.log
@@ -31,3 +32,5 @@ pnpm-debug.log*
 *.p12
 
 .localstack/
+
+.stryker-tmp/

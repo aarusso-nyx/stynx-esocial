@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "output": "docs-site/build",
+  "pages": [
+    "index.html",
+    "security.html",
+    "compliance.html",
+    "operations.html"
+  ]
+}

@@ -11,7 +11,7 @@
 
 KMS auto-rotation, RDS-credential rotation, and JWT-signing-key rotation
 all rotate **service-side** secrets the project owns. They differ from
-**eSocial certificate** rotation (R6, owner-blocked) which depends on
+**eSocial certificate** rotation (Round 7, owner-blocked) which depends on
 external real-cert provisioning.
 
 ## Tasks
@@ -27,7 +27,7 @@ external real-cert provisioning.
    - **JWT/API signing keys** (DLQ replay auth, LGPD DSR auth) —
      90-day rotation with rolling-key support so old + new both
      verify during overlap.
-   - **(Real eSocial certs are R6 — explicitly excluded here.)**
+   - **(Real eSocial certs are Round 7 — explicitly excluded here.)**
 3. **Audit + alarm**:
    - Rotation success → `audit_event_log` row of kind
      `secret.rotated`.
@@ -49,7 +49,7 @@ external real-cert provisioning.
 
 ## Do not touch
 
-- eSocial certificate rotation (R6 owns).
+- eSocial certificate rotation (Round 7 owns).
 - Application semantics beyond secret-refresh hook.
 
 ## Exit criteria

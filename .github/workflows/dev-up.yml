@@ -1,0 +1,44 @@
+name: Dev Stack Cold Start
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 10 * * 1"
+
+permissions:
+  contents: read
+
+jobs:
+  cold-start:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+      - name: Capture cold-start timing
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p docs/release/1.2.0/dx
+          {
+            echo "# Fresh Clone Cold Start"
+            echo
+            echo "- Runner: \`$RUNNER_OS\`"
+            echo "- CPU: \`$(nproc)\`"
+            echo "- Memory: \`$(free -h | awk '/Mem:/ {print $2}')\`"
+            echo "- Docker: \`$(docker --version)\`"
+            echo
+            echo '```text'
+            /usr/bin/time -p npm ci
+            /usr/bin/time -p npm run dev:up
+            curl --retry 30 --retry-delay 10 --fail http://localhost:3000/healthz || npm run test:e2e
+            /usr/bin/time -p npm run dev:down
+            echo '```'
+          } | tee docs/release/1.2.0/dx/cold-start.md
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: dev-stack-cold-start
+          path: docs/release/1.2.0/dx/cold-start.md

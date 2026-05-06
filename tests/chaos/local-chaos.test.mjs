@@ -109,15 +109,96 @@ test('partial batch failures preserve survivor dispatches', () => {
   assert.equal(records[1].budgetRemaining, 0);
 });
 
+test('database transient claim failure leaves retry records untouched', async () => {
+  const repository = new ChaosRetryRepository([
+    retryRecord('retry-db-1', { attemptCount: 1, budgetRemaining: 2 }),
+  ]);
+  repository.claimError = new Error('database transient unavailable');
+
+  await assert.rejects(
+    () => pollRetrySchedule({
+      repository,
+      now,
+      limit: 10,
+      publisher: {
+        publish: async () => undefined,
+      },
+    }),
+    /database transient unavailable/u,
+  );
+
+  assert.equal(repository.dispatched.length, 0);
+  assert.equal(repository.deferred.length, 0);
+  assert.equal(repository.dlq.length, 0);
+});
+
+test('missing tenant context fails closed before replay publication', async () => {
+  const repository = new ChaosRetryRepository([
+    retryRecord('retry-missing-tenant', {
+      tenantId: '',
+      attemptCount: 1,
+      budgetRemaining: 2,
+    }),
+  ]);
+
+  await assert.rejects(
+    () => pollRetrySchedule({
+      repository,
+      now,
+      limit: 10,
+      publisher: {
+        publish: async (request) => {
+          if (!request.tenant_id) {
+            throw new Error('tenant context missing');
+          }
+        },
+      },
+    }),
+    /tenant context missing/u,
+  );
+
+  assert.equal(repository.dispatched.length, 0);
+});
+
+test('clock skew keeps retry delay deterministic', () => {
+  const error = {
+    category: 'transport',
+    code: 'ESOCIAL_SOCKET_TIMEOUT',
+    message: 'timeout during seeded chaos run',
+    retryable: true,
+  };
+  const before = decideRetry({
+    attempt: 2,
+    occurredAt: new Date('2026-05-06T11:59:30.000Z'),
+    error,
+    jitterSeed: 'clock-skew-chaos',
+  });
+  const after = decideRetry({
+    attempt: 2,
+    occurredAt: new Date('2026-05-06T12:00:30.000Z'),
+    error,
+    jitterSeed: 'clock-skew-chaos',
+  });
+
+  assert.equal(before.action, 'retry');
+  assert.equal(after.action, 'retry');
+  assert.equal(before.delayMs, after.delayMs);
+  assert.notEqual(before.nextAttemptAt, after.nextAttemptAt);
+});
+
 class ChaosRetryRepository {
   constructor(records) {
     this.records = records;
     this.dispatched = [];
     this.deferred = [];
     this.dlq = [];
+    this.claimError = undefined;
   }
 
   async claimDue() {
+    if (this.claimError) {
+      throw this.claimError;
+    }
     return this.records;
   }
 
@@ -135,7 +216,10 @@ class ChaosRetryRepository {
 }
 
 function retryRecord(id, overrides = {}) {
-  const originalEnvelope = requestEnvelope({ attempt: overrides.attemptCount ?? 1 });
+  const originalEnvelope = requestEnvelope({
+    attempt: overrides.attemptCount ?? 1,
+    tenantId: overrides.tenantId,
+  });
   return {
     retryScheduleId: id,
     tenantId: originalEnvelope.tenant_id,
@@ -159,7 +243,7 @@ function requestEnvelope(overrides = {}) {
     'correlation-id': 'corr-chaos',
     'idempotency-key': 'esocial:v1:request:tenant:QUALIFICATION:S-1299:source:entity:-:2026-05:sha256%3Apayload:-:-',
     created_at: now.toISOString(),
-    tenant_id: '00000000-0000-4000-8000-000000000101',
+    tenant_id: overrides.tenantId ?? '00000000-0000-4000-8000-000000000101',
     environment: 'QUALIFICATION',
     event_class: 'S-1299',
     source: { source_event_id: 'source', source_entity_id: 'entity' },

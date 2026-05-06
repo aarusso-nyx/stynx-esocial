@@ -8,7 +8,7 @@
 - ☐ Release-engineering owner sign-off.
 - ☐ `@esocial/contracts` npm registry access verified.
 - ☐ R5 D1 reference site updated with v1.1 release notes.
-- ☐ R6 C1 pen-test critical/high findings closed.
+- ☐ C1 pen-test critical/high findings closed.
 
 Record in `docs/release/1.3.0/authorizations/D1.md`.
 
@@ -34,7 +34,7 @@ Record in `docs/release/1.3.0/authorizations/D1.md`.
    - Envelope `version: 'v1'` enforcement (R1 Batch 0).
    - Branded types (R3 A2).
    - OpenAPI / AsyncAPI specs (R3 D5).
-   - Any pen-test-driven changes (R6 C1).
+   - Any pen-test-driven changes (C1).
 4. **Tag** `contracts-v1.1.0` and push.
 5. **`release.yml`** runs:
    - Unit + integration jobs.

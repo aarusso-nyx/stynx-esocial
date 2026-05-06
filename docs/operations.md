@@ -451,6 +451,54 @@ Round 4 adds:
 The active coverage gate remains configurable and records the measured gap to
 the Round 4 95 percent target under `docs/release/1.1.0/coverage/summary.json`.
 
+## LGPD DSR and Retention
+
+Round 6 adds local runtime services for privacy operations:
+
+```bash
+npm run build
+node --test tests/integration/lgpd-runtime.test.mjs
+```
+
+`services/lgpd/` handles `access`, `export`, and `erase` requests. All three
+actions require explicit LGPD roles, write audit entries for success and denial,
+return only redacted subject projections, and keep tenant identifiers scoped to
+the request.
+
+`services/retention-sweeper/` creates deterministic `retention.pending` batches
+from expired `audit_event_log`, `event_record`, and `dlq_item` candidates. It
+does not delete a batch until an append-only approval row exists:
+
+```sql
+INSERT INTO esocial.lgpd_approval (
+  batch_id,
+  tenant_id,
+  approver_role,
+  approver_actor,
+  approval_reason
+)
+VALUES (
+  '<batch uuid>',
+  '<tenant uuid>',
+  'Data Protection Officer',
+  'Data Protection Officer (TBD)',
+  'Approved after legal-retention review and incident check'
+);
+```
+
+Pending batches should be reviewed with:
+
+```sql
+SELECT event_type, tenant_id, payload
+FROM esocial.audit_event_log
+WHERE event_type = 'retention.pending'
+ORDER BY occurred_at;
+```
+
+If an approval is inserted accidentally, do not update or delete it. Open an
+operator incident, add a compensating `audit_event_log` row, and block the
+sweeper run before it evaluates the batch.
+
 ## ADR Cadence
 
 Decision-bearing changes to `tsconfig*`, migrations, CDK, public contracts, or

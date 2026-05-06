@@ -64,7 +64,7 @@ starting. **The prompt fails if any checkbox is unchecked.**
 
 ## Do not touch
 
-- Production stage (still gated by `ESOCIAL_PROD_CONFIRM=1`; not in R6).
+- Production stage (still gated by `ESOCIAL_PROD_CONFIRM=1`; not in A1).
 - Lower-stage configurations.
 - Other waves' work.
 

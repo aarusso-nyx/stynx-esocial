@@ -91,5 +91,5 @@ import it. See ADR 0012.
 
 Round 4 local-safe execution captured the dry-run plan but did not involve an
 external engineer in this workspace. The evidence gap is tracked in
-`docs/work/round-4/execution-status.md`; a reviewer outside the project should
-complete Day 1 in under 4 hours before this item is marked fully closed.
+`docs/release/1.2.0/onboarding/dry-run.md`; a reviewer outside the project
+should complete Day 1 in under 4 hours before this item is marked fully closed.

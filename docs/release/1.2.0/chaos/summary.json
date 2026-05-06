@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "scenarios": [
+    "publisher transient failure",
+    "SOAP timeout circuit breaker",
+    "certificate expiry race",
+    "partial batch failure",
+    "database transient claim failure",
+    "missing tenant context",
+    "clock skew retry determinism"
+  ],
+  "command": "npm run test:chaos"
+}

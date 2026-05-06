@@ -1,0 +1,730 @@
+{
+  "status": "partial",
+  "requiredTags": [
+    "Name"
+  ],
+  "taggableResourcesChecked": 86,
+  "missing": [
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "EsocialDatabaseKmsKey",
+      "type": "AWS::KMS::Key",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "EsocialCertificateKmsKey",
+      "type": "AWS::KMS::Key",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "EsocialQueueKmsKey",
+      "type": "AWS::KMS::Key",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "EsocialLambdaSecurityGroup",
+      "type": "AWS::EC2::SecurityGroup",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "EsocialDatabaseSecurityGroup",
+      "type": "AWS::EC2::SecurityGroup",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "EsocialDatabaseSubnetGroup",
+      "type": "AWS::RDS::DBSubnetGroup",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "EsocialEventsBus",
+      "type": "AWS::Events::EventBus",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "EsocialDatabaseSecret",
+      "type": "AWS::SecretsManager::Secret",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "EsocialCertificateSecret",
+      "type": "AWS::SecretsManager::Secret",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "EsocialDatabase",
+      "type": "AWS::RDS::DBInstance",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "EsocialMigrationProjectLogGroup",
+      "type": "AWS::Logs::LogGroup",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "EsocialMigrationProjectRole",
+      "type": "AWS::IAM::Role",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "EsocialMigrationProject",
+      "type": "AWS::CodeBuild::Project",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "SubmitRequestQueue",
+      "type": "AWS::SQS::Queue",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "SubmitResponseQueue",
+      "type": "AWS::SQS::Queue",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "SpoolQueue",
+      "type": "AWS::SQS::Queue",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "RetryQueue",
+      "type": "AWS::SQS::Queue",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "ReplayQueue",
+      "type": "AWS::SQS::Queue",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "SubmitDlq",
+      "type": "AWS::SQS::Queue",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "ReturnDlq",
+      "type": "AWS::SQS::Queue",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "SubmissionRole",
+      "type": "AWS::IAM::Role",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "SubmissionLogGroup",
+      "type": "AWS::Logs::LogGroup",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "SubmissionFunction",
+      "type": "AWS::Lambda::Function",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "RetornoRole",
+      "type": "AWS::IAM::Role",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "RetornoLogGroup",
+      "type": "AWS::Logs::LogGroup",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "RetornoFunction",
+      "type": "AWS::Lambda::Function",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "CertificadoRole",
+      "type": "AWS::IAM::Role",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "CertificadoLogGroup",
+      "type": "AWS::Logs::LogGroup",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "CertificadoFunction",
+      "type": "AWS::Lambda::Function",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "HttpGatewayRole",
+      "type": "AWS::IAM::Role",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "HttpGatewayLogGroup",
+      "type": "AWS::Logs::LogGroup",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "HttpGatewayFunction",
+      "type": "AWS::Lambda::Function",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "SubmissionEventSource",
+      "type": "AWS::Lambda::EventSourceMapping",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "RetornoEventSource",
+      "type": "AWS::Lambda::EventSourceMapping",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "AuditRule",
+      "type": "AWS::Events::Rule",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "SpoolQueuePolicy",
+      "type": "AWS::SQS::QueuePolicy",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "DlqAlarm",
+      "type": "AWS::CloudWatch::Alarm",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "RetryAlarm",
+      "type": "AWS::CloudWatch::Alarm",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "TimeoutAlarm",
+      "type": "AWS::CloudWatch::Alarm",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-qualification.template.json",
+      "logicalId": "ObservabilityDashboard",
+      "type": "AWS::CloudWatch::Dashboard",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "EsocialDatabaseKmsKey",
+      "type": "AWS::KMS::Key",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "EsocialCertificateKmsKey",
+      "type": "AWS::KMS::Key",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "EsocialQueueKmsKey",
+      "type": "AWS::KMS::Key",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "EsocialLambdaSecurityGroup",
+      "type": "AWS::EC2::SecurityGroup",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "EsocialDatabaseSecurityGroup",
+      "type": "AWS::EC2::SecurityGroup",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "EsocialDatabaseSubnetGroup",
+      "type": "AWS::RDS::DBSubnetGroup",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "EsocialEventsBus",
+      "type": "AWS::Events::EventBus",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "EsocialDatabaseSecret",
+      "type": "AWS::SecretsManager::Secret",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "EsocialCertificateSecret",
+      "type": "AWS::SecretsManager::Secret",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "EsocialDatabase",
+      "type": "AWS::RDS::DBInstance",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "EsocialMigrationProjectLogGroup",
+      "type": "AWS::Logs::LogGroup",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "EsocialMigrationProjectRole",
+      "type": "AWS::IAM::Role",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "EsocialMigrationProject",
+      "type": "AWS::CodeBuild::Project",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "SubmitRequestQueue",
+      "type": "AWS::SQS::Queue",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "SubmitResponseQueue",
+      "type": "AWS::SQS::Queue",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "SpoolQueue",
+      "type": "AWS::SQS::Queue",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "RetryQueue",
+      "type": "AWS::SQS::Queue",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "ReplayQueue",
+      "type": "AWS::SQS::Queue",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "SubmitDlq",
+      "type": "AWS::SQS::Queue",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "ReturnDlq",
+      "type": "AWS::SQS::Queue",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "SubmissionRole",
+      "type": "AWS::IAM::Role",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "SubmissionLogGroup",
+      "type": "AWS::Logs::LogGroup",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "SubmissionFunction",
+      "type": "AWS::Lambda::Function",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "RetornoRole",
+      "type": "AWS::IAM::Role",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "RetornoLogGroup",
+      "type": "AWS::Logs::LogGroup",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "RetornoFunction",
+      "type": "AWS::Lambda::Function",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "CertificadoRole",
+      "type": "AWS::IAM::Role",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "CertificadoLogGroup",
+      "type": "AWS::Logs::LogGroup",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "CertificadoFunction",
+      "type": "AWS::Lambda::Function",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "HttpGatewayRole",
+      "type": "AWS::IAM::Role",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "HttpGatewayLogGroup",
+      "type": "AWS::Logs::LogGroup",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "HttpGatewayFunction",
+      "type": "AWS::Lambda::Function",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "SubmissionEventSource",
+      "type": "AWS::Lambda::EventSourceMapping",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "RetornoEventSource",
+      "type": "AWS::Lambda::EventSourceMapping",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "AuditRule",
+      "type": "AWS::Events::Rule",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "SpoolQueuePolicy",
+      "type": "AWS::SQS::QueuePolicy",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "DlqAlarm",
+      "type": "AWS::CloudWatch::Alarm",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "RetryAlarm",
+      "type": "AWS::CloudWatch::Alarm",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "TimeoutAlarm",
+      "type": "AWS::CloudWatch::Alarm",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "logicalId": "ObservabilityDashboard",
+      "type": "AWS::CloudWatch::Dashboard",
+      "tags": [],
+      "missing": [
+        "Name"
+      ]
+    }
+  ],
+  "note": "Round 5 local-safe check covers generated template tags. Full AWS Cost Explorer CUR validation remains external."
+}

@@ -1,0 +1,12 @@
+{
+  "status": "passed",
+  "implemented": [
+    "PII catalog",
+    "DPIA draft",
+    "Forward retention schema scaffold",
+    "DSR access/export/erase runtime service",
+    "Retention pending batch planner",
+    "DPO-gated destructive retention approval flow",
+    "Append-only lgpd_approval migration"
+  ]
+}

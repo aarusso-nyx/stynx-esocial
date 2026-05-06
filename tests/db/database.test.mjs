@@ -373,6 +373,30 @@ test('fresh migrations enforce tenant RLS, idempotency, and append-only history'
     assert.match(psql(workerUrl, `
       TRUNCATE esocial.event_status_history;
     `, { expectFailure: true }).stderr, /permission denied|append-only|must be owner/iu);
+
+    psql(workerUrl, `
+      INSERT INTO esocial.lgpd_approval (
+        batch_id,
+        tenant_id,
+        approver_role,
+        approver_actor,
+        approval_reason
+      )
+      VALUES (
+        '90000000-0000-4000-8000-000000000001',
+        ${quoteLiteral(tenantA)},
+        'Data Protection Officer',
+        'Data Protection Officer (TBD)',
+        'db test approval gate'
+      );
+    `);
+    assert.match(psql(workerUrl, `
+      UPDATE esocial.lgpd_approval
+      SET approval_reason = 'mutated';
+    `, { expectFailure: true }).stderr, /permission denied|append-only/iu);
+    assert.match(psql(workerUrl, `
+      DELETE FROM esocial.lgpd_approval;
+    `, { expectFailure: true }).stderr, /permission denied|append-only/iu);
   } finally {
     cleanup(databaseName, appRole, workerRole);
   }

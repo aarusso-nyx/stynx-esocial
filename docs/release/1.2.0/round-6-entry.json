@@ -1,0 +1,78 @@
+{
+  "status": "not-ready",
+  "generatedAt": "2026-05-06T00:00:00.000Z",
+  "blocked": [
+    {
+      "name": "mutation",
+      "path": "docs/release/1.2.0/mutation/summary.json",
+      "status": "failed"
+    },
+    {
+      "name": "events",
+      "path": "docs/release/1.2.0/events/s1030-s1040-s1060.md",
+      "status": "blocked"
+    }
+  ],
+  "results": [
+    {
+      "name": "mutation",
+      "path": "docs/release/1.2.0/mutation/summary.json",
+      "status": "failed"
+    },
+    {
+      "name": "chaos",
+      "path": "docs/release/1.2.0/chaos/summary.json",
+      "status": "passed"
+    },
+    {
+      "name": "load",
+      "path": "docs/release/1.2.0/load/smoke/summary.json",
+      "status": "passed"
+    },
+    {
+      "name": "security",
+      "path": "docs/release/1.2.0/security/summary.json",
+      "status": "passed"
+    },
+    {
+      "name": "lgpd",
+      "path": "docs/release/1.2.0/lgpd/summary.json",
+      "status": "passed"
+    },
+    {
+      "name": "soc2",
+      "path": "docs/release/1.2.0/soc2/2026-Q2/manifest.json",
+      "status": "partial"
+    },
+    {
+      "name": "secrets",
+      "path": "docs/release/1.2.0/secrets/kms-rotation.json",
+      "status": "passed"
+    },
+    {
+      "name": "audit",
+      "path": "docs/release/1.2.0/audit/verification.json",
+      "status": "passed"
+    },
+    {
+      "name": "cost",
+      "path": "docs/release/1.2.0/cost/tag-coverage.json",
+      "status": "partial"
+    },
+    {
+      "name": "slo",
+      "path": "docs/release/1.2.0/slo/alarm-assertions.json",
+      "status": "passed"
+    },
+    {
+      "name": "reference-site",
+      "path": "docs/release/1.2.0/reference-site/build.json",
+      "status": "passed"
+    },
+    {
+      "name": "events",
+      "path": "docs/release/1.2.0/events/s1030-s1040-s1060.md",
+      "status": "blocked"
+    }
+  ]
+}

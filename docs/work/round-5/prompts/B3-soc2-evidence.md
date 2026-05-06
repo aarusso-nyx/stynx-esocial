@@ -21,9 +21,9 @@
    - GitHub PR review records via Octokit.
    - Vulnerability management (R4 D2 SBOM + CVE).
    - Incident response (PagerDuty / SNS log — placeholder until
-     R7 wires real on-call).
-   - DR drill log placeholder (R6 ships the drill).
-   - Pen-test report placeholder (R6 ships).
+     Round 6 wires real on-call).
+   - DR drill log placeholder (Round 7 ships the external drill).
+   - Pen-test report placeholder (Round 7 ships).
 3. **Quarterly evidence run** via `scripts/soc2-evidence.mjs` that
    collects the artifacts into a versioned snapshot under
    `docs/release/1.2.0/soc2/<quarter>/`.
@@ -47,7 +47,7 @@
   Confidentiality.
 - Quarterly evidence script runs cleanly.
 - Auditor handoff template ready.
-- DR + pen-test placeholders explicit, with R6 ownership noted.
+- DR + pen-test placeholders explicit, with Round 7 ownership noted.
 
 ## Verification
 
@@ -56,4 +56,4 @@ node scripts/soc2-evidence.mjs --quarter 2026-Q3
 ls docs/release/1.2.0/soc2/2026-Q3/
 ```
 
-Report: criteria covered, evidence categories collected, R6 deferrals.
+Report: criteria covered, evidence categories collected, Round 7 deferrals.

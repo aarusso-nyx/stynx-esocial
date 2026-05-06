@@ -11,11 +11,9 @@
 
 ## Why this exists
 
-R6 is gated by external authorizations and deployed infrastructure.
-Some of those gates are met by R5 outputs (threat model from B1, SLOs
-from C2, anchor cross-region prereq from B5). E1 verifies every R6
-prerequisite is signed off **before** R6 starts; otherwise R6 stalls
-mid-wave.
+Round 6 is the immediate/local closure round. E1 verifies the Round 5
+evidence that Round 6 depends on and separates anything that still needs
+external authorization into Round 7.
 
 ## Tasks
 
@@ -32,13 +30,13 @@ mid-wave.
    - Chaos suite weekly green.
    - Load tests soak run green.
    - SBOM + vuln SLA enforcement live (R4 D2).
-2. **Owner sign-off** captured in
+2. **Readiness record** captured in
    `docs/release/1.2.0/round-6-entry.md`:
-   - Each owner identified in `blocked-artifacts.json` confirms
-     readiness for R6 batches that depend on them.
+   - Each Round 6 prerequisite is PASS / PARTIAL / BLOCKED.
+   - External blockers are routed to `docs/work/round-7/plan.md`.
 3. **Gate**: R6 plan readiness checklist. If any prereq is open, the
    prompt fails and an issue is opened naming the open prereq +
-   owner. R6 cannot start.
+   owner. Round 6 can start only for the unblocked local-safe batches.
 4. **Update `blocked-artifacts.json`** entries that are no longer
    blocked because R5 closed an upstream gate (e.g., threat-model
    prereq for pen-test).
@@ -56,10 +54,10 @@ mid-wave.
 
 ## Exit criteria
 
-- Every R6 prerequisite is recorded as PASS or BLOCKED with owner.
-- If all PASS: R6 can start.
-- If any BLOCKED: tracking issues opened; R5 close blocked until
-  resolved.
+- Every Round 6 prerequisite is recorded as PASS / PARTIAL / BLOCKED.
+- External blockers are explicitly routed to Round 7.
+- If any local prerequisite is BLOCKED: tracking issues opened; R5 close
+  blocked until resolved.
 
 ## Verification
 
@@ -68,5 +66,5 @@ node scripts/round-6-readiness.mjs
 test -f docs/release/1.2.0/round-6-entry.md
 ```
 
-Report: R6 prereqs PASS / BLOCKED count, owners contacted, R6
-go/no-go.
+Report: R6 prereqs PASS / PARTIAL / BLOCKED count, external blockers
+routed to Round 7, and Round 6 go/no-go.

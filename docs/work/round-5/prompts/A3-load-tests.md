@@ -23,7 +23,7 @@
    - Spike absorbs 5000 msg/s within 30 s without DLQ growth.
    - Soak: zero leak (memory, FDs, DB connections).
 4. **CI runs against LocalStack + ephemeral Postgres** (no real
-   deployed environment in R5; full restricted-production runs are R6
+   deployed environment in R5; full restricted-production runs are Round 7
    territory).
 5. **Reports**: throughput, latency percentiles, error rate, queue
    age, Lambda concurrency timeline, DB connection counts →
@@ -43,7 +43,7 @@
 ## Do not touch
 
 - Production code semantics.
-- Real deployed environment (R6 covers that).
+- Real deployed environment (Round 7 covers that).
 
 ## Exit criteria
 

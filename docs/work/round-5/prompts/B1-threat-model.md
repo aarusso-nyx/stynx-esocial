@@ -6,7 +6,7 @@
 
 - [`../plan.md`](../plan.md) — closure item 4.
 - Round-3 prompt `C1-threat-model-and-pentest.md` — pen-test parts
-  ship in **R6** (owner-blocked).
+  ship in **Round 7** (owner-blocked).
 
 ## Tasks
 
@@ -20,13 +20,13 @@
    - SOAP transport (deterministic stub + real client).
    - RDS / autonomous schema (RLS + tenants).
    - Audit log (Merkle tamper-evidence — coordinate with B5).
-   - Operator console (R7 deferral noted).
+   - Operator console (Round 6 deferral noted).
    For each: Spoofing, Tampering, Repudiation, Info disclosure, DoS,
    Elevation of privilege. Mitigations cited to existing code /
    migrations / CDK constructs.
 2. **Trust boundaries** diagrammed:
    - SGP ↔ eSocial (queue-only).
-   - eSocial ↔ gov.br (real SOAP — round-2 / R6 territory).
+   - eSocial ↔ gov.br (real SOAP — Round 7 territory).
    - eSocial ↔ AWS (Secrets Manager, KMS, queues).
    - Operator ↔ HTTP gateway.
 3. **Attack tree** for the highest-impact compromise: forged
@@ -39,9 +39,9 @@
    The R4 D2 vuln-triage workflow already enforces; B1 documents the
    policy.
 5. **Review**: ≥ 2 engineers sign off in PR.
-6. **Pen test** is **R6** scope (vendor selection + execution
+6. **Pen test** is **Round 7** scope (vendor selection + execution
    require owner authorization). B1 records pen-test prerequisites
-   so R6 can run faster.
+   so Round 7 can run faster.
 
 ## Primary write scope
 
@@ -52,7 +52,7 @@
 
 ## Do not touch
 
-- Production code semantics. Findings drive B2/B4/B5 PRs and R6
+- Production code semantics. Findings drive B2/B4/B5 PRs and Round 7
   pen-test execution.
 
 ## Exit criteria
@@ -60,7 +60,7 @@
 - Threat model committed and reviewed by ≥ 2 engineers.
 - Attack tree committed.
 - SLA documented.
-- Pen-test prerequisite list ready for R6.
+- Pen-test prerequisite list ready for Round 7.
 
 ## Verification
 
@@ -69,5 +69,5 @@ test -f docs/security/threat-model.md
 git log --grep="threat-model" docs/security/
 ```
 
-Report: components covered, identified mitigations, R6 pen-test
+Report: components covered, identified mitigations, Round 7 pen-test
 prereqs.

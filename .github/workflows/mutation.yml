@@ -1,0 +1,25 @@
+name: mutation
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "19 3 * * *"
+
+jobs:
+  domain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run mutation
+      - run: npm run mutation:summary
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: mutation-evidence
+          path: docs/release/1.2.0/mutation/

@@ -1,0 +1,31 @@
+{
+  "rows": [
+    {
+      "audit_event_id": "audit-1",
+      "tenant_id": "00000000-0000-4000-8000-000000000101",
+      "event_type": "submission.received",
+      "occurred_at": "2026-05-06T12:00:00.000Z",
+      "payload_hash": "sha256:audit-1",
+      "prev_hash": null,
+      "row_hash": "sha256:41792fd1586217ed1043bc3d4e697b7b473d70b827e8d57bb39642d10f4a996a"
+    },
+    {
+      "audit_event_id": "audit-2",
+      "tenant_id": "00000000-0000-4000-8000-000000000101",
+      "event_type": "xml.signed",
+      "occurred_at": "2026-05-06T12:00:00.000Z",
+      "payload_hash": "sha256:audit-2",
+      "prev_hash": "sha256:41792fd1586217ed1043bc3d4e697b7b473d70b827e8d57bb39642d10f4a996a",
+      "row_hash": "sha256:c5177ed7362696614032a5ac8e34a406803b008f5a3403e273f527defb78325f"
+    },
+    {
+      "audit_event_id": "audit-3",
+      "tenant_id": "00000000-0000-4000-8000-000000000101",
+      "event_type": "soap.response.parsed",
+      "occurred_at": "2026-05-06T12:00:00.000Z",
+      "payload_hash": "sha256:audit-3",
+      "prev_hash": "sha256:c5177ed7362696614032a5ac8e34a406803b008f5a3403e273f527defb78325f",
+      "row_hash": "sha256:cf4b6667e568ea131cc40b53cfe1f1f1b582438d902b40fad75f528fd529be65"
+    }
+  ]
+}

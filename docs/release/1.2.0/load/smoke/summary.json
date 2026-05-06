@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "scripts": [
+    {
+      "fileName": "submit-status.k6.js",
+      "hasK6Imports": true,
+      "hasThresholds": true,
+      "hasChecks": true
+    }
+  ],
+  "failures": [],
+  "fullRunCommand": "k6 run tests/load/submit-status.k6.js"
+}

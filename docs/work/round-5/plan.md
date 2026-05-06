@@ -24,7 +24,7 @@ takes:
   product decision; XSDs are publicly published by gov.br and can be
   fetched without authorization.
 
-Round 5 defers (to round 6):
+Round 5 defers (to round 7):
 
 - Multi-region DR drill (needs deployed infra).
 - Cert rotation automation (needs real-cert provisioning sign-off).
@@ -69,8 +69,9 @@ A green CI pipeline proving:
     onboarding, release notes. Per-PR preview.
 12. **S-1030, S-1040, S-1060 ACTIVE_FULL** — XSDs sourced; goldens
     aligned; all 35/35 non-return classes ACTIVE_FULL.
-13. **Round-6 entry verification** — every R6 prerequisite is signed
-    off; R6 is unblocked to start.
+13. **Round-6 entry verification** — local prerequisites are recorded,
+    external blockers are routed to Round 7, and Round 6 is unblocked
+    for immediate/local work.
 
 ---
 
@@ -146,5 +147,5 @@ A green CI pipeline proving:
 
 - Round 4 → Round 5: round-4 closure verified; greenfield foundations
   in place (dev:up, ADRs, drift cron, SBOM scanners).
-- Round 5 → Round 6: E1 verifies every R6 prerequisite is met before
-  R6 starts.
+- Round 5 → Round 6: E1 verifies local prerequisites and routes external
+  blockers to Round 7 before Round 6 starts.

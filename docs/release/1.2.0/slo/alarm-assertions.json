@@ -1,0 +1,29 @@
+{
+  "status": "passed",
+  "requiredMetrics": [
+    "esocial.dlq",
+    "esocial.retry",
+    "esocial.timeout"
+  ],
+  "stageFindings": [
+    {
+      "template": "esocial-qualification.template.json",
+      "metrics": [
+        "esocial.dlq",
+        "esocial.retry",
+        "esocial.timeout"
+      ],
+      "missing": []
+    },
+    {
+      "template": "esocial-restricted-production.template.json",
+      "metrics": [
+        "esocial.dlq",
+        "esocial.retry",
+        "esocial.timeout"
+      ],
+      "missing": []
+    }
+  ],
+  "failures": []
+}

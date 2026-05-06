@@ -8,7 +8,9 @@
     { "path": "./services/shared" },
     { "path": "./services/certificado" },
     { "path": "./services/http-gateway" },
+    { "path": "./services/lgpd" },
     { "path": "./services/retorno" },
+    { "path": "./services/retention-sweeper" },
     { "path": "./services/submission" },
     { "path": "./infra/cdk" }
   ]

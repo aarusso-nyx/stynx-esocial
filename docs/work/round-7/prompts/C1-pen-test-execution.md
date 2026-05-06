@@ -38,7 +38,7 @@ Record in `docs/release/1.3.0/authorizations/C1.md`.
 4. **Findings logged** at `docs/release/1.3.0/pentest/findings/`:
    - Each finding gets a tracking issue.
    - Severity assigned per the round-5 B1 SLA.
-   - Critical / high closed before round-6 D1/D2 publish.
+   - Critical / high closed before D1/D2 publish.
 5. **Remediation PRs** under labels `security` + `pentest-finding`.
    Coordinate with the worker that owns the affected area
    (e.g., a DLQ-replay finding routes to the security-engineering

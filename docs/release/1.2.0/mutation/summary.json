@@ -1,0 +1,10 @@
+{
+  "status": "failed",
+  "threshold": 80,
+  "actual": 0,
+  "killed": 0,
+  "survived": 3902,
+  "timeout": 0,
+  "errors": 2218,
+  "command": "npm run mutation"
+}

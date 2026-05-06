@@ -13,6 +13,7 @@ export default [
     ignores: [
       'dist/**',
       '**/dist/**',
+      '.stryker-tmp/**',
       'node_modules/**',
       'coverage/**',
       'infra/cdk/cdk.out/**',

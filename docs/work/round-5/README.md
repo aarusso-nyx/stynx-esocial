@@ -45,7 +45,8 @@ Highlights:
 - Workers stay in scope; cross-cutting work routes through Wave E.
 - Evidence-by-default under `docs/release/1.2.0/<area>/`.
 
-## Round 6
+## Round 6 / Round 7
 
-After round 5 closes, round 6 (owner-blocked items) follows. See
-`../round-6/plan.md`.
+After round 5 closes, round 6 handles immediate/local closure and platform
+expansion. Round 7 holds owner-blocked external integrations. See
+`../round-6/plan.md` and `../round-7/plan.md`.

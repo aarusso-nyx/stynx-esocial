@@ -4,8 +4,8 @@
 
 ## Authorization required
 
-- ☐ Owner approves canary scope per stage (especially production —
-  defer to R7 if not approved here).
+- ☐ Owner approves canary scope per stage. Production categories that are not
+  approved remain blocked inside this Round 7 item.
 - ☐ Synthetic-tenant budget approved (canary submissions accumulate
   under a synthetic CNPJ).
 
@@ -34,10 +34,10 @@ Record in `docs/release/1.3.0/authorizations/B3.md`.
    - **qualification**: full canary set.
    - **restricted-production**: full canary set.
    - **production**: scope owner-approved per category. If owner
-     declines for a category, mark deferred-to-R7 in
+     declines for a category, mark blocked in
      `docs/release/1.3.0/canary/scope.md`.
-5. **Dashboard panel** in operator console (R7 wires the console
-   itself; B3 only emits the metrics + a placeholder doc).
+5. **Dashboard panel contract** for the Round 6 operator console; B3
+   only emits the metrics and external-stage evidence.
 
 ## Primary write scope
 
@@ -50,7 +50,7 @@ Record in `docs/release/1.3.0/authorizations/B3.md`.
 ## Do not touch
 
 - Production data — synthetic tenants only.
-- Operator console (R7 owns).
+- Operator console runtime (Round 6 owns).
 
 ## Exit criteria
 

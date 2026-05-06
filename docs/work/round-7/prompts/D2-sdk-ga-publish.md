@@ -8,11 +8,11 @@
 - ☐ Release-engineering owner sign-off.
 - ☐ `@esocial/sdk` npm registry access verified.
 - ☐ All 35 non-return families have at least one example under
-  `packages/sdk/examples/` (currently 1; R6 D2 ships the missing 34
+  `packages/sdk/examples/` (currently 1; D2 ships the missing 34
   before publish).
 - ☐ jscodeshift codemod (`tools/codemods/sgp-1.0-to-1.x/`) tested
   against a synthetic SGP fixture.
-- ☐ R6 D1 published `@esocial/contracts@1.1.0` first.
+- ☐ D1 published `@esocial/contracts@1.1.0` first.
 
 Record in `docs/release/1.3.0/authorizations/D2.md`.
 

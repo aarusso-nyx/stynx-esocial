@@ -1,0 +1,18 @@
+{
+  "generatedAt": "2026-05-06T00:00:00.000Z",
+  "status": "partial",
+  "controls": [
+    "SOC2-SEC-BOUNDARY",
+    "SOC2-SEC-RLS",
+    "SOC2-SEC-SECRETS",
+    "SOC2-SEC-AUDIT",
+    "SOC2-AVAIL-SLO",
+    "SOC2-AVAIL-CHAOS",
+    "SOC2-PRIV-LGPD",
+    "SOC2-CONF-PII",
+    "SOC2-CC-CHANGE"
+  ],
+  "controlCount": 9,
+  "source": "docs/compliance/soc2-control-matrix.md",
+  "limitation": "Local repository evidence only; auditor-owned AWS, ticketing, and access review exports are not present."
+}

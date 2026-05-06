@@ -57,8 +57,8 @@ A green CI pipeline proving:
     vuln-triage SLA documented.
 12. **`blocked-artifacts.json` review** — every blocker has a named
     owner + target round + target date; orphaned blockers escalated.
-13. **Round-7 charter** drafted in `docs/work/round-7/` (planning only;
-    R5 and R6 happen first).
+13. **Round-6 charter** drafted in `docs/work/round-6/` for the
+    immediate/local round after R5.
 
 ---
 
@@ -102,7 +102,7 @@ calendar**.
 
 | # | Prompt | Effort |
 | --- | --- | --- |
-| E1 | [`prompts/E1-round-7-scoping.md`](prompts/E1-round-7-scoping.md) | 0.25 wk |
+| E1 | [`prompts/E1-round-6-scoping.md`](prompts/E1-round-6-scoping.md) | 0.25 wk |
 
 **Total**: ~6.5 engineer-weeks; ~1.5 weeks calendar with 5 engineers.
 

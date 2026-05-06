@@ -1,51 +1,32 @@
-# Round 6 — Owner-Blocked Items
+# Round 6 — Immediate Closure + Platform Expansion
 
-Round 6 closes the **7 owner-blocked items** from the round-3 punch
-list — work that requires explicit owner authorization, real
-certificates, real eSocial endpoints, deployed infrastructure, or
-external vendor engagement.
+Round 6 is the former platform-expansion plan renumbered into the next immediate round. It
+contains only work that can be executed with repository-owned code, docs, CI,
+deterministic tests, sandbox/LocalStack evidence, and internal operator
+workflows.
 
-## Authoritative documents
+## Boundary
 
-- [`./plan.md`](./plan.md) — closure target, waves, exit criteria.
-- `../round-3/assessment.md` — punch list source.
-- `../round-5/plan.md` — prerequisite round (E1 verifies R6 entry).
+| Round | Owns |
+| --- | --- |
+| Round 6 | Immediate/local closure, platform expansion, mutation/coverage, event promotion, LGPD runtime, internal security tests, reference/operator surfaces. |
+| Round 7 | Deferred external integrations: real certificates, real eSocial endpoints, restricted-production deployment, external pen test, real AWS evidence, real CUR validation, and npm publishing. |
 
-## Waves
+## Carryover Absorbed by Round 6
 
-| Wave | Theme | Prompts | Notes |
-| --- | --- | --- | --- |
-| A | Real connectivity | A1 | foundation; unblocks B |
-| B | Cert + drills | B1 B2 B3 | parallel after A1 |
-| C | External engagement | C1 | parallel with B |
-| D | Releases | D1 D2 | gated by D-bound authorizations |
+| Source | Items | Batch |
+| --- | --- | --- |
+| R4 carryover | coverage gate, onboarding dry-run, OSV/Trivy proof, fresh-clone cold-start | [F1](prompts/F1-round-4-carryover.md) |
+| R5 mutation | Stryker execution and threshold closure | [F2](prompts/F2-mutation-testing-closure.md) |
+| R5 promotion | S-1030 / S-1040 / S-1060 active promotion | [F3](prompts/F3-s1030-s1040-s1060-promotion.md) |
+| R5 LGPD runtime | DSR API, retention sweeper, destructive-retention approval queue | [F4](prompts/F4-lgpd-runtime-closure.md) |
+| R5 internal security | DLQ replay authorization tests and runtime deny evidence | [F5](prompts/F5-security-internal-closures.md) |
 
-4 engineers ship round 6 in **~4 weeks calendar** (dominated by external
-dependencies, not engineering effort).
+External-evidence items formerly routed to a later follow-up now live in
+[`../round-7/`](../round-7/). There is no active later-round work tree.
 
-## Closure target
+## See Also
 
-7 items in [`./plan.md`](./plan.md#closure-target-done-means).
-Highlights:
-
-- Real eSocial qualification round-trip per category.
-- Real cert rotation automation.
-- External pen-test report.
-- Multi-region failover drill (RTO ≤ 1 h, RPO ≤ 5 min).
-- Synthetic canaries every 5 min per stage.
-- `@esocial/contracts@1.1.0` + `@esocial/sdk@1.0.0` published.
-
-## Operating principles
-
-- Authorization-by-default. No prompt starts without authorization
-  recorded.
-- Real PII handling per round-1 + round-5 policies.
-- Reversibility for every restricted-production deployment.
-- Evidence redaction for real-cert serials / CNPJs.
-
-## Round 7
-
-After round 6 closes, round 7 (post-1.0 platform expansion — operator
-console, multi-account isolation, customer onboarding pipeline,
-internationalization) follows. Plan drafted in `../round-7/`
-during R4 E1.
+- [plan.md](plan.md) — full closure target and sequencing.
+- [prompts/](prompts/) — Round 6 prompt sequence.
+- [`../round-7/plan.md`](../round-7/plan.md) — deferred and external work.

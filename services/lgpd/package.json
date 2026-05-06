@@ -1,0 +1,12 @@
+{
+  "name": "@esocial/service-lgpd",
+  "version": "0.0.0-r6.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/handler.js",
+  "types": "./dist/handler.d.ts",
+  "dependencies": {
+    "@esocial/domain": "0.0.0-r6.0",
+    "@esocial/service-shared": "0.0.0-r6.0"
+  }
+}

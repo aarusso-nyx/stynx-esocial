@@ -17,7 +17,7 @@ Date: 2026-05-06
 | D1 drift audit | Complete local-safe | `npm run drift:audit` passed; quarterly workflow added. |
 | D2 SBOM/scanners/SLA | Complete local-safe | CycloneDX/SPDX generation passed; security workflow added. Live OSV/Trivy execution in GitHub remains CI evidence. |
 | D3 blockers | Complete | Blockers now have owners, target rounds, dates, and lint. |
-| E1 round-7 scoping | Complete | `docs/work/round-7/` plan and prompts authored. |
+| E1 round-6 scoping | Complete | `docs/work/round-6/` plan and prompts authored. |
 
 ## Verification Run
 

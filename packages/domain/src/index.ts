@@ -51,6 +51,11 @@ export {
   recordCircuitBreakerOutcome,
   withTraceSpan,
 } from './operations/index.js';
+export {
+  maskCnpj,
+  maskCpf,
+  redactForLog,
+} from './observability/redaction.js';
 export { SubmissionProcessor } from './submission/submission-processor.js';
 export {
   RetryableSubmissionError,

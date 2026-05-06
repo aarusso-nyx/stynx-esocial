@@ -39,7 +39,7 @@ Highlights:
 - 5 no-op services triaged (real or deleted).
 - README + ADRs + onboarding + reference-site-pointer docs.
 - Drift-audit cron, SBOM scanners with SLA, blocked-artifacts review.
-- Round-7 charter drafted (R5 + R6 happen between).
+- Round-6 charter drafted for the next immediate/local round after R5.
 
 ## Operating principles
 
@@ -50,8 +50,9 @@ Highlights:
 - Evidence-by-default: each prompt writes artifacts under
   `docs/release/1.1.0/<area>/`.
 
-## Round 5 / Round 6
+## Round 5 / Round 6 / Round 7
 
 After round 4 closes, round 5 (greenfield, ~16 engineer-weeks) and
-round 6 (owner-blocked, ~5 engineer-weeks gated by authorizations)
-follow. See `../round-5/plan.md` and `../round-6/plan.md`.
+round 6 (immediate closure + platform expansion) follow. Round 7 holds
+owner-blocked external integrations and evidence. See
+`../round-5/plan.md`, `../round-6/plan.md`, and `../round-7/plan.md`.

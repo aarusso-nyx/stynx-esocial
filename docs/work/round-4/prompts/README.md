@@ -29,4 +29,4 @@ waits for everything else.
 - [`D1-drift-audit-cron.md`](D1-drift-audit-cron.md)
 - [`D2-sbom-scanners-sla.md`](D2-sbom-scanners-sla.md)
 - [`D3-blocked-artifacts-review.md`](D3-blocked-artifacts-review.md)
-- [`E1-round-7-scoping.md`](E1-round-7-scoping.md)
+- [`E1-round-6-scoping.md`](E1-round-6-scoping.md)

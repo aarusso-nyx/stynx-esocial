@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "artifacts": [
+    "docs/security/threat-model.md",
+    "docs/security/attack-tree.md",
+    "services/http-gateway/__tests__/dlq-replay-auth.test.mjs",
+    "tests/integration/network-policy.test.mjs",
+    "docs/release/1.2.0/security/network-policy-evidence.md"
+  ]
+}

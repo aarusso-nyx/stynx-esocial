@@ -31,9 +31,9 @@
      auditors. Same auth surface as DLQ replay.
 4. **Tamper alarm**:
    - Verifier failure → page + tenant-scoped circuit-breaker open
-     until SRE acknowledges; restore from anchor (R6 DR runbook
+     until SRE acknowledges; restore from anchor (Round 7 DR runbook
      covers cross-region restore).
-5. **Anchor replication**: cross-region (R6 wires multi-region S3
+5. **Anchor replication**: cross-region (Round 7 wires multi-region S3
    replication; B5 commits anchor bucket with replication config).
 6. **Coordination with B2**: retention-sweeper deletions are signed
    into the Merkle log so deletes are tamper-evident too.
@@ -52,7 +52,7 @@
 ## Do not touch
 
 - Append-only triggers themselves (extended, not replaced).
-- Cross-region replication wiring (R6 finalizes).
+- Cross-region replication wiring (Round 7 finalizes).
 
 ## Exit criteria
 

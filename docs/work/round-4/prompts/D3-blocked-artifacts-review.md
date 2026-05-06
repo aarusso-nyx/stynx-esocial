@@ -24,17 +24,21 @@
 3. **Round-routing**:
    - Items handled in round 5 (greenfield-internal) — none of the 5
      fit; round 5 is internal.
-   - Items handled in round 6 (owner-blocked) — all 5 fit; route to
-     `docs/work/round-6/`.
-   - Items unscheduled — promote to round-7 charter (E1) with a
-     dedicated batch.
+   - Items handled in round 6 (immediate/local) — route only items that
+     do not require real certificates, real endpoints, external vendors,
+     publishing, or real AWS account evidence.
+   - Items handled in round 7 (owner-blocked/external) — route real
+     certificates, official endpoint calls, restricted-production, DR,
+     pen test, external evidence, and publishing to `docs/work/round-7/`.
+   - Items unscheduled — promote to the appropriate round-6 or round-7
+     charter with a dedicated batch.
 4. **Lifecycle script** `scripts/blocked-artifacts-lint.mjs`:
    - Validates every entry has the required fields.
    - Fails CI if any entry is older than `target_date`.
    - Wired under `npm run lint`.
 5. **Cross-reference** the routing in
    `docs/work/round-6/plan.md` and `docs/work/round-7/plan.md` (E1
-   creates the latter).
+   creates/updates the charters).
 
 ## Primary write scope
 
@@ -44,7 +48,8 @@
   per-version)
 - `scripts/blocked-artifacts-lint.mjs` (new)
 - `package.json` `lint` (extend)
-- `docs/work/round-6/plan.md` (cross-link; coordinate with R6 owner)
+- `docs/work/round-6/plan.md`
+- `docs/work/round-7/plan.md`
 - `docs/release/1.1.0/governance/`
 
 ## Do not touch
@@ -55,7 +60,7 @@
 
 - Every blocker has owner + target round + target date.
 - Lifecycle script in CI; one stale-blocker demo passes.
-- Routing reflected in round-6 plan.
+- Routing reflected in round-6 / round-7 plans.
 
 ## Verification
 
