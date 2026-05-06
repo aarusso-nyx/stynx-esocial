@@ -1,0 +1,53 @@
+{
+  "version": "v1",
+  "family": "request",
+  "request-id": "req-request-S-1207",
+  "correlation-id": "corr-S-1207",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-1207:source-event-S-1207:source-entity-S-1207:-:2026-05:sha256%3A6549617f3e47d212f4ad9f2e669afec9b2099bfda2d7512890cd5deb6b6d6894:-:-",
+  "created_at": "2026-05-05T12:00:00.000Z",
+  "tenant_id": "tenant-a",
+  "environment": "QUALIFICATION",
+  "event_class": "S-1207",
+  "source": {
+    "source_event_id": "source-event-S-1207",
+    "source_entity_id": "source-entity-S-1207",
+    "payroll_run_id": "payroll-2026-05",
+    "source_system": "SGP"
+  },
+  "kind": "folha",
+  "payload_hash": "sha256:6549617f3e47d212f4ad9f2e669afec9b2099bfda2d7512890cd5deb6b6d6894",
+  "attempt": 1,
+  "max-attempts": 3,
+  "reply-to": "sgp.esocial.submit.response",
+  "dead-letter-topic": "sgp.esocial.dlq",
+  "payload": {
+    "eventClass": "S-1207",
+    "tenantId": "tenant-a",
+    "sourceEventId": "source-event-S-1207",
+    "sourceEntityId": "source-entity-S-1207",
+    "environment": "qualification",
+    "employerCnpj": "12345678000199",
+    "competence": "2026-05",
+    "payrollRunId": "payroll-2026-05-benefits",
+    "payrollRunStatus": "GENERATED",
+    "benefits": [
+      {
+        "employeeId": "beneficiary-1",
+        "beneficiaryCpf": "12345678901",
+        "benefitSourceKind": "RETIREMENT",
+        "benefitSourceId": "sgp-s2410-benefit-1",
+        "benefitNumber": "RET08000000000000001",
+        "activeBenefitCount": 1,
+        "rubrics": [
+          {
+            "rubricCode": "BEN",
+            "rubricTableId": "SGP",
+            "amount": "3200.00",
+            "quantity": "1.0000",
+            "kind": "EARNING"
+          }
+        ]
+      }
+    ]
+  }
+}

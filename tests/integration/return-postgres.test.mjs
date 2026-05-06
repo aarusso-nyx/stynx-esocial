@@ -140,7 +140,7 @@ test('return processor persists status and totalizer evidence against the esocia
       returnEnvelope({
         tenantId,
         protocolNumber: '1.2.202605.000000000000000001',
-        rawResponseXml: liftedParserFixture('s5011-totalizer.golden.xml'),
+        rawResponseXml: returnGolden('s5011-totalizer.golden.xml'),
       }),
     );
 
@@ -219,13 +219,9 @@ function returnEnvelope(input) {
   };
 }
 
-function liftedParserFixture(fileName) {
+function returnGolden(fileName) {
   return readFileSync(
-    join(
-      root,
-      'packages/domain/src/sgp-lifted/esocial-worker/parsers/__fixtures__',
-      fileName,
-    ),
+    join(root, 'docs/templates/golden/returns', fileName),
     'utf8',
   );
 }

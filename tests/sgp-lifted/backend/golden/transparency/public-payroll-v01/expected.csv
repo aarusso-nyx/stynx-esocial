@@ -1,3 +1,0 @@
-﻿tenant_id,competence,employee_public_id,full_name,registration_number,position_name,organizational_unit,gross_total,deductions_total,net_total,snapshot_taken_at
-00000000-0000-4000-8000-000000000001,2026-04-01,pub-0001,Ana Silva,MAT-001,Analista,Administracao,1000.00,100.00,900.00,2026-05-02 00:00:00+00
-00000000-0000-4000-8000-000000000001,2026-04-01,pub-0002,Bruno Costa,MAT-002,Professor,Educacao,4200.00,245.50,3954.50,2026-05-02 00:00:00+00

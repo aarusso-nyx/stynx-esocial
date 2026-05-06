@@ -1,152 +1,115 @@
 # esocial
 
 [![CI](https://github.com/aarusso-nyx/stynx-esocial/actions/workflows/ci.yml/badge.svg)](https://github.com/aarusso-nyx/stynx-esocial/actions/workflows/ci.yml)
-[![contracts](https://img.shields.io/badge/%40esocial%2Fcontracts-1.0.0-blue)](packages/contracts/CHANGELOG.md)
-[![coverage](https://img.shields.io/badge/coverage-local%20gate-yellow)](docs/release/0.1.0/ci/coverage.md)
+[![contracts](https://img.shields.io/badge/%40esocial%2Fcontracts-1.1.0--rc.0-blue)](packages/contracts/CHANGELOG.md)
+[![coverage](https://img.shields.io/badge/coverage-70%25%20gate-blue)](docs/release/0.2.0/coverage/coverage.md)
 
-Standalone eSocial product for event intake, XML generation, schema validation,
-certificate-bound signing, SOAP submission, return parsing, retry/DLQ handling,
-and operational evidence.
+Standalone eSocial service bus runtime for DTO intake, XML generation, XSD
+validation, certificate-bound signing, SOAP submission, return parsing,
+retry/DLQ handling, audit/status publication, and operational evidence.
 
-This repository was lifted out of SGP. SGP remains the HR/payroll business
-system of record; this repository owns the eSocial runtime.
+SGP remains the HR/payroll business system of record. This repository owns the
+eSocial runtime and exposes only versioned contracts, queues/events, and
+operator evidence.
 
 ## Boundary
 
 Hard rules:
 
-- The eSocial service owns its own database schema, `esocial`, in an isolated
-  runtime account.
-- SGP must not read or write the eSocial database directly.
-- SGP keeps only its local legal/operator projection in `public.esocial_events`.
-- SGP triggers eSocial from backend domain actions; it must not expose
-  browser-facing `/api/v1/esocial/*` routes.
-- Cross-boundary traffic is SQS, EventBridge, or SGP-backend-only HTTPS.
-- External eSocial, ICP-Brasil, certificate, and SOAP behavior must use sandbox
-  adapters or deterministic fixtures until an owner explicitly authorizes real
+- The service owns schema `esocial` in an isolated database.
+- SGP must not read or write eSocial tables, use FDWs, share DB URLs, or create
+  cross-database foreign keys.
+- SGP sends typed DTO envelopes and consumes status/audit updates; it does not
+  send XML, SOAP envelopes, certificates, private keys, or signed material.
+- SGP source ids are opaque payload identifiers, not database relationships.
+- External eSocial, ICP-Brasil, certificate, SOAP, SQS, EventBridge, and AWS
+  behavior stays sandboxed or deterministic until an owner authorizes real
   service tests.
 
 ## Repository Map
 
 | Path | Purpose |
 | --- | --- |
-| `packages/contracts/` | Queue, audit, and status-update contracts consumed by SGP and worker services. |
-| `packages/domain/` | Lifted eSocial domain implementation, XML builders, parsers, validators, and submission processor. |
-| `packages/pki-pades/` | Signing boundary placeholder for ICP-Brasil/PAdES/PKCS#7 work. |
-| `services/` | Lambda/service entrypoints by event family and operation surface. |
-| `infra/migrations/` | Canonical PostgreSQL schema, RLS, triggers, and audit SQL for the isolated eSocial database. |
-| `infra/cdk/` | Deterministic CloudFormation template surface and stage metadata. |
-| `docs/` | Architecture, consumer contracts, event inventory, references, worker bootstrap, and XML examples. |
-| `tests/contract/` | Current executable repo contract checks. |
-| `tests/sgp-lifted/` | Copied SGP test corpus for mining and staged migration; not all files are active yet. |
+| `packages/contracts/` | SGP-facing TypeScript types, JSON Schemas, examples, idempotency helper, and envelope taxonomy. |
+| `packages/domain/` | Active XML builders, XSD/security validation, submission/return processors, retry/DLQ/replay, observability, and sandbox transport. |
+| `packages/pki-pades/` | Signing boundary used by the deterministic local certificate tests. |
+| `services/` | Lambda/service entrypoints for submission, returns, retry polling, and transport publishers. |
+| `infra/migrations/` | Forward-only PostgreSQL migrations for schema `esocial`, RLS, idempotency, status history, audit, retry, DLQ, and totalizers. |
+| `infra/cdk/` | CDK app and deterministic template review artifacts for qualification, restricted-production, and guarded production synthesis. |
+| `docs/` | Architecture, consumer contracts, event inventory, operations, SGP migration, templates, release evidence, and local references. |
+| `tests/` | Active contract, golden, handler, XML, return, DB, integration, SOAP, retry, and LocalStack-compatible tests. |
 
-## Start Here
-
-For a new Codex session:
-
-1. Read `AGENTS.md`.
-2. Read `docs/codex-bootstrap.md`.
-3. Read `docs/architecture.md`, `docs/consumers.md`, and `docs/events.md`.
-4. Inspect live status with `git status --short --branch`.
-5. Run the current fast gates:
-
-```bash
-npm test
-npm run lint
-npm run build
-npm run test:db
-```
-
-The current gates include TypeScript compilation, executable contract/unit
-tests, and focused PostgreSQL behavior tests. They are still not full
-production-readiness evidence by themselves.
-
-## Current Implementation State
+## Current State
 
 Implemented:
 
-- Isolated schema baseline under `infra/migrations/` using schema `esocial`.
-- Versioned `@esocial/contracts@1.0.0` request, response, spool, audit, retry,
-  DLQ, and replay envelopes, including 40 event classes.
-- Round 0 DTO-to-XML-to-sign-to-SOAP-stub-to-status pipeline for S-1000,
-  S-1010, S-1200, S-1299, and S-2200.
-- XSD and XML-security gates with DTD/entity/stylesheet hardening before signing
-  or SOAP submission.
-- Deterministic SOAP transport and return path for S-5001, S-5002, S-5011,
+- `@esocial/contracts@1.1.0-rc.0` with the 40-class v1 event taxonomy,
+  schemas/examples for every class, enforced envelope `version: "v1"`, and
+  helper-built idempotency keys. S-50xx entries document the internal
+  `retorno` return path rather than SGP source DTOs.
+- End-to-end DTO to XML to XSD to sign to SOAP-stub to persist to publish path
+  for all active Round 0 and Round 1 promoted families.
+- Active builders for S-1000, S-1005, S-1010, S-1020, S-1050, S-1070, S-1200,
+  S-1202, S-1207, S-1210, S-1298, S-1299, S-2200, S-2205, S-2206, S-2210,
+  S-2220, S-2230, S-2240, S-2298, S-2299, S-2300, S-2306, S-2399, S-2400,
+  S-2405, S-2410, S-2416, S-2418, S-2420, S-2501, and S-3000.
+- Return parser and live return handler coverage for S-5001, S-5002, S-5011,
   S-5012, and S-5013 totalizers.
-- Retry budget classification, DLQ persistence, operator replay request
-  creation, circuit breaker state, and fault-injection tests.
-- Structured logs, CloudWatch EMF metric payloads, OpenTelemetry span helpers,
-  redaction policy, alarm definitions, and dashboard metadata.
-- Service entrypoint skeletons for submission, tables, worker events, payroll,
-  closure, exclusion, returns, certificate operations, and HTTP gateway, with
-  active submission/return handling wired into the pipeline.
-- Local PostgreSQL migration/RLS tests, in-process integration tests, and a
-  LocalStack-compatible queue/event/PostgreSQL harness.
-- Deterministic CloudFormation template generation for qualification and
-  restricted-production, plus production dry-run guarded by explicit operator
-  confirmation.
-- CI, release workflow, SBOM generation, release checklist, SGP migration notes,
-  operations runbooks, and a Round 0 evidence bundle under `docs/release/0.1.0/`.
+- Local PostgreSQL migration/RLS/idempotency/history tests, in-process
+  integration tests, LocalStack-compatible queue/event/PostgreSQL harness, CDK
+  synth gates, IAM scope checks, coverage threshold, SBOM generation, and
+  release evidence under `docs/release/0.2.0/`.
+- Lifted builders, lifted return parsers, and `tests/sgp-lifted/` retired.
+  The only retained lifted runtime path is the XSD bundle documented in
+  `docs/work/round-1/lifted-retention.md`.
 
-Not complete:
+Owner-blocked:
 
-- Promotion of the remaining 30+ event-family builders. Round 1 owns that
-  mechanical promotion along the same pipeline.
-- Real AWS CDK synthesis. Round 0 keeps the honest deterministic template
-  generator; `cdk:synth` is intentionally absent until it synthesizes CDK.
-- Real eSocial qualification/restricted-production connectivity and real
-  certificate custody. Round 2 requires explicit owner authorization.
-- GitHub branch protection and npm publication are configured out-of-band; this
-  repo now provides the workflow and release definitions but does not tag or
-  publish without authorization.
-- Aggregate coverage remains below the Round 0 target. The Wave C local run
-  ended at 69.88 percent line coverage in the combined node coverage report and
-  is recorded in `docs/release/0.1.0/ci/coverage.md`.
+- S-1030, S-1040, and S-1060 remain typed source-event `round1Pending` DTOs
+  because the current S-1.3 XSD binding is missing or legacy-only. The blocker
+  is tracked in `docs/work/round-1/leiaute-blockers.md`.
+- `1.1.0` final package publication is blocked until SGP accepts the breaking
+  idempotency/version coordination plan and the three table-event decisions are
+  closed. The package stays `1.1.0-rc.0`.
+- Real eSocial endpoints, real certificates, and restricted-production evidence
+  require explicit owner authorization in Round 2.
 
 ## Commands
+
+Run from the repository root:
 
 ```bash
 npm test
 npm run lint
 npm run build
 npm run coverage
-npm run templates:generate
-npm run templates:check
 npm run test:db
 npm run migrate:dev
-npm run integration:localstack
 npm run test:integration
+npm run integration:localstack
+npm run cdk:synth
+npm run templates:check
+npm run sbom
 ```
 
-`npm run templates:generate` regenerates
-`infra/cdk/cdk.out/esocial-*.template.json`. `npm run templates:check` verifies
-those committed review artifacts are reproducible. The old `cdk:synth` command
-was removed because this repository currently uses an honest deterministic
-CloudFormation generator, not AWS CDK synthesis.
+`npm run cdk:synth` performs real CDK synthesis after regenerating deterministic
+template review artifacts. `npm run cdk:synth:production` remains guarded by
+`ESOCIAL_PROD_CONFIRM=1`.
 
-## Consumer Contract Summary
+## Start Here
 
-SGP and other producers send normalized request envelopes to eSocial. eSocial
-responds with status, audit, protocol, receipt, error, and totalizer updates. See
-`docs/consumers.md` for the consumer-facing contract, topic names, required
-fields, idempotency rules, and failure semantics.
+1. Read `AGENTS.md`.
+2. Read `docs/architecture.md`, `docs/consumers.md`, and `docs/events.md`.
+3. Check `docs/work/round-1/leiaute-blockers.md` before claiming all table
+   classes are active.
+4. Inspect live status with `git status --short --branch`.
+5. Run `npm test` before non-trivial changes, then expand to the relevant gate
+   set above.
 
-## Event Inventory and Examples
+## Consumer Summary
 
-`docs/events.md` lists the lifted S-1000, S-12xx, S-22xx, S-23xx, S-24xx,
-S-2501, S-3000, and S-50xx families with source file paths and XML examples.
-Golden XML and WSDL files live under `docs/templates/`.
-
-## Production Target
-
-Production-grade means:
-
-- Contract-complete public inputs and outputs.
-- Tenant isolation and RLS proven against a real local PostgreSQL database.
-- Deterministic XML/signing/submission/return tests.
-- Sandbox eSocial submission evidence retained in docs.
-- Operational runbooks for replay, retry, DLQ, certificate rotation, and
-  incident investigation.
-- SGP integration limited to backend-triggered envelopes and status projection
-  into `public.esocial_events`.
+SGP sends normalized request envelopes to `sgp.esocial.submit.request` and
+consumes status, audit, protocol, receipt, rejection, retry, DLQ, replay, and
+totalizer updates. See `docs/consumers.md` and `docs/sgp-migration.md` for DTO
+requirements, topic names, idempotency rules, error semantics, and cutover
+steps.

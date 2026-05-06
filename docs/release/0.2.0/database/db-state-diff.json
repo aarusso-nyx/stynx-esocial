@@ -1,0 +1,12 @@
+{
+  "command": "npm run test:db",
+  "result": "passed",
+  "ephemeralPostgres": true,
+  "assertions": [
+    "schema esocial migration chain",
+    "RLS tenant isolation",
+    "idempotency uniqueness",
+    "append-only history rejection"
+  ],
+  "observed": "fresh migrations enforce tenant RLS, idempotency, and append-only history"
+}

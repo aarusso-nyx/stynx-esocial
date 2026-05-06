@@ -1,0 +1,13 @@
+{
+  "eventClass": "S-3000",
+  "tenantId": "tenant-a",
+  "sourceEventId": "source-event-S-3000-worker",
+  "sourceEntityId": "exclusion-worker-1",
+  "environment": "qualification",
+  "employerCnpj": "12345678000199",
+  "originalEventClass": "S-2200",
+  "originalReceipt": "1.1.0000000000000002200",
+  "exclusionReason": "Admissao enviada indevidamente",
+  "cpf": "12345678901",
+  "registration": "MAT-1"
+}

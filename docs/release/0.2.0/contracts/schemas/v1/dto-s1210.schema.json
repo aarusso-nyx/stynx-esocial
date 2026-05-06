@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sistematech.local/esocial/v1/esocial-s-1210-sgp-request-dto-v1.schema.json",
+  "title": "eSocial S-1210 SGP request DTO v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "eventClass": {
+      "const": "S-1210"
+    },
+    "tenantId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceEventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceEntityId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceEntityIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "environment": {
+      "enum": [
+        "qualification",
+        "restricted_production",
+        "production"
+      ]
+    },
+    "operation": {
+      "enum": [
+        "inclusion",
+        "change",
+        "rectification",
+        "exclusion"
+      ]
+    },
+    "employerCnpj": {
+      "type": "string",
+      "minLength": 1
+    },
+    "competence": {
+      "type": "string",
+      "minLength": 1
+    },
+    "paymentBatchId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "paymentBatchStatus": {
+      "type": "string",
+      "minLength": 1
+    },
+    "payrollRunId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "confirmedTotal": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "number"
+        }
+      ]
+    },
+    "payments": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "employeeId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "cpf": {
+            "type": "string",
+            "minLength": 1
+          },
+          "amount": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "paymentDate": {
+            "type": "string",
+            "minLength": 1
+          },
+          "receiptReference": {
+            "type": "string",
+            "minLength": 1
+          },
+          "payrollRunId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "ideDmDev": {
+            "type": "string",
+            "minLength": 1
+          },
+          "eventId": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "employeeId",
+          "cpf",
+          "amount",
+          "paymentDate",
+          "receiptReference"
+        ]
+      }
+    }
+  },
+  "required": [
+    "eventClass",
+    "tenantId",
+    "sourceEventId",
+    "employerCnpj",
+    "competence",
+    "paymentBatchId",
+    "paymentBatchStatus",
+    "confirmedTotal",
+    "payments"
+  ],
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "xml"
+        ]
+      },
+      {
+        "required": [
+          "payloadXml"
+        ]
+      },
+      {
+        "required": [
+          "signedXml"
+        ]
+      },
+      {
+        "required": [
+          "signedEnvelope"
+        ]
+      },
+      {
+        "required": [
+          "pkcs7"
+        ]
+      },
+      {
+        "required": [
+          "pkcs7Sha256"
+        ]
+      }
+    ]
+  }
+}

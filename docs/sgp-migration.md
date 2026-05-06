@@ -9,7 +9,7 @@ SGP integrates only through the versioned contracts in `@esocial/contracts`.
 Install the contract package from the restricted npm registry:
 
 ```bash
-npm install @esocial/contracts@1.0.0
+npm install @esocial/contracts@1.1.0-rc.0
 ```
 
 Use only exported types, constants, schemas, and examples. Do not import eSocial
@@ -17,15 +17,15 @@ service internals, SQL files, handlers, or domain modules into SGP.
 
 ## Request DTOs
 
-For every event class listed in `docs/events.md`, SGP sends a v1 request
-envelope to `sgp.esocial.submit.request`. Round 0 implements the five families
-below end to end; Round 1 Batch 1 adds the unblocked table families
-`S-1005`, `S-1020`, `S-1050`, and `S-1070`; Round 1 Batch 2 adds the remaining
-periodic DTO families `S-1202`, `S-1207`, `S-1210`, and `S-1298`; Round 1 Batch
-3 adds worker, SST, and TS-V DTO families `S-2205`, `S-2206`, `S-2210`,
-`S-2220`, `S-2230`, `S-2240`, `S-2298`, `S-2299`, `S-2300`, `S-2306`, and
-`S-2399`. Remaining exported event classes stay typed Round 1 pending DTOs with
-`round1Pending: true`.
+For every active event class listed in `docs/events.md`, SGP sends a v1 request
+envelope to `sgp.esocial.submit.request`. Round 1 Batch 5 makes the promoted
+DTO path active for every unblocked family from S-1000 through S-3000, plus the
+S-50xx return parser/status surface. `S-1030`, `S-1040`, and `S-1060` remain
+typed owner-blocked table DTOs with `round1Pending: true`; SGP must not enqueue
+them as active regulatory work until their leiaute/XSD decisions close.
+S-50xx schemas are not SGP source DTOs; they document the internal `retorno`
+envelope shape for official totalizer XML that eSocial parses and republishes
+as status/totalizer updates.
 
 Required SGP-sourced fields:
 
@@ -133,8 +133,8 @@ SGP displays business-readable status, but eSocial owns remediation.
 Automatic:
 
 - eSocial schedules retry for retryable transport, timeout, and authentication
-  failures within the documented budget. In Round 0, only `transport`,
-  `timeout`, and `authentication` have a non-zero default budget.
+  failures within the documented budget. In the current sandbox policy,
+  `transport`, `timeout`, and `authentication` have a non-zero default budget.
 - eSocial publishes retry, DLQ, audit, and replay evidence.
 
 Operator-driven:
@@ -147,7 +147,10 @@ Operator-driven:
 
 ## Cutover Steps
 
-1. Deploy `@esocial/contracts@1.0.0` into SGP backend code.
+1. Deploy `@esocial/contracts@1.1.0-rc.0` into SGP backend code for shadow
+   validation only. Promote to final `1.1.0` after SGP accepts the breaking
+   idempotency/version requirement and the three blocked table events are
+   resolved or retired.
 2. Map each existing SGP eSocial domain action to one request-envelope builder.
 3. Start writing `public.esocial_events` as a local projection before enqueueing.
 4. Publish qualification traffic to `sgp.esocial.submit.request`.

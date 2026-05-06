@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sistematech.local/esocial/v1/esocial-s-1299-sgp-request-dto-v1.schema.json",
+  "title": "eSocial S-1299 SGP request DTO v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "eventClass": {
+      "const": "S-1299"
+    },
+    "tenantId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceEventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceEntityId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceEntityIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "environment": {
+      "enum": [
+        "qualification",
+        "restricted_production",
+        "production"
+      ]
+    },
+    "operation": {
+      "enum": [
+        "inclusion",
+        "change",
+        "rectification",
+        "exclusion"
+      ]
+    },
+    "employerCnpj": {
+      "type": "string",
+      "minLength": 1
+    },
+    "competence": {
+      "type": "string",
+      "minLength": 1
+    },
+    "payrollRunId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "pendingPeriodicEvents": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "acceptedEventCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "remuneration": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "payments": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "totalizers": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "remuneration",
+        "payments"
+      ]
+    },
+    "responsibleCpf": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "eventClass",
+    "tenantId",
+    "sourceEventId",
+    "employerCnpj",
+    "competence",
+    "payrollRunId",
+    "pendingPeriodicEvents",
+    "acceptedEventCounts"
+  ],
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "xml"
+        ]
+      },
+      {
+        "required": [
+          "payloadXml"
+        ]
+      },
+      {
+        "required": [
+          "signedXml"
+        ]
+      },
+      {
+        "required": [
+          "signedEnvelope"
+        ]
+      },
+      {
+        "required": [
+          "pkcs7"
+        ]
+      },
+      {
+        "required": [
+          "pkcs7Sha256"
+        ]
+      }
+    ]
+  }
+}

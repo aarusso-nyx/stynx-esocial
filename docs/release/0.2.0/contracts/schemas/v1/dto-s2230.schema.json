@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sistematech.local/esocial/v1/esocial-s-2230-sgp-request-dto-v1.schema.json",
+  "title": "eSocial S-2230 SGP request DTO v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "eventClass": {
+      "const": "S-2230"
+    },
+    "tenantId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceEventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceEntityId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceEntityIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "environment": {
+      "enum": [
+        "qualification",
+        "restricted_production",
+        "production"
+      ]
+    },
+    "operation": {
+      "enum": [
+        "inclusion",
+        "change",
+        "rectification",
+        "exclusion"
+      ]
+    },
+    "employerCnpj": {
+      "type": "string",
+      "minLength": 1
+    },
+    "employerCpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "eventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "employeeId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "registration": {
+      "type": "string",
+      "minLength": 1
+    },
+    "receiptReference": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "enum": [
+        "medical-leave",
+        "vacation"
+      ]
+    },
+    "startDate": {
+      "type": "string",
+      "minLength": 1
+    },
+    "leaveReasonCode": {
+      "type": "string",
+      "minLength": 1
+    },
+    "observation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "acquisitionStart": {
+      "type": "string",
+      "minLength": 1
+    },
+    "acquisitionEnd": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "eventClass",
+    "tenantId",
+    "sourceEventId",
+    "employerCnpj",
+    "employeeId",
+    "cpf",
+    "registration",
+    "kind",
+    "startDate",
+    "leaveReasonCode"
+  ],
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "xml"
+        ]
+      },
+      {
+        "required": [
+          "payloadXml"
+        ]
+      },
+      {
+        "required": [
+          "signedXml"
+        ]
+      },
+      {
+        "required": [
+          "signedEnvelope"
+        ]
+      },
+      {
+        "required": [
+          "pkcs7"
+        ]
+      },
+      {
+        "required": [
+          "pkcs7Sha256"
+        ]
+      }
+    ]
+  }
+}

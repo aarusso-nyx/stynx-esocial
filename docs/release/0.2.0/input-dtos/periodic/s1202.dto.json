@@ -1,0 +1,64 @@
+{
+  "eventClass": "S-1202",
+  "tenantId": "00000000-0000-0000-0000-000000000120",
+  "sourceEventId": "source-event-s1202-rpps-workers",
+  "sourceEntityId": "00000000-0000-4000-8000-000000001202",
+  "environment": "qualification",
+  "employerCnpj": "12345678000199",
+  "competence": "2026-01",
+  "payrollRunId": "00000000-0000-4000-8000-000000001202",
+  "payrollRunStatus": "GENERATED",
+  "workers": [
+    {
+      "employeeId": "00000000-0000-4000-8000-000000000301",
+      "registration": "RPPS-001",
+      "cpf": "11122233344",
+      "categoryCode": "301",
+      "rubrics": [
+        {
+          "rubricCode": "BASIC",
+          "rubricTableId": "SGP",
+          "kind": "EARNING",
+          "amount": "5000.00",
+          "quantity": "1.0000"
+        },
+        {
+          "rubricCode": "RPPS",
+          "rubricTableId": "SGP",
+          "kind": "DEDUCTION",
+          "amount": "700.00",
+          "quantity": "1.0000"
+        },
+        {
+          "rubricCode": "IRRF",
+          "rubricTableId": "SGP",
+          "kind": "DEDUCTION",
+          "amount": "350.00",
+          "quantity": "1.0000"
+        }
+      ]
+    },
+    {
+      "employeeId": "00000000-0000-4000-8000-000000000302",
+      "registration": "RPPS-002",
+      "cpf": "22233344405",
+      "categoryCode": "302",
+      "rubrics": [
+        {
+          "rubricCode": "BASIC",
+          "rubricTableId": "SGP",
+          "kind": "EARNING",
+          "amount": "3200.00",
+          "quantity": "1.0000"
+        },
+        {
+          "rubricCode": "RPPS",
+          "rubricTableId": "SGP",
+          "kind": "DEDUCTION",
+          "amount": "448.00",
+          "quantity": "1.0000"
+        }
+      ]
+    }
+  ]
+}

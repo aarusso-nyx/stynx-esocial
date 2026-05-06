@@ -1,0 +1,34 @@
+{
+  "version": "v1",
+  "family": "request",
+  "request-id": "req-request-S-1000",
+  "correlation-id": "corr-S-1000",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-1000:source-event-S-1000:source-entity-S-1000:-:2026-05:sha256%3A4d7613fc1a44faa7b90ee441e7c3e31725662f2c11e7035d6a8fd13da05063f7:-:-",
+  "created_at": "2026-05-05T12:00:00.000Z",
+  "tenant_id": "tenant-a",
+  "environment": "QUALIFICATION",
+  "event_class": "S-1000",
+  "source": {
+    "source_event_id": "source-event-S-1000",
+    "source_entity_id": "source-entity-S-1000",
+    "payroll_run_id": "payroll-2026-05",
+    "source_system": "SGP"
+  },
+  "kind": "tabelas",
+  "payload_hash": "sha256:4d7613fc1a44faa7b90ee441e7c3e31725662f2c11e7035d6a8fd13da05063f7",
+  "attempt": 1,
+  "max-attempts": 3,
+  "reply-to": "sgp.esocial.submit.response",
+  "dead-letter-topic": "sgp.esocial.dlq",
+  "payload": {
+    "eventClass": "S-1000",
+    "tenantId": "tenant-a",
+    "sourceEventId": "source-event-S-1000",
+    "sourceEntityId": "source-entity-S-1000",
+    "environment": "qualification",
+    "employerCnpj": "12345678000199",
+    "validityStart": "2026-05",
+    "legalName": "SistemaTech Fixture Employer",
+    "taxClassification": "99"
+  }
+}

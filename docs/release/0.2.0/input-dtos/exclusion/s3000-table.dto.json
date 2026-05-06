@@ -1,0 +1,11 @@
+{
+  "eventClass": "S-3000",
+  "tenantId": "tenant-a",
+  "sourceEventId": "source-event-S-3000-table",
+  "sourceEntityId": "exclusion-table-1",
+  "environment": "qualification",
+  "employerCnpj": "12345678000199",
+  "originalEventClass": "S-1005",
+  "originalReceipt": "1.1.0000000000000001005",
+  "exclusionReason": "Tabela de estabelecimento enviada indevidamente"
+}

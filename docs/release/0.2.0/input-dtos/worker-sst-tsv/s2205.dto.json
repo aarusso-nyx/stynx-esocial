@@ -1,0 +1,23 @@
+{
+  "eventClass": "S-2205",
+  "tenantId": "tenant-a",
+  "sourceEventId": "source-event-S-2205",
+  "sourceEntityId": "source-entity-S-2205",
+  "environment": "qualification",
+  "employerCnpj": "12345678000199",
+  "employeeId": "employee-1",
+  "cpf": "12345678901",
+  "registration": "MAT-1",
+  "changeDate": "2026-05-10",
+  "name": "Maria Silva Atualizada",
+  "sex": "F",
+  "dependents": [
+    {
+      "sourceDependentId": "dependent-1",
+      "name": "Dependente Um",
+      "birthDate": "2015-03-12",
+      "relationshipCode": "03",
+      "cpf": "98765432100"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "eventClass": "S-1210",
+  "tenantId": "00000000-0000-0000-0000-000000000100",
+  "sourceEventId": "source-event-s1210-confirmed-payments",
+  "sourceEntityId": "00000000-0000-4000-8000-000000001210",
+  "environment": "qualification",
+  "employerCnpj": "12345678000199",
+  "competence": "2026-01",
+  "paymentBatchId": "00000000-0000-4000-8000-000000001210",
+  "paymentBatchStatus": "PAID",
+  "payrollRunId": "00000000-0000-4000-8000-000000001200",
+  "confirmedTotal": "3000.00",
+  "payments": [
+    {
+      "employeeId": "00000000-0000-4000-8000-000000000001",
+      "cpf": "11122233344",
+      "amount": "1000.00",
+      "paymentDate": "2026-01-25",
+      "receiptReference": "1.1.0000000000000001200"
+    },
+    {
+      "employeeId": "00000000-0000-4000-8000-000000000002",
+      "cpf": "22233344405",
+      "amount": "2000.00",
+      "paymentDate": "2026-01-25",
+      "receiptReference": "1.1.0000000000000001200"
+    }
+  ]
+}

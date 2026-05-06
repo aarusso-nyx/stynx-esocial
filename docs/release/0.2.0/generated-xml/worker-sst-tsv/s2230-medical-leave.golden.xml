@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtAfastTemp/v_S_01_03_00">
+  <evtAfastTemp Id="ID1795394684383319223340577245973072">
+    <ideEvento><indRetif>1</indRetif><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+
+    <ideVinculo><cpfTrab>12345678901</cpfTrab><matricula>MAT-1</matricula></ideVinculo>
+    <infoAfastamento><iniAfastamento><dtIniAfast>2026-05-04</dtIniAfast><codMotAfast>01</codMotAfast><observacao>Licenca medica homologada</observacao></iniAfastamento></infoAfastamento>
+  </evtAfastTemp>
+</eSocial>

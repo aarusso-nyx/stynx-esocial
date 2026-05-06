@@ -1,0 +1,36 @@
+{
+  "version": "v1",
+  "family": "request",
+  "request-id": "req-request-S-1070",
+  "correlation-id": "corr-S-1070",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-1070:source-event-S-1070:source-entity-S-1070:-:2026-05:sha256%3A3f448b9a5feaa68d56a7a6a2eb9e745c1a98227ed8f96584c30bfb8a954b63fc:-:-",
+  "created_at": "2026-05-05T12:00:00.000Z",
+  "tenant_id": "tenant-a",
+  "environment": "QUALIFICATION",
+  "event_class": "S-1070",
+  "source": {
+    "source_event_id": "source-event-S-1070",
+    "source_entity_id": "source-entity-S-1070",
+    "payroll_run_id": "payroll-2026-05",
+    "source_system": "SGP"
+  },
+  "kind": "tabelas",
+  "payload_hash": "sha256:3f448b9a5feaa68d56a7a6a2eb9e745c1a98227ed8f96584c30bfb8a954b63fc",
+  "attempt": 1,
+  "max-attempts": 3,
+  "reply-to": "sgp.esocial.submit.response",
+  "dead-letter-topic": "sgp.esocial.dlq",
+  "payload": {
+    "eventClass": "S-1070",
+    "tenantId": "tenant-a",
+    "sourceEventId": "source-event-S-1070",
+    "sourceEntityId": "source-entity-S-1070",
+    "environment": "qualification",
+    "employerCnpj": "12345678000199",
+    "validityStart": "2026-05",
+    "processNumber": "12345678901234567",
+    "subject": "Processo administrativo",
+    "processType": "1",
+    "matterIndicator": "1"
+  }
+}

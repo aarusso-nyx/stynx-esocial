@@ -86,7 +86,7 @@ test('return handler persists every S-50xx totalizer variant and emits totalizer
   for (const [fileName, expectedClass] of cases) {
     const harness = createHarness();
     const response = await harness.handler(
-      sqsEvent(returnEnvelope(liftedParserFixture(fileName), `totalizer-${expectedClass}`, {
+      sqsEvent(returnEnvelope(returnGolden(fileName), `totalizer-${expectedClass}`, {
         sourceEventClass: 'S-1299',
       })),
     );
@@ -250,13 +250,9 @@ function returnEnvelope(rawResponseXml, suffix, payload = {}) {
   };
 }
 
-function liftedParserFixture(fileName) {
+function returnGolden(fileName) {
   return readFileSync(
-    join(
-      root,
-      'packages/domain/src/sgp-lifted/esocial-worker/parsers/__fixtures__',
-      fileName,
-    ),
+    join(root, 'docs/templates/golden/returns', fileName),
     'utf8',
   );
 }

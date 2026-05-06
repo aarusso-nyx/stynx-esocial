@@ -1,0 +1,33 @@
+{
+  "eventClass": "S-2200",
+  "tenantId": "00000000-0000-0000-0000-000000000100",
+  "sourceEventId": "source-s2200-round0",
+  "sourceEntityId": "00000000-0000-4000-8000-000000002200",
+  "employerCnpj": "12345678000199",
+  "employeeId": "00000000-0000-4000-8000-000000002200",
+  "cpf": "11122233344",
+  "name": "Maria Silva",
+  "birthDate": "1990-01-02",
+  "admissionDate": "2026-01-10",
+  "registration": "MAT-2200",
+  "categoryCode": "301",
+  "contractType": "statutory",
+  "jobCode": "Analista Municipal",
+  "workScheduleCode": "JORN01",
+  "dependents": [
+    {
+      "sourceDependentId": "00000000-0000-4000-8000-000000002201",
+      "cpf": "22233344405",
+      "name": "Ana Silva",
+      "birthDate": "2015-02-03",
+      "relationshipCode": "03"
+    },
+    {
+      "sourceDependentId": "00000000-0000-4000-8000-000000002202",
+      "cpf": "33344455506",
+      "name": "Bruno Silva",
+      "birthDate": "2018-06-07",
+      "relationshipCode": "03"
+    }
+  ]
+}

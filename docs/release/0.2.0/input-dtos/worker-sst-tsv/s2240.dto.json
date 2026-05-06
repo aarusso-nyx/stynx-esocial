@@ -1,0 +1,20 @@
+{
+  "eventClass": "S-2240",
+  "tenantId": "tenant-a",
+  "sourceEventId": "source-event-S-2240",
+  "sourceEntityId": "source-entity-S-2240",
+  "environment": "qualification",
+  "employerCnpj": "12345678000199",
+  "employeeId": "employee-1",
+  "cpf": "12345678901",
+  "registration": "MAT-1",
+  "operation": "start",
+  "startDate": "2026-05-05",
+  "workplaceRegistrationNumber": "12345678000199",
+  "sector": "Oficina",
+  "activityDescription": "Operacao em area com ruido",
+  "riskCode": "02.01.001",
+  "riskDescription": "Ruido continuo",
+  "intensity": "85.5000",
+  "responsibleCpf": "12345678901"
+}

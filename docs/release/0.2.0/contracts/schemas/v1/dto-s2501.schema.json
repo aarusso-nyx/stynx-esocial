@@ -1,0 +1,240 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sistematech.local/esocial/v1/esocial-s-2501-sgp-request-dto-v1.schema.json",
+  "title": "eSocial S-2501 SGP request DTO v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "eventClass": {
+      "const": "S-2501"
+    },
+    "tenantId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceEventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceEntityId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceEntityIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "environment": {
+      "enum": [
+        "qualification",
+        "restricted_production",
+        "production"
+      ]
+    },
+    "operation": {
+      "enum": [
+        "inclusion",
+        "change",
+        "rectification",
+        "exclusion"
+      ]
+    },
+    "employerCnpj": {
+      "type": "string",
+      "minLength": 1
+    },
+    "employerCpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "eventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "processNumber": {
+      "type": "string",
+      "minLength": 1
+    },
+    "linkedProcessNumbers": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "paymentPeriod": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sequenceNumber": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "observation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "processTaxBases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "workerCpf": {
+            "type": "string",
+            "minLength": 1
+          },
+          "referencePeriod": {
+            "type": "string",
+            "minLength": 1
+          },
+          "monthlyBase": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "thirteenthBase": {
+            "anyOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "number"
+              }
+            ]
+          },
+          "contributions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "revenueCode": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "amount": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    {
+                      "type": "number"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "revenueCode",
+                "amount"
+              ]
+            }
+          },
+          "irrf": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "revenueCode": {
+                  "enum": [
+                    "593656",
+                    "056152",
+                    "188951"
+                  ]
+                },
+                "amount": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    {
+                      "type": "number"
+                    }
+                  ]
+                },
+                "thirteenthAmount": {
+                  "anyOf": [
+                    {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    {
+                      "type": "number"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "revenueCode",
+                "amount"
+              ]
+            }
+          }
+        },
+        "required": [
+          "workerCpf",
+          "referencePeriod",
+          "monthlyBase",
+          "thirteenthBase"
+        ]
+      }
+    }
+  },
+  "required": [
+    "eventClass",
+    "tenantId",
+    "sourceEventId",
+    "employerCnpj",
+    "processNumber",
+    "paymentPeriod",
+    "processTaxBases"
+  ],
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "xml"
+        ]
+      },
+      {
+        "required": [
+          "payloadXml"
+        ]
+      },
+      {
+        "required": [
+          "signedXml"
+        ]
+      },
+      {
+        "required": [
+          "signedEnvelope"
+        ]
+      },
+      {
+        "required": [
+          "pkcs7"
+        ]
+      },
+      {
+        "required": [
+          "pkcs7Sha256"
+        ]
+      }
+    ]
+  }
+}

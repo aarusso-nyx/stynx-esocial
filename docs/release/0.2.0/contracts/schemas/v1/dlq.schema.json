@@ -1,0 +1,214 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sistematech.local/esocial/v1/esocial-dlq-envelope-v1.schema.json",
+  "title": "eSocial dlq envelope v1",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "version": {
+      "const": "v1"
+    },
+    "family": {
+      "const": "dlq"
+    },
+    "request-id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "correlation-id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "idempotency-key": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "tenant_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "environment": {
+      "enum": [
+        "PRODUCTION",
+        "QUALIFICATION"
+      ]
+    },
+    "event_class": {
+      "enum": [
+        "S-1000",
+        "S-1005",
+        "S-1010",
+        "S-1020",
+        "S-1030",
+        "S-1040",
+        "S-1050",
+        "S-1060",
+        "S-1070",
+        "S-1200",
+        "S-1202",
+        "S-1207",
+        "S-1210",
+        "S-1298",
+        "S-1299",
+        "S-2200",
+        "S-2205",
+        "S-2206",
+        "S-2210",
+        "S-2220",
+        "S-2230",
+        "S-2240",
+        "S-2298",
+        "S-2299",
+        "S-2300",
+        "S-2306",
+        "S-2399",
+        "S-2400",
+        "S-2405",
+        "S-2410",
+        "S-2416",
+        "S-2418",
+        "S-2420",
+        "S-2501",
+        "S-3000",
+        "S-5001",
+        "S-5002",
+        "S-5011",
+        "S-5012",
+        "S-5013"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_event_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "payroll_run_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "employee_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_entity_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_entity_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "source_system": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "kind": {
+      "enum": [
+        "submit",
+        "tabelas",
+        "trabalhador",
+        "folha",
+        "fechamento",
+        "exclusao",
+        "retorno",
+        "certificado"
+      ]
+    },
+    "status": {
+      "enum": [
+        "dlq",
+        "failed"
+      ]
+    },
+    "final_attempt": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "dlq_reason": {
+      "type": "string",
+      "minLength": 1
+    },
+    "failed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "category": {
+            "enum": [
+              "validation",
+              "schema",
+              "xml_build",
+              "signing",
+              "transport",
+              "regulatory",
+              "configuration",
+              "authentication",
+              "idempotency",
+              "totalizer_parse",
+              "internal"
+            ]
+          },
+          "code": {
+            "type": "string",
+            "minLength": 1
+          },
+          "message": {
+            "type": "string",
+            "minLength": 1
+          },
+          "retryable": {
+            "type": "boolean"
+          },
+          "occurred_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "category",
+          "code",
+          "message"
+        ]
+      }
+    },
+    "replay_topic": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "version",
+    "family",
+    "request-id",
+    "correlation-id",
+    "idempotency-key",
+    "created_at",
+    "tenant_id",
+    "environment",
+    "event_class",
+    "source",
+    "kind",
+    "status",
+    "final_attempt",
+    "dlq_reason",
+    "failed_at",
+    "errors"
+  ]
+}

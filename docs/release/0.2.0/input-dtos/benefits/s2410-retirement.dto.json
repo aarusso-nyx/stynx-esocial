@@ -1,0 +1,18 @@
+{
+  "eventClass": "S-2410",
+  "tenantId": "tenant-a",
+  "sourceEventId": "source-event-S-2410-retirement",
+  "sourceEntityId": "00000000-0000-4000-8000-000000002413",
+  "environment": "qualification",
+  "employerCnpj": "12345678000199",
+  "benefitKind": "RETIREMENT",
+  "benefitIdentifier": "00000000-0000-4000-8000-000000002413",
+  "beneficiaryCpf": "11144477735",
+  "benefitNumber": "RET08000000000002413",
+  "startDate": "2026-05-01",
+  "benefitType": "0101",
+  "planType": "0",
+  "description": "Aposentadoria por tempo de contribuicao",
+  "registration": "MAT-1",
+  "judicialDecision": "N"
+}

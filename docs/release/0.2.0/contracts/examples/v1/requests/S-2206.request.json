@@ -1,0 +1,40 @@
+{
+  "version": "v1",
+  "family": "request",
+  "request-id": "req-request-S-2206",
+  "correlation-id": "corr-S-2206",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-2206:source-event-S-2206:source-entity-S-2206:-:-:sha256%3Aaef0009819c5f5e8455dce6918c8773c67a015a8abceea818794751ca2120971:-:-",
+  "created_at": "2026-05-05T12:00:00.000Z",
+  "tenant_id": "tenant-a",
+  "environment": "QUALIFICATION",
+  "event_class": "S-2206",
+  "source": {
+    "source_event_id": "source-event-S-2206",
+    "source_entity_id": "source-entity-S-2206",
+    "employee_id": "employee-1",
+    "source_system": "SGP"
+  },
+  "kind": "trabalhador",
+  "payload_hash": "sha256:aef0009819c5f5e8455dce6918c8773c67a015a8abceea818794751ca2120971",
+  "attempt": 1,
+  "max-attempts": 3,
+  "reply-to": "sgp.esocial.submit.response",
+  "dead-letter-topic": "sgp.esocial.dlq",
+  "payload": {
+    "eventClass": "S-2206",
+    "tenantId": "tenant-a",
+    "sourceEventId": "source-event-S-2206",
+    "sourceEntityId": "source-entity-S-2206",
+    "environment": "qualification",
+    "employerCnpj": "12345678000199",
+    "employeeId": "employee-1",
+    "cpf": "12345678901",
+    "registration": "MAT-1",
+    "changeKind": "promotion",
+    "changeDate": "2026-05-10",
+    "effectiveDate": "2026-05-15",
+    "description": "Promocao funcional aprovada",
+    "jobName": "Coordenador Administrativo",
+    "categoryCode": "301"
+  }
+}

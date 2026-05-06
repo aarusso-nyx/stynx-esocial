@@ -1,0 +1,21 @@
+{
+  "eventClass": "S-2410",
+  "tenantId": "tenant-a",
+  "sourceEventId": "source-event-S-2410-pension",
+  "sourceEntityId": "sgp-s2410-pension-1",
+  "environment": "qualification",
+  "employerCnpj": "12345678000199",
+  "benefitKind": "PENSION",
+  "benefitIdentifier": "sgp-s2410-pension-1",
+  "beneficiaryCpf": "12345678901",
+  "benefitNumber": "PEN08000000000000001",
+  "startDate": "2026-05-01",
+  "benefitType": "0601",
+  "planType": "0",
+  "description": "Pensao por morte",
+  "registration": "MAT-2",
+  "judicialDecision": "N",
+  "institutingCpf": "10987654321",
+  "pensionDeathType": "1",
+  "dependentTypeCode": "03"
+}

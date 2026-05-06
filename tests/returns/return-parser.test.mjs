@@ -81,23 +81,19 @@ test('totalizer parser covers every S-50xx variant and preserves trace fields', 
   ];
 
   for (const [fileName, expectedKind] of cases) {
-    const parsed = parseTotalizerXml(liftedParserFixture(fileName));
+    const parsed = parseTotalizerXml(returnGolden(fileName));
     assert.equal(parsed.kind, expectedKind, fileName);
     assert.match(parsed.competence, /^\d{4}-\d{2}$/u, fileName);
     assert.match(parsed.sourceEventReceipt, /^\d/u, fileName);
     assert.equal(parsed.payload.kind, expectedKind, fileName);
     assert.equal(parsed.payload.sourceEventReceipt, parsed.sourceEventReceipt);
-    assert.equal(parsed.payload.rawXml, liftedParserFixture(fileName));
+    assert.equal(parsed.payload.rawXml, returnGolden(fileName));
   }
 });
 
-function liftedParserFixture(fileName) {
+function returnGolden(fileName) {
   return readFileSync(
-    join(
-      root,
-      'packages/domain/src/sgp-lifted/esocial-worker/parsers/__fixtures__',
-      fileName,
-    ),
+    join(root, 'docs/templates/golden/returns', fileName),
     'utf8',
   );
 }

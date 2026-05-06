@@ -1,0 +1,11 @@
+{
+  "eventClass": "S-1298",
+  "tenantId": "00000000-0000-0000-0000-000000001298",
+  "sourceEventId": "source-event-s1298-reopening",
+  "sourceEntityId": "2026-01",
+  "environment": "qualification",
+  "employerCnpj": "12345678000199",
+  "competence": "2026-01",
+  "acceptedClosureReceipt": "1.1.0000000000000001299",
+  "acceptedClosureAt": "2026-05-02T12:30:00.000Z"
+}

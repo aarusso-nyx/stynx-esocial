@@ -1,0 +1,168 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sistematech.local/esocial/v1/esocial-s-2240-sgp-request-dto-v1.schema.json",
+  "title": "eSocial S-2240 SGP request DTO v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "eventClass": {
+      "const": "S-2240"
+    },
+    "tenantId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceEventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceEntityId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceEntityIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "environment": {
+      "enum": [
+        "qualification",
+        "restricted_production",
+        "production"
+      ]
+    },
+    "operation": {
+      "enum": [
+        "start",
+        "change",
+        "end"
+      ]
+    },
+    "employerCnpj": {
+      "type": "string",
+      "minLength": 1
+    },
+    "employerCpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "eventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "employeeId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "registration": {
+      "type": "string",
+      "minLength": 1
+    },
+    "receiptReference": {
+      "type": "string",
+      "minLength": 1
+    },
+    "startDate": {
+      "type": "string",
+      "minLength": 1
+    },
+    "endDate": {
+      "type": "string",
+      "minLength": 1
+    },
+    "workplaceRegistrationNumber": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sector": {
+      "type": "string",
+      "minLength": 1
+    },
+    "activityDescription": {
+      "type": "string",
+      "minLength": 1
+    },
+    "riskCode": {
+      "type": "string",
+      "minLength": 1
+    },
+    "riskDescription": {
+      "type": "string",
+      "minLength": 1
+    },
+    "intensity": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1
+        },
+        {
+          "type": "number"
+        }
+      ]
+    },
+    "responsibleCpf": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "eventClass",
+    "tenantId",
+    "sourceEventId",
+    "employerCnpj",
+    "employeeId",
+    "cpf",
+    "registration",
+    "operation",
+    "startDate",
+    "workplaceRegistrationNumber",
+    "sector",
+    "activityDescription",
+    "riskCode",
+    "riskDescription",
+    "intensity",
+    "responsibleCpf"
+  ],
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "xml"
+        ]
+      },
+      {
+        "required": [
+          "payloadXml"
+        ]
+      },
+      {
+        "required": [
+          "signedXml"
+        ]
+      },
+      {
+        "required": [
+          "signedEnvelope"
+        ]
+      },
+      {
+        "required": [
+          "pkcs7"
+        ]
+      },
+      {
+        "required": [
+          "pkcs7Sha256"
+        ]
+      }
+    ]
+  }
+}

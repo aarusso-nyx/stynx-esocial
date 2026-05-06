@@ -1,0 +1,32 @@
+{
+  "version": "v1",
+  "family": "request",
+  "request-id": "req-request-S-5001",
+  "correlation-id": "corr-S-5001",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-5001:source-event-S-5001:source-entity-S-5001:-:2026-05:sha256%3Abbe28ec118d715ef39d4dcaa648638a3160705d341f4c52087ed7fbac25f99b4:-:-",
+  "created_at": "2026-05-05T12:00:00.000Z",
+  "tenant_id": "tenant-a",
+  "environment": "QUALIFICATION",
+  "event_class": "S-5001",
+  "source": {
+    "source_event_id": "source-event-S-5001",
+    "source_entity_id": "source-entity-S-5001",
+    "payroll_run_id": "payroll-2026-05",
+    "source_system": "SGP"
+  },
+  "kind": "retorno",
+  "payload_hash": "sha256:bbe28ec118d715ef39d4dcaa648638a3160705d341f4c52087ed7fbac25f99b4",
+  "attempt": 1,
+  "max-attempts": 3,
+  "reply-to": "sgp.esocial.submit.response",
+  "dead-letter-topic": "sgp.esocial.dlq",
+  "payload": {
+    "eventClass": "S-5001",
+    "tenantId": "tenant-a",
+    "sourceEventId": "source-event-S-5001",
+    "sourceEntityId": "source-entity-S-5001",
+    "environment": "qualification",
+    "round1Pending": true,
+    "deferredReason": "builder_not_promoted_in_round0"
+  }
+}

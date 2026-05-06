@@ -1,0 +1,335 @@
+{
+  "generatedAt": "2026-05-05T12:00:00.000Z",
+  "note": "Hashes use generated local test key material only; no real certificates or private keys are retained.",
+  "hashes": [
+    {
+      "eventClass": "S-1000",
+      "fixture": "docs/templates/golden/builders/s1000.golden.xml",
+      "unsignedXmlSha256": "5ddd45a139e2642dd0a58e1acd335d43e02ff46a3ca40db0790b44551a371c89",
+      "signedPayloadSha256": "ac879bf88f1c59c4be4957935f1004bc6d4c55dd878fe1bb44491e99cc98096a",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-1005",
+      "fixture": "docs/templates/golden/builders/s1005.golden.xml",
+      "unsignedXmlSha256": "23ae61c31565dca062407a18cb6fe545dbd5821081de51a091d4c9170998e32b",
+      "signedPayloadSha256": "74f3a49671b5353443f089c1e83ed2b0a0b2fb61ec859824240ed4f55e077f7c",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-1010",
+      "fixture": "docs/templates/golden/builders/s1010.golden.xml",
+      "unsignedXmlSha256": "066f44b41ff82110cffe2d699e77f1db1fff0a8d7e8d23adac32e79079c4b2e3",
+      "signedPayloadSha256": "65fbbdbb0b18afccce6be6ecd3e0bb5584c8315f84921a8c33287ec679800456",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-1020",
+      "fixture": "docs/templates/golden/builders/s1020.golden.xml",
+      "unsignedXmlSha256": "30af0bfb8aaf39173d052a006ff6af0221cdc348d3241493d22e63e5a9a72ef3",
+      "signedPayloadSha256": "679a56c1173f0122f0217932add2c33b8fed471a48740c5b2182c05940ea9805",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-1050",
+      "fixture": "docs/templates/golden/builders/s1050.golden.xml",
+      "unsignedXmlSha256": "16523efb020aaa7190a26bc183b212a898dc6d61df6aac4157ba7631dd2e5316",
+      "signedPayloadSha256": "31ce64fb86b11b586194f2b4316e0f2203d05b52a0b5e4ae2abe30dfa391b690",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-1070",
+      "fixture": "docs/templates/golden/builders/s1070.golden.xml",
+      "unsignedXmlSha256": "744ea8f050578e3d08ffe26bbf6b779fea92f4cc23c3b66df35c0463466e4b1b",
+      "signedPayloadSha256": "04e6a9307215befbd78bb24741b9af34469ccfaffa2388f181f79f478c11ef28",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-1200",
+      "fixture": "docs/templates/golden/builders/s1200-three-workers.golden.xml",
+      "unsignedXmlSha256": "0a60913b7c9c441aadf745aee01fba9978d0a47ac53b77c30fed1e500260df8a",
+      "signedPayloadSha256": "5f798b46d1cc0159c0706974f32e59bfbf1cbc312e5e9b200b64ef022082e1c4",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-1202",
+      "fixture": "docs/templates/golden/builders/s1202-rpps-workers.golden.xml",
+      "unsignedXmlSha256": "d69522d82984ca8fca93b1c5673b4553439734d804ae2a39c1d23a8fe1e164a7",
+      "signedPayloadSha256": "8076370c8b6722ebe0a7e34f8c2623650515042ae97465286a2d126ff6dabc90",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-1207",
+      "fixture": "docs/templates/golden/builders/s1207-rpps-benefit.golden.xml",
+      "unsignedXmlSha256": "f43013a7d0f6975d0055c93e496b5c5fd6064e7ae4d3c105a79fbd473d89ba98",
+      "signedPayloadSha256": "564ca08d933f21c6278d7063120c87b4587d93d0ffde88a095785d60e854c063",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-1210",
+      "fixture": "docs/templates/golden/builders/s1210-confirmed-payments.golden.xml",
+      "unsignedXmlSha256": "873f246b4d96df535acd33696c189aa8ec88f91edf3dd7566980435e6f88cd7f",
+      "signedPayloadSha256": "2a2e9c1e1174f5f3b21d98687e104c2027232a37afe9f50ae467c92803a98edc",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-1298",
+      "fixture": "docs/templates/golden/builders/s1298.golden.xml",
+      "unsignedXmlSha256": "28b62319b99d7af8e67c5ed6f944202248f9ec03b82b9da5b90ecadc81bd6ca0",
+      "signedPayloadSha256": "c088b787459af104b896fc7170e3a1b59d49f5b3defa07e38dcedeefc9fbc62e",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-1299",
+      "fixture": "docs/templates/golden/builders/s1299.golden.xml",
+      "unsignedXmlSha256": "175f510a7cc2bb5e540ca4e79a3a01e58ff723e98ec569da1f9599191888b3dd",
+      "signedPayloadSha256": "bf8264395779d68c651c816dd0078ca144b04f9389c3dd492ebd17b16a81aba2",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2200",
+      "fixture": "docs/templates/golden/builders/s2200.golden.xml",
+      "unsignedXmlSha256": "3badac467c2512240edd8278f5b807dcfb463cbf0ff9e73c03eca5f5ef54fafa",
+      "signedPayloadSha256": "0a06ff363e397d6a8b658f9c7fc1d58a74cbb7c83b73c8f355c64e3a257471c1",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2205",
+      "fixture": "docs/templates/golden/builders/s2205.golden.xml",
+      "unsignedXmlSha256": "398b0d30e522d17c78dbedd65a412edfdf234c4e4de50eb59dc7612dbc19aae4",
+      "signedPayloadSha256": "9c020cbb9d62d4f42cede02dac59cebffad91d4f81c98f860cacb530d6788450",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2206",
+      "fixture": "docs/templates/golden/builders/s2206-promotion.golden.xml",
+      "unsignedXmlSha256": "07d5f86d23b34e1f178c9cc9445f2c406e1ebcc3bca5631e3c35b12fa46d08f0",
+      "signedPayloadSha256": "43c6050f3b67d4513d9e6ca27006294178fd13756fe228484b662a3d7fad4c4f",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2210",
+      "fixture": "docs/templates/golden/builders/s2210-inicial.golden.xml",
+      "unsignedXmlSha256": "e28682864f72c2e1607f52328d136299dad36dc7e70b577d3d2a167f93952159",
+      "signedPayloadSha256": "03ac7cef92ebdecd226c6e8ab4c64c95cddcab32aaed8aad421bd4fbda53b402",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2210",
+      "fixture": "docs/templates/golden/builders/s2210-obito.golden.xml",
+      "unsignedXmlSha256": "498792f096083d4fbe88b2d999c3f71363204ca99251225f211a6999459b5bc0",
+      "signedPayloadSha256": "ce7ebec0e771e9762cf4f33a08f333cf4d6a5f1caeb1c6ef71fb635b7176183a",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2210",
+      "fixture": "docs/templates/golden/builders/s2210-reabertura.golden.xml",
+      "unsignedXmlSha256": "d48f5f78a4847d1900a92b57b229189a75c09eb9b45b1a7074acde6aba8960ab",
+      "signedPayloadSha256": "240510c0f9393d4c23d43bc9175948259cf870aeb431f491d9cf9942c2b17be6",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2220",
+      "fixture": "docs/templates/golden/builders/s2220-admissional.golden.xml",
+      "unsignedXmlSha256": "6e5c7d935afaa9ee0025bbbbe41a1a814b8e270caab4bf0c5e2661ab47c5d542",
+      "signedPayloadSha256": "c4fb1a8413d952fafef42de11f7a26272eca76da92b1faf2286c0a8c7229b2f7",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2220",
+      "fixture": "docs/templates/golden/builders/s2220-demissional.golden.xml",
+      "unsignedXmlSha256": "e28aadf1d755a96d57ff1ca79eecb833abe306e547eed9284bb4b055bd88c20b",
+      "signedPayloadSha256": "b7cdde0f3affb3e326d8b9134b8c3e29d7908ee5a52e175b12079a51f17b1c24",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2220",
+      "fixture": "docs/templates/golden/builders/s2220-periodico.golden.xml",
+      "unsignedXmlSha256": "1761d4b9bc62433e5e8f5fe26b9ec024a454fb019125ff8e92f9d0591544b888",
+      "signedPayloadSha256": "48b8a54d1260053f1aff8b7a7543e7b5a6e781385e6f366929bb7b3c2b8c66a0",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2220",
+      "fixture": "docs/templates/golden/builders/s2220-retorno-trabalho.golden.xml",
+      "unsignedXmlSha256": "5818c0d4b82968c4f3b6a98947542a0190720781f3a0bc2e547ffe279750bd48",
+      "signedPayloadSha256": "548f1b725a7e160b8bdba23c3044ce68fd556c3bbeb395bf105c9443da9806c1",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2230",
+      "fixture": "docs/templates/golden/builders/s2230-medical-leave.golden.xml",
+      "unsignedXmlSha256": "70193808351e58fdeb1408e83c5647df5e840452571e39918bbfa7f05197ff24",
+      "signedPayloadSha256": "8ff9d7b12e66e2afbdbb84ac9359a7bb9815d8d0dca44ffb03dc97eb20aa6657",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2230",
+      "fixture": "docs/templates/golden/builders/s2230-vacation.golden.xml",
+      "unsignedXmlSha256": "7abf81ba87f21fc3f956b1c1aa7ed209f4c864df35ca3abe313ba888047f6089",
+      "signedPayloadSha256": "26bcaa768507a620030f9af0da5991dcc1b3631d6d9222c234dd1b23442985e4",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2240",
+      "fixture": "docs/templates/golden/builders/s2240-noise-change.golden.xml",
+      "unsignedXmlSha256": "dabf55bacbe1073d0e43e43b99a5c81c2ba1e909f5084e1735355a180145e9cf",
+      "signedPayloadSha256": "d3576f3500fe2196c297b27a72e0d1a761b050dede59ff711d6b61f483578af4",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2240",
+      "fixture": "docs/templates/golden/builders/s2240-noise-end.golden.xml",
+      "unsignedXmlSha256": "d165f42c970bc63aec3ade669ac21bcba55442076235fb5b07261d033d00cea1",
+      "signedPayloadSha256": "c9244e06e897704d30a3aa3be392e82576b3a7d1ff9311b3d5cfd7ba1431baba",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2240",
+      "fixture": "docs/templates/golden/builders/s2240-noise-start.golden.xml",
+      "unsignedXmlSha256": "7f81512f7248d96715a2f182dace83a5b8758ec5eb5876eb539e62dc033633b9",
+      "signedPayloadSha256": "beeac8253c685b202e2c89cc2b023e965b4dbdd1b21cb008a8f47bf5d8d87573",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2298",
+      "fixture": "docs/templates/golden/builders/s2298.golden.xml",
+      "unsignedXmlSha256": "863e51a47b07999820b299c9bd2a769bb3487ad0a2d8cb002263d938cfaf9e2c",
+      "signedPayloadSha256": "c004cb33ea7f4cf8e04f09fd2e7ad501a2bf48963f84462f0d6c7665e7744b46",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2299",
+      "fixture": "docs/templates/golden/builders/s2299-with-notice.golden.xml",
+      "unsignedXmlSha256": "8e274bfcb115facc41ba926baede4911bbc5c444a2f244188d714b33a93d3e3f",
+      "signedPayloadSha256": "90e4324b9c54718f9aa6a5128d110bab4a26ce1e84c017708f063ecbfb66daf3",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2299",
+      "fixture": "docs/templates/golden/builders/s2299-without-notice.golden.xml",
+      "unsignedXmlSha256": "40d08b1c5129faaa73db532e6455f0a736d0be6e4e842d170bad4ea22d41002a",
+      "signedPayloadSha256": "939eb2e318d420d6fbd2303688e75f5ff42c9464a7657a42672e7a4d9786420c",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2300",
+      "fixture": "docs/templates/golden/builders/s2300-autonomo.golden.xml",
+      "unsignedXmlSha256": "e82a4fddeeeca07b063b4cf48111859a2a7c518ea3532bb55c51e3ef693410dd",
+      "signedPayloadSha256": "d70cc9d37f122726ed0aa773c584b09adca05e727f13aec1bd3da57806937aa5",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2300",
+      "fixture": "docs/templates/golden/builders/s2300-conselheiro.golden.xml",
+      "unsignedXmlSha256": "42495644526d270ccc15f09fedf371a5fdac1386e84756afe55579b7f2c27357",
+      "signedPayloadSha256": "2cf24af3289bb84a7175ae160943ef34d843a3cfa485ecb6c861ddfba3ee1eba",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2300",
+      "fixture": "docs/templates/golden/builders/s2300-estagiario.golden.xml",
+      "unsignedXmlSha256": "238431547a32ff022db3e7086078016552ad89b590036ab0f070493b6ba6e262",
+      "signedPayloadSha256": "8ce9a7f4bfb15dbb9439fe55ba55317b4da4be90b1ec9c2da4db220a70999df0",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2306",
+      "fixture": "docs/templates/golden/builders/s2306.golden.xml",
+      "unsignedXmlSha256": "47964af3451da3208ce0ca9ea53a3e1cbb2ef1dc6b83da176e6e5df63e1f80f1",
+      "signedPayloadSha256": "7e801543ffe9b6c78debbf5071d5dcf2cdfab08e5e32452090471bc867d392d5",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2399",
+      "fixture": "docs/templates/golden/builders/s2399-autonomo.golden.xml",
+      "unsignedXmlSha256": "00967744becd08dff3ee8673860cf19a7048279d65662ad1d9a312d1714259af",
+      "signedPayloadSha256": "35e90ea5d8f2595dada65a79ed30bc8db8d4cb6ea63e312bc8fa6959ab15b95b",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2399",
+      "fixture": "docs/templates/golden/builders/s2399-conselheiro.golden.xml",
+      "unsignedXmlSha256": "2a1e592e692381a5528a1b108ca5a4393aca9c006fa995837c042673a030b095",
+      "signedPayloadSha256": "9fefad79dc430c9d1ed4f25b4fbf4e88e159b0a82c159fe24801fccf433faa5d",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2399",
+      "fixture": "docs/templates/golden/builders/s2399-estagiario.golden.xml",
+      "unsignedXmlSha256": "f4283bb44bbcfd750c7d50884c38815e63474464de90c19b5c90908688529a4e",
+      "signedPayloadSha256": "453aabde274816a7a456dde63be45efa35ef707cc85b9cdf45ca40ce8f5d8476",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2400",
+      "fixture": "docs/templates/golden/builders/s2400.golden.xml",
+      "unsignedXmlSha256": "b6b2bbeecc8d08d7496fc3d68265275dbb63ad5b32f3f416ca0870294c3d62bc",
+      "signedPayloadSha256": "cac0dd6ee78aec0002e4e03541bf21679d0d8b21d0df2ea4d25a98e7a0d04a1b",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2405",
+      "fixture": "docs/templates/golden/builders/s2405.golden.xml",
+      "unsignedXmlSha256": "c8a6bb33f5cbb967ace7e4bd3d0cd67fceea6bab65c3ed4ee5144b427e12a659",
+      "signedPayloadSha256": "e72e68d9896f2a22e7e2c40047b521b8e889c0e7cd723018b5d712edfa58d10d",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2410",
+      "fixture": "docs/templates/golden/builders/s2410-pension.golden.xml",
+      "unsignedXmlSha256": "2118b7e60691c630af991ac390d46d5201170659bbdb3c995c8b6a5b199335dc",
+      "signedPayloadSha256": "e1f9f4ae9e9964011c5a8ef03356d651b6379dc5a50a8a38b1634f56fbd10ed0",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2410",
+      "fixture": "docs/templates/golden/builders/s2410-retirement.golden.xml",
+      "unsignedXmlSha256": "b8c0e90e1850ee469773883e5b1da8a642b143f157e438f074768a43ebc500d9",
+      "signedPayloadSha256": "90f282fcda1db1131d021c3e6f71e84b517af9be88418a6be33c7a14348d6c17",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2416",
+      "fixture": "docs/templates/golden/builders/s2416-pension-founder.golden.xml",
+      "unsignedXmlSha256": "78bc84bda3ce594276a6cdea86bc0a5a93af86511aac407f792f3490b1b34396",
+      "signedPayloadSha256": "2b7c039978df2797b47566ce501430d53f70a9dcc0cd7de2e35a33929de82e83",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2418",
+      "fixture": "docs/templates/golden/builders/s2418-pension.golden.xml",
+      "unsignedXmlSha256": "34a43043b4f1d9ea7c2030d291af0a6e0fe5d5a4b91290a9c3a59549fa94ca3b",
+      "signedPayloadSha256": "963fc417d0ab48d67233790fc06948d30e6b0f162675d68c6d3b4e642aa5a367",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2418",
+      "fixture": "docs/templates/golden/builders/s2418-retirement.golden.xml",
+      "unsignedXmlSha256": "69d3ee9ce966b83aa62c9593536f007fdf71d76f72fe3afb5a5e209b56c6f810",
+      "signedPayloadSha256": "d02bee650a925a7e6e2e5b0b4f59b568ea85a0c5cb2cdb6afe76dd1c813c82d9",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2420",
+      "fixture": "docs/templates/golden/builders/s2420-pension.golden.xml",
+      "unsignedXmlSha256": "91c0de91d407021ad36143b8faa161b45c98a0fa6de86c035137c8f8b9b23151",
+      "signedPayloadSha256": "ff717c4215d39facc9a03a1742ad0581f1d7ba5615cf842c0286f4a49d162a5b",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-2501",
+      "fixture": "docs/templates/golden/builders/s2501.golden.xml",
+      "unsignedXmlSha256": "5f91468b502c7cd44aa856a7e9b079be08d6a060a27771ef671fcc9426c4581e",
+      "signedPayloadSha256": "9ca47721fba14b75ba58ae1241daf335d938e3faa2445a447d90b0b85a1b7473",
+      "certificateRef": "local-test://release-0.2.0"
+    },
+    {
+      "eventClass": "S-3000",
+      "fixture": "docs/templates/golden/builders/s3000.golden.xml",
+      "unsignedXmlSha256": "b7a99e9317352ffff8030ff573f1a9c86ad7a3a49517e4d6e81afed00e04f1b2",
+      "signedPayloadSha256": "93b817c7a31c6a9ce6085d0e61b59ecffe53af5c87f09edee8ea68a96979ad73",
+      "certificateRef": "local-test://release-0.2.0"
+    }
+  ]
+}

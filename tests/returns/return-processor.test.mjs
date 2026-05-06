@@ -82,7 +82,7 @@ test('return processor maps malformed XML and unknown regulatory codes to failed
 
 test('return processor persists totalizer traceability and publishes SGP-facing totalizer status', async () => {
   const harness = createHarness();
-  const totalizerXml = liftedParserFixture('s5011-totalizer.golden.xml');
+  const totalizerXml = returnGolden('s5011-totalizer.golden.xml');
   const result = await harness.processor.process(
     returnEnvelope(totalizerXml, 'return-totalizer', {
       sourceEventClass: 'S-1299',
@@ -219,13 +219,9 @@ function returnEnvelope(rawResponseXml, suffix = 'return-ok', payload = {}) {
   };
 }
 
-function liftedParserFixture(fileName) {
+function returnGolden(fileName) {
   return readFileSync(
-    join(
-      root,
-      'packages/domain/src/sgp-lifted/esocial-worker/parsers/__fixtures__',
-      fileName,
-    ),
+    join(root, 'docs/templates/golden/returns', fileName),
     'utf8',
   );
 }

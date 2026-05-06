@@ -1,0 +1,51 @@
+{
+  "version": "v1",
+  "family": "request",
+  "request-id": "req-request-S-1202",
+  "correlation-id": "corr-S-1202",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-1202:source-event-S-1202:source-entity-S-1202:-:2026-05:sha256%3A9263e0e73e819110f565bd07c01cbf120cdc78f73201cd614c66eb2b8bfeec79:-:-",
+  "created_at": "2026-05-05T12:00:00.000Z",
+  "tenant_id": "tenant-a",
+  "environment": "QUALIFICATION",
+  "event_class": "S-1202",
+  "source": {
+    "source_event_id": "source-event-S-1202",
+    "source_entity_id": "source-entity-S-1202",
+    "payroll_run_id": "payroll-2026-05",
+    "source_system": "SGP"
+  },
+  "kind": "folha",
+  "payload_hash": "sha256:9263e0e73e819110f565bd07c01cbf120cdc78f73201cd614c66eb2b8bfeec79",
+  "attempt": 1,
+  "max-attempts": 3,
+  "reply-to": "sgp.esocial.submit.response",
+  "dead-letter-topic": "sgp.esocial.dlq",
+  "payload": {
+    "eventClass": "S-1202",
+    "tenantId": "tenant-a",
+    "sourceEventId": "source-event-S-1202",
+    "sourceEntityId": "source-entity-S-1202",
+    "environment": "qualification",
+    "employerCnpj": "12345678000199",
+    "competence": "2026-05",
+    "payrollRunId": "payroll-2026-05-rpps",
+    "payrollRunStatus": "GENERATED",
+    "workers": [
+      {
+        "employeeId": "rpps-worker-1",
+        "cpf": "12345678901",
+        "registration": "RPPS-1",
+        "categoryCode": "301",
+        "rubrics": [
+          {
+            "rubricCode": "PROV",
+            "rubricTableId": "SGP",
+            "amount": "5000.00",
+            "quantity": "1.0000",
+            "kind": "EARNING"
+          }
+        ]
+      }
+    ]
+  }
+}

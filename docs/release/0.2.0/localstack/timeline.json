@@ -1,0 +1,17 @@
+{
+  "command": "npm run integration:localstack",
+  "result": "passed",
+  "expectedAssertions": [
+    "request queue accepts submit envelope",
+    "response queue receives submission response",
+    "spool queue receives status update",
+    "audit bus receives audit event",
+    "esocial.event_record persists sent status"
+  ],
+  "observed": {
+    "responseQueueMessages": 1,
+    "spoolQueueMessages": 1,
+    "auditBusEvents": 1,
+    "roundTripMs": 1075
+  }
+}

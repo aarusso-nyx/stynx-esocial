@@ -1,0 +1,40 @@
+{
+  "version": "v1",
+  "family": "request",
+  "request-id": "req-request-S-2418",
+  "correlation-id": "corr-S-2418",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-2418:source-event-S-2418:source-entity-S-2418:-:-:sha256%3A6040888d958d245488d5c7d81e3ef749510f87a9a0d0427b7884c71b869d23f5:-:-",
+  "created_at": "2026-05-05T12:00:00.000Z",
+  "tenant_id": "tenant-a",
+  "environment": "QUALIFICATION",
+  "event_class": "S-2418",
+  "source": {
+    "source_event_id": "source-event-S-2418",
+    "source_entity_id": "source-entity-S-2418",
+    "employee_id": "employee-1",
+    "source_system": "SGP"
+  },
+  "kind": "submit",
+  "payload_hash": "sha256:6040888d958d245488d5c7d81e3ef749510f87a9a0d0427b7884c71b869d23f5",
+  "attempt": 1,
+  "max-attempts": 3,
+  "reply-to": "sgp.esocial.submit.response",
+  "dead-letter-topic": "sgp.esocial.dlq",
+  "payload": {
+    "eventClass": "S-2418",
+    "tenantId": "tenant-a",
+    "sourceEventId": "source-event-S-2418",
+    "sourceEntityId": "source-entity-S-2418",
+    "environment": "qualification",
+    "employerCnpj": "12345678000199",
+    "benefitKind": "RETIREMENT",
+    "benefitIdentifier": "sgp-s2410-benefit-1",
+    "beneficiaryCpf": "12345678901",
+    "benefitNumber": "RET08000000000000001",
+    "effectiveReactivationDate": "2026-05-20",
+    "financialEffectDate": "2026-05-01",
+    "acceptedS2410Receipt": "1.1.0000000000000002410",
+    "suspendedOrTerminatedBenefitReceipt": "1.1.0000000000000002420",
+    "reactivatedBenefitReceipt": "1.1.0000000000000002418"
+  }
+}

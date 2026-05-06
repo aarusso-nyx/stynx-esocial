@@ -1,0 +1,19 @@
+{
+  "eventClass": "S-2300",
+  "tenantId": "tenant-a",
+  "sourceEventId": "source-event-S-2300",
+  "sourceEntityId": "source-entity-S-2300",
+  "environment": "qualification",
+  "employerCnpj": "12345678000199",
+  "kind": "intern",
+  "workerId": "tsv-worker-1",
+  "cpf": "12345678901",
+  "name": "TSV Fixture Worker",
+  "birthDate": "2000-01-01",
+  "registration": "TSV-1",
+  "categoryCode": "901",
+  "startDate": "2026-05-01",
+  "role": "Estagiario Administrativo",
+  "salaryAmount": 1200,
+  "workplaceRegistrationNumber": "12345678000199"
+}

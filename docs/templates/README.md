@@ -1,12 +1,12 @@
 # XML Templates and Examples
 
-This directory keeps byte-reviewable examples from the lifted SGP eSocial
-implementation.
+This directory keeps byte-reviewable XML, return, and SOAP examples used by the
+active tests and release evidence.
 
 | Path | Source |
 | --- | --- |
-| `golden/builders/*.golden.xml` | Builder fixtures from `packages/domain/src/sgp-lifted/esocial-worker/builders/__fixtures__/`. |
-| `golden/returns/*.golden.xml` | Return parser fixtures from `packages/domain/src/sgp-lifted/esocial-worker/parsers/__fixtures__/`. |
+| `golden/builders/*.golden.xml` | Canonical active builder goldens plus documented blocked-table examples. |
+| `golden/returns/*.golden.xml` | Canonical S-50xx totalizer return parser fixtures. |
 | `wsdl/ws-enviar-lote-eventos.wsdl` | SOAP submission WSDL fixture from the lifted submission tests. |
 
 Treat these files as contract examples. Do not normalize or reformat them unless

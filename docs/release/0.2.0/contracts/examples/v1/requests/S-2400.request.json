@@ -1,0 +1,46 @@
+{
+  "version": "v1",
+  "family": "request",
+  "request-id": "req-request-S-2400",
+  "correlation-id": "corr-S-2400",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-2400:source-event-S-2400:source-entity-S-2400:-:-:sha256%3A51e622a85bb31a99da3214a02bf695269a913704a145eb2b606d579b240f3ba4:-:-",
+  "created_at": "2026-05-05T12:00:00.000Z",
+  "tenant_id": "tenant-a",
+  "environment": "QUALIFICATION",
+  "event_class": "S-2400",
+  "source": {
+    "source_event_id": "source-event-S-2400",
+    "source_entity_id": "source-entity-S-2400",
+    "employee_id": "employee-1",
+    "source_system": "SGP"
+  },
+  "kind": "submit",
+  "payload_hash": "sha256:51e622a85bb31a99da3214a02bf695269a913704a145eb2b606d579b240f3ba4",
+  "attempt": 1,
+  "max-attempts": 3,
+  "reply-to": "sgp.esocial.submit.response",
+  "dead-letter-topic": "sgp.esocial.dlq",
+  "payload": {
+    "eventClass": "S-2400",
+    "tenantId": "tenant-a",
+    "sourceEventId": "source-event-S-2400",
+    "sourceEntityId": "source-entity-S-2400",
+    "environment": "qualification",
+    "employerCnpj": "12345678000199",
+    "beneficiaryId": "beneficiary-1",
+    "cpf": "12345678901",
+    "name": "Beneficiaria RPPS",
+    "birthDate": "1960-01-01",
+    "startDate": "2026-05-01",
+    "sex": "F",
+    "maritalStatus": "2",
+    "dependents": [
+      {
+        "sourceDependentId": "benef-dependent-1",
+        "name": "Dependente Beneficio",
+        "birthDate": "2010-02-03",
+        "relationshipCode": "03"
+      }
+    ]
+  }
+}

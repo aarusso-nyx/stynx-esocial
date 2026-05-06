@@ -1,11 +1,11 @@
 # Operations
 
-This document describes the implemented Round 0 operating surface. Round 0 is a
-deterministic qualification-style runtime: it uses local PostgreSQL, local
-queue/event harnesses, deterministic SOAP stubs, sandbox certificate material in
-tests, and generated CloudFormation review templates. Real eSocial endpoints,
-real certificates, and restricted-production evidence are deferred to Round 2
-under explicit owner authorization.
+This document describes the implemented Round 1 Batch 5 operating surface. The
+runtime uses local PostgreSQL, local queue/event harnesses, deterministic SOAP
+stubs, sandbox certificate material in tests, CDK synthesis, and generated
+CloudFormation review templates. Real eSocial endpoints, real certificates, and
+restricted-production evidence are deferred to Round 2 under explicit owner
+authorization.
 
 ## Local PostgreSQL
 
@@ -64,12 +64,14 @@ with membership in `esocial_worker`.
 
 ## Deployment Templates
 
-Round 0 still uses a deterministic CloudFormation template generator, not AWS
-CDK synthesis. The command surface remains named accordingly:
+Deployment evidence uses both the deterministic template generator and the CDK
+app. The generator keeps review templates stable; the CDK command proves the
+deployable stack surface:
 
 ```bash
 npm run templates:generate
 npm run templates:check
+npm run cdk:synth
 ```
 
 Committed review artifacts live under `infra/cdk/cdk.out/` and are checked for
@@ -146,8 +148,8 @@ compiled submission handler through a local LocalStack-compatible queue/event
 harness and a real temporary PostgreSQL database. It sends a submit envelope
 through the request queue, verifies response queue, spool queue, and audit bus
 outputs, and checks the persisted `esocial.event_record` status. It remains an
-honest deterministic harness in Round 0; it does not deploy real CDK stacks or
-call live AWS services.
+honest deterministic harness; it does not deploy real CDK stacks or call live
+AWS services.
 
 ## Return Reconciliation
 
@@ -203,7 +205,7 @@ and stores S-50xx regulatory totalizers in `esocial.esocial_totalizer`. The acti
 tests cover protocol success, regulatory rejection, SOAP faults, malformed XML,
 all S-5001/S-5002/S-5011/S-5012/S-5013 totalizer variants, and PostgreSQL
 totalizer persistence. SOAP faults are terminal `failed` transport outcomes in
-Round 0; malformed XML is a terminal `failed` schema outcome and must not create
+the sandbox harness; malformed XML is a terminal `failed` schema outcome and must not create
 an `esocial_totalizer` row. Unknown regulatory response codes are terminal
 `failed` regulatory outcomes with `audit_flags` containing
 `unknown_regulatory_code`.

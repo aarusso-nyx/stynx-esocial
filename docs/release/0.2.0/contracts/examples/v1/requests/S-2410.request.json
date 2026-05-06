@@ -1,0 +1,41 @@
+{
+  "version": "v1",
+  "family": "request",
+  "request-id": "req-request-S-2410",
+  "correlation-id": "corr-S-2410",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-2410:source-event-S-2410:source-entity-S-2410:-:-:sha256%3Aa73f85ae2b4a39c333056d4a0b434c8860c0d943401cfa2664bc1ecbca1d7891:-:-",
+  "created_at": "2026-05-05T12:00:00.000Z",
+  "tenant_id": "tenant-a",
+  "environment": "QUALIFICATION",
+  "event_class": "S-2410",
+  "source": {
+    "source_event_id": "source-event-S-2410",
+    "source_entity_id": "source-entity-S-2410",
+    "employee_id": "employee-1",
+    "source_system": "SGP"
+  },
+  "kind": "submit",
+  "payload_hash": "sha256:a73f85ae2b4a39c333056d4a0b434c8860c0d943401cfa2664bc1ecbca1d7891",
+  "attempt": 1,
+  "max-attempts": 3,
+  "reply-to": "sgp.esocial.submit.response",
+  "dead-letter-topic": "sgp.esocial.dlq",
+  "payload": {
+    "eventClass": "S-2410",
+    "tenantId": "tenant-a",
+    "sourceEventId": "source-event-S-2410",
+    "sourceEntityId": "source-entity-S-2410",
+    "environment": "qualification",
+    "employerCnpj": "12345678000199",
+    "benefitKind": "RETIREMENT",
+    "benefitIdentifier": "sgp-s2410-benefit-1",
+    "beneficiaryCpf": "12345678901",
+    "benefitNumber": "RET08000000000000001",
+    "startDate": "2026-05-01",
+    "benefitType": "0101",
+    "planType": "0",
+    "description": "Aposentadoria por tempo de contribuicao",
+    "registration": "MAT-1",
+    "judicialDecision": "N"
+  }
+}

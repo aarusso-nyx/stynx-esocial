@@ -1,0 +1,12 @@
+{
+  "eventClass": "S-1020",
+  "tenantId": "00000000-0000-0000-0000-000000000100",
+  "sourceEventId": "source-s1020-batch1",
+  "sourceEntityId": "00000000-0000-4000-8000-000000000020",
+  "employerCnpj": "12345678000199",
+  "validityStart": "2026-01",
+  "lotationCode": "LOT01",
+  "lotationTypeCode": "01",
+  "fpasCode": "582",
+  "thirdPartyCode": "0000"
+}

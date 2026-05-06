@@ -1,18 +1,16 @@
 # Lifted eSocial Events
 
-The lifted implementation lives under
-`packages/domain/src/sgp-lifted/esocial-worker/`. Golden XML examples are copied
-under `docs/templates/golden/` so operators and reviewers can inspect concrete
-payload shape without walking source fixtures.
+Active implementations live under `packages/domain/src/builders/`,
+`packages/domain/src/xml/`, and `packages/domain/src/returns/`. Golden XML
+examples live under `docs/templates/golden/` so operators and reviewers can
+inspect concrete payload shape without walking source fixtures.
 
 ## Table Events
 
 Active builders live in `packages/domain/src/builders/<event>/`. They consume
 DTOs from `@esocial/contracts`, produce unsigned XML for the signing/XSD/SOAP
 workers, and do not import or query SGP code. Shared table XML helpers live in
-`packages/domain/src/xml/builders/tables/index.ts`; the lifted `sgp-lifted`
-builder files remain migration evidence only when the family has not yet been
-promoted.
+`packages/domain/src/xml/builders/tables/index.ts`.
 
 | Event | Purpose | Production implementation | Status | XML example |
 | --- | --- | --- | --- | --- |
@@ -20,10 +18,10 @@ promoted.
 | S-1005 | Establishment/workplace table | `builders/s1005/builder.ts` | Promoted in Round 1 Batch 1 | `templates/golden/builders/s1005.golden.xml` |
 | S-1010 | Rubric table | `builders/s1010/builder.ts` | Promoted in Round 0 Wave B | `templates/golden/builders/s1010.golden.xml` |
 | S-1020 | Tax lotation table | `builders/s1020/builder.ts` | Promoted in Round 1 Batch 1 | `templates/golden/builders/s1020.golden.xml` |
-| S-1030 | Job/cargo table | `builders/s1030.builder.ts` | Deferred: lifted golden exists, but no active XSD binding is present in `packages/domain/src/sgp-lifted/esocial-worker/xsd/` | `templates/golden/builders/s1030.golden.xml` |
-| S-1040 | Function table | `builders/s1040.builder.ts` | Deferred: lifted golden exists, but no active XSD binding is present in `packages/domain/src/sgp-lifted/esocial-worker/xsd/` | `templates/golden/builders/s1040.golden.xml` |
+| S-1030 | Job/cargo table | Not promoted | Deferred: no active S-1.3 `evtTabCargo.xsd` binding is present in the retained XSD bundle | `templates/golden/builders/s1030.golden.xml` |
+| S-1040 | Function table | Not promoted | Deferred: no active S-1.3 `evtTabFuncao.xsd` binding is present in the retained XSD bundle | `templates/golden/builders/s1040.golden.xml` |
 | S-1050 | Work schedule table | `builders/s1050/builder.ts` | Promoted in Round 1 Batch 1 | `templates/golden/builders/s1050.golden.xml` |
-| S-1060 | Work environment table | `builders/s1060.builder.ts` | Deferred: lifted golden uses legacy `evtTabAmbiente/v02_05_00`, and no active XSD binding is present in the current bundle | `templates/golden/builders/s1060.golden.xml` |
+| S-1060 | Work environment table | Not promoted | Deferred: available golden uses legacy `evtTabAmbiente/v02_05_00`, and no active current-layout XSD binding is present | `templates/golden/builders/s1060.golden.xml` |
 | S-1070 | Administrative/judicial process table | `builders/s1070/builder.ts` | Promoted in Round 1 Batch 1 | `templates/golden/builders/s1070.golden.xml` |
 
 ### Promoted Table DTOs
@@ -192,11 +190,11 @@ contract before real SGP cutover.
 | --- | --- | --- | --- |
 | S-2501 | Labor process tax information; rejects empty tax-base lists and duplicate normalized process numbers | `S2501ProcessTaxDto`; `packages/domain/src/builders/s2501/builder.ts` | `templates/golden/builders/s2501.golden.xml` |
 | S-3000 | Event exclusion; DTO carries `originalEventClass`, `originalReceipt`, and `exclusionReason`; routing is in `dispatchExclusionByOriginalClass(dto)` with no `public.esocial_event` reads | `S3000ExclusionDto`; `packages/domain/src/builders/s3000/builder.ts` | `templates/golden/builders/s3000.golden.xml` |
-| S-5001 | Social-security contribution totalizer | `packages/domain/src/returns/parsers.ts` | `packages/domain/src/sgp-lifted/esocial-worker/parsers/__fixtures__/s5001-totalizer.golden.xml` |
-| S-5002 | IRRF totalizer | `packages/domain/src/returns/parsers.ts` | `packages/domain/src/sgp-lifted/esocial-worker/parsers/__fixtures__/s5002-totalizer.golden.xml` |
-| S-5011 | Employer contribution totalizer | `packages/domain/src/returns/parsers.ts` | `packages/domain/src/sgp-lifted/esocial-worker/parsers/__fixtures__/s5011-totalizer.golden.xml` |
-| S-5012 | IRRF consolidation totalizer | `packages/domain/src/returns/parsers.ts` | `packages/domain/src/sgp-lifted/esocial-worker/parsers/__fixtures__/s5012-totalizer.golden.xml` |
-| S-5013 | FGTS totalizer | `packages/domain/src/returns/parsers.ts` | `packages/domain/src/sgp-lifted/esocial-worker/parsers/__fixtures__/s5013-totalizer.golden.xml` |
+| S-5001 | Social-security contribution totalizer | `packages/domain/src/returns/parsers.ts` | `templates/golden/returns/s5001-totalizer.golden.xml` |
+| S-5002 | IRRF totalizer | `packages/domain/src/returns/parsers.ts` | `templates/golden/returns/s5002-totalizer.golden.xml` |
+| S-5011 | Employer contribution totalizer | `packages/domain/src/returns/parsers.ts` | `templates/golden/returns/s5011-totalizer.golden.xml` |
+| S-5012 | IRRF consolidation totalizer | `packages/domain/src/returns/parsers.ts` | `templates/golden/returns/s5012-totalizer.golden.xml` |
+| S-5013 | FGTS totalizer | `packages/domain/src/returns/parsers.ts` | `templates/golden/returns/s5013-totalizer.golden.xml` |
 
 ## Template Custody
 
@@ -204,12 +202,10 @@ Promoted table builder XML examples are canonicalized under
 `docs/templates/golden/builders/` and covered by active tests in
 `tests/golden/`.
 
-Unpromoted builder XML examples are copied from
-`packages/domain/src/sgp-lifted/esocial-worker/builders/__fixtures__/` until
-their families move into active production builders.
-Return XML examples are copied from
-`packages/domain/src/sgp-lifted/esocial-worker/parsers/__fixtures__/`.
-They should be changed only with intentional contract updates and matching tests.
+The remaining unpromoted table XML examples are retained only to document the
+S-1030/S-1040/S-1060 blockers. Return XML examples are canonical files under
+`docs/templates/golden/returns/`. They should be changed only with intentional
+contract updates and matching tests.
 The S-50xx fixture set is exercised by `tests/returns/return-parser.test.mjs`;
 status publication and PostgreSQL totalizer traceability are covered by
 `tests/returns/return-processor.test.mjs` and

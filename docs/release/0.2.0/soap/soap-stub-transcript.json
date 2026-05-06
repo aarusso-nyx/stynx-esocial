@@ -1,0 +1,10 @@
+{
+  "mode": "deterministic-sandbox",
+  "command": "npm run test:integration and npm run integration:localstack",
+  "endpointPolicy": "qualification and restricted-production deny gov.br hosts; production synthesis requires ESOCIAL_PROD_CONFIRM=1.",
+  "evidence": [
+    "tests/integration/soap-submission-pipeline.test.mjs",
+    "tests/soap/*.test.mjs",
+    "scripts/integration-localstack.mjs"
+  ]
+}

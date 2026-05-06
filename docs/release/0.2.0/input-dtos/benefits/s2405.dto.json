@@ -1,0 +1,15 @@
+{
+  "eventClass": "S-2405",
+  "tenantId": "tenant-a",
+  "sourceEventId": "source-event-S-2405",
+  "sourceEntityId": "beneficiary-1",
+  "environment": "qualification",
+  "employerCnpj": "12345678000199",
+  "beneficiaryId": "beneficiary-1",
+  "cpf": "12345678901",
+  "name": "Beneficiaria RPPS Atualizada",
+  "changeDate": "2026-05-15",
+  "acceptedS2400Receipt": "1.1.0000000000000002400",
+  "sex": "F",
+  "maritalStatus": "2"
+}

@@ -1,0 +1,46 @@
+{
+  "version": "v1",
+  "family": "request",
+  "request-id": "req-request-S-2299",
+  "correlation-id": "corr-S-2299",
+  "idempotency-key": "esocial:v1:request:tenant-a:QUALIFICATION:S-2299:source-event-S-2299:source-entity-S-2299:-:-:sha256%3Ab1241d73e9302a50117a4bd4f44ccc013f4bf8c47b60e32b6fca95f3cd88561f:-:-",
+  "created_at": "2026-05-05T12:00:00.000Z",
+  "tenant_id": "tenant-a",
+  "environment": "QUALIFICATION",
+  "event_class": "S-2299",
+  "source": {
+    "source_event_id": "source-event-S-2299",
+    "source_entity_id": "source-entity-S-2299",
+    "employee_id": "employee-1",
+    "source_system": "SGP"
+  },
+  "kind": "trabalhador",
+  "payload_hash": "sha256:b1241d73e9302a50117a4bd4f44ccc013f4bf8c47b60e32b6fca95f3cd88561f",
+  "attempt": 1,
+  "max-attempts": 3,
+  "reply-to": "sgp.esocial.submit.response",
+  "dead-letter-topic": "sgp.esocial.dlq",
+  "payload": {
+    "eventClass": "S-2299",
+    "tenantId": "tenant-a",
+    "sourceEventId": "source-event-S-2299",
+    "sourceEntityId": "source-entity-S-2299",
+    "environment": "qualification",
+    "employerCnpj": "12345678000199",
+    "employeeId": "employee-1",
+    "cpf": "12345678901",
+    "registration": "MAT-1",
+    "kind": "with-notice",
+    "terminationDate": "2026-05-31",
+    "terminationReasonCode": "02",
+    "projectedNoticeEndDate": "2026-06-30",
+    "ideDmDev": "RESC-1",
+    "rubrics": [
+      {
+        "rubricCode": "RUB-RESC",
+        "quantity": "1.0000",
+        "amount": "2500.00"
+      }
+    ]
+  }
+}

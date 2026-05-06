@@ -110,12 +110,17 @@ Active DTOs are implemented for:
 | `S-1299` | Periodic closure | `tenantId`, `sourceEventId`, `employerCnpj`, `competence`, `payrollRunId`, accepted/pending event summary |
 | `S-2200` | Admission/initial worker registration | `tenantId`, `sourceEventId`, `employerCnpj`, `employeeId`, `cpf`, `admissionDate`, registration/contract fields |
 
-Remaining exported event classes have `Round1Pending` DTO stubs so the v1 type
-surface covers the full 40-class taxonomy without pretending their builders
-landed. Stub payloads carry `round1Pending: true` and
-`deferredReason: "builder_not_promoted_in_round0"`. The table exceptions still
-pending after Round 1 Batch 1 are `S-1030`, `S-1040`, and `S-1060`; their
-leiaute/XSD blockers are tracked in `docs/work/round-1/leiaute-blockers.md`.
+The only SGP source event classes that still carry `Round1Pending` DTO stubs are
+`S-1030`, `S-1040`, and `S-1060`. Stub payloads carry
+`round1Pending: true` and a blocker-specific `deferredReason` because the
+current S-1.3 leiaute/XSD decision is unresolved. Their blockers are tracked in
+`docs/work/round-1/leiaute-blockers.md`; producers must not send them as active
+work until that document is closed and the package moves past RC.
+
+The S-50xx classes are active return-parser/status classes, not SGP source DTO
+families. Their request examples use `kind: "retorno"` and retain
+`round1Pending` payload markers so SGP does not mistake official totalizer
+returns for producer-owned source events.
 
 DTO-level `environment`, when present, is one of `qualification`,
 `restricted_production`, or `production`. Envelope environment values remain the
@@ -214,14 +219,14 @@ full exported event taxonomy:
   `S-2418`, `S-2420`, `S-2501`, `S-3000`.
 - Returns: `S-5001`, `S-5002`, `S-5011`, `S-5012`, `S-5013`.
 
-Round 1 Batch 3 promotes the Worker/SST/TSV classes listed above into active
-DTO schemas and builders. `S-2210` reopening/death DTOs carry the original CAT
-receipt in `originalReceipt`; `S-2220` and `S-2230` use discriminated `kind`
-fields; `S-2240` uses `operation: "start" | "change" | "end"`; `S-2399`
-carries accepted TS-V context as opaque S-2300/S-2306 receipt fields.
+The Worker/SST/TSV classes listed above are active DTO schemas and builders.
+`S-2210` reopening/death DTOs carry the original CAT receipt in
+`originalReceipt`; `S-2220` and `S-2230` use discriminated `kind` fields;
+`S-2240` uses `operation: "start" | "change" | "end"`; `S-2399` carries
+accepted TS-V context as opaque S-2300/S-2306 receipt fields.
 
-Round 1 Batch 4 promotes benefits/process/exclusion into active DTO schemas
-and builders. `S-2410.benefitIdentifier` is the stable opaque identifier that
+Benefits/process/exclusion classes are active DTO schemas and builders.
+`S-2410.benefitIdentifier` is the stable opaque identifier that
 `S-1207.benefits[].benefitSourceId` references. `S-2418` publishes optional
 `reactivatedBenefitReceipt`, which `S-2298` carries when reintegration is tied
 to benefit reactivation. `S-3000` is DTO-complete: SGP must send
@@ -355,14 +360,17 @@ Compatibility matrix:
 | Change | Contract version | Package semver | SGP action |
 | --- | --- | --- | --- |
 | Optional response/status field | `v1` | minor | Consume when useful; old consumers keep working. |
-| New Round 1 DTO replacing a `Round1Pending` stub | `v1` | minor | Upgrade `@esocial/contracts`, emit the promoted DTO branch. |
+| New DTO replacing a `Round1Pending` stub | `v1` | minor or RC until owner acceptance | Upgrade `@esocial/contracts`, emit the promoted DTO branch. |
 | New required field in an existing DTO/envelope | `v2` | major | Run overlap: SGP emits v1 until it is upgraded to v2. |
 | Removed/renamed field or discriminator | `v2` | major | Migrate producer and consumer together during the overlap window. |
 | Status or error taxonomy change | `v2` unless purely additive | major for breaking, minor for additive | Update SGP mappings and contract tests before cutover. |
 
 ## Package Artifacts
 
-The SGP-facing package is `@esocial/contracts@1.0.0`.
+The SGP-facing package for this closure is `@esocial/contracts@1.1.0-rc.0`.
+Final `1.1.0` publication is blocked until SGP accepts the breaking
+idempotency/version coordination plan and `S-1030`, `S-1040`, and `S-1060`
+leave owner-blocked status or are explicitly retired.
 
 Published contents:
 

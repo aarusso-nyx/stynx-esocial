@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sistematech.local/esocial/v1/esocial-s-2220-sgp-request-dto-v1.schema.json",
+  "title": "eSocial S-2220 SGP request DTO v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "eventClass": {
+      "const": "S-2220"
+    },
+    "tenantId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceEventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceEntityId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceEntityIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "environment": {
+      "enum": [
+        "qualification",
+        "restricted_production",
+        "production"
+      ]
+    },
+    "operation": {
+      "enum": [
+        "inclusion",
+        "change",
+        "rectification",
+        "exclusion"
+      ]
+    },
+    "employerCnpj": {
+      "type": "string",
+      "minLength": 1
+    },
+    "employerCpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "eventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "employeeId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "registration": {
+      "type": "string",
+      "minLength": 1
+    },
+    "receiptReference": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "enum": [
+        "admission",
+        "periodic",
+        "return-to-work",
+        "termination"
+      ]
+    },
+    "examDate": {
+      "type": "string",
+      "minLength": 1
+    },
+    "resultCode": {
+      "type": "string",
+      "minLength": 1
+    },
+    "procedureCode": {
+      "type": "string",
+      "minLength": 1
+    },
+    "procedureObservation": {
+      "type": "string",
+      "minLength": 1
+    },
+    "doctorName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "doctorCrm": {
+      "type": "string",
+      "minLength": 1
+    },
+    "doctorUf": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "eventClass",
+    "tenantId",
+    "sourceEventId",
+    "employerCnpj",
+    "employeeId",
+    "cpf",
+    "registration",
+    "kind",
+    "examDate"
+  ],
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "xml"
+        ]
+      },
+      {
+        "required": [
+          "payloadXml"
+        ]
+      },
+      {
+        "required": [
+          "signedXml"
+        ]
+      },
+      {
+        "required": [
+          "signedEnvelope"
+        ]
+      },
+      {
+        "required": [
+          "pkcs7"
+        ]
+      },
+      {
+        "required": [
+          "pkcs7Sha256"
+        ]
+      }
+    ]
+  }
+}

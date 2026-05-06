@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.sistematech.local/esocial/v1/esocial-s-2410-sgp-request-dto-v1.schema.json",
+  "title": "eSocial S-2410 SGP request DTO v1",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "eventClass": {
+      "const": "S-2410"
+    },
+    "tenantId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceEventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceEntityId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sourceEntityIds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "environment": {
+      "enum": [
+        "qualification",
+        "restricted_production",
+        "production"
+      ]
+    },
+    "operation": {
+      "enum": [
+        "inclusion",
+        "change",
+        "rectification",
+        "exclusion"
+      ]
+    },
+    "employerCnpj": {
+      "type": "string",
+      "minLength": 1
+    },
+    "employerCpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "eventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "benefitKind": {
+      "enum": [
+        "RETIREMENT",
+        "PENSION"
+      ]
+    },
+    "benefitIdentifier": {
+      "type": "string",
+      "minLength": 1
+    },
+    "beneficiaryCpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "benefitNumber": {
+      "type": "string",
+      "minLength": 1
+    },
+    "startDate": {
+      "type": "string",
+      "minLength": 1
+    },
+    "benefitType": {
+      "type": "string",
+      "minLength": 1
+    },
+    "planType": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "registration": {
+      "type": "string",
+      "minLength": 1
+    },
+    "judicialDecision": {
+      "enum": [
+        "S",
+        "N"
+      ]
+    },
+    "institutingCpf": {
+      "type": "string",
+      "minLength": 1
+    },
+    "pensionDeathType": {
+      "enum": [
+        "1",
+        "2"
+      ]
+    },
+    "dependentTypeCode": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "eventClass",
+    "tenantId",
+    "sourceEventId",
+    "employerCnpj",
+    "benefitKind",
+    "benefitIdentifier",
+    "beneficiaryCpf",
+    "benefitNumber",
+    "startDate",
+    "benefitType"
+  ],
+  "not": {
+    "anyOf": [
+      {
+        "required": [
+          "xml"
+        ]
+      },
+      {
+        "required": [
+          "payloadXml"
+        ]
+      },
+      {
+        "required": [
+          "signedXml"
+        ]
+      },
+      {
+        "required": [
+          "signedEnvelope"
+        ]
+      },
+      {
+        "required": [
+          "pkcs7"
+        ]
+      },
+      {
+        "required": [
+          "pkcs7Sha256"
+        ]
+      }
+    ]
+  }
+}

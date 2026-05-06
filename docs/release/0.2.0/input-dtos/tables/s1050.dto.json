@@ -1,0 +1,11 @@
+{
+  "eventClass": "S-1050",
+  "tenantId": "00000000-0000-0000-0000-000000000100",
+  "sourceEventId": "source-s1050-batch1",
+  "sourceEntityId": "00000000-0000-4000-8000-000000000050",
+  "employerCnpj": "12345678000199",
+  "validityStart": "2026-01",
+  "workScheduleCode": "JORN01",
+  "description": "Jornada padrao",
+  "dailyHours": "8.00"
+}
