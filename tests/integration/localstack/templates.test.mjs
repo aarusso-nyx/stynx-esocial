@@ -40,10 +40,16 @@ test('generated templates enforce stages and production confirmation', () => {
 
   assert.equal(qualification.Metadata.stage, 'qualification');
   assert.equal(restrictedProduction.Metadata.stage, 'restricted-production');
-  assert.equal(lambdaCount(qualification), 9);
-  assert.equal(lambdaCount(restrictedProduction), 9);
-  assert.equal(lambdaRoleCount(qualification), 9);
-  assert.equal(lambdaRoleCount(restrictedProduction), 9);
+  assert.equal(lambdaCount(qualification), 4);
+  assert.equal(lambdaCount(restrictedProduction), 4);
+  assert.equal(lambdaRoleCount(qualification), 4);
+  assert.equal(lambdaRoleCount(restrictedProduction), 4);
+  assert.deepEqual(lambdaNames(qualification), [
+    'esocial-qualification-certificado',
+    'esocial-qualification-http-gateway',
+    'esocial-qualification-retorno',
+    'esocial-qualification-submission',
+  ]);
   assert.equal(qualification.Metadata.boundary.endpointHostEnv, 'ESOCIAL_QUALIFICATION_ENDPOINT_HOST');
   assert.equal(
     restrictedProduction.Metadata.boundary.endpointHostEnv,
@@ -77,6 +83,13 @@ function lambdaCount(template) {
   return Object.values(template.Resources)
     .filter((resource) => resource.Type === 'AWS::Lambda::Function')
     .length;
+}
+
+function lambdaNames(template) {
+  return Object.values(template.Resources)
+    .filter((resource) => resource.Type === 'AWS::Lambda::Function')
+    .map((resource) => resource.Properties.FunctionName)
+    .sort();
 }
 
 function lambdaRoleCount(template) {

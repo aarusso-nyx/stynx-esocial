@@ -13,7 +13,7 @@
     "lint": "eslint . --max-warnings=0 && npm run lint:boundaries --silent && npm run lint:migrations --silent",
     "lint:boundaries": "node scripts/check.mjs lint",
     "lint:migrations": "node scripts/check-migrations.mjs lint:migrations",
-    "test": "npm run build --silent && vitest run && node --test services/retorno/__tests__/*.test.mjs tests/contract/*.test.mjs tests/certificado/*.test.mjs tests/golden/*.test.mjs tests/handler/*.test.mjs tests/pki/*.test.mjs tests/returns/*.test.mjs tests/xml/*.test.mjs",
+    "test": "npm run build --silent && vitest run && node --test services/retorno/__tests__/*.test.mjs tests/contract/*.test.mjs tests/certificado/*.test.mjs tests/golden/*.test.mjs tests/handler/*.test.mjs tests/observability/*.test.mjs tests/pki/*.test.mjs tests/returns/*.test.mjs tests/xml/*.test.mjs",
     "build": "tsc -b && npm run schemas:generate --workspace @esocial/contracts --silent",
     "coverage": "npm run build --silent && vitest run && node scripts/coverage-check.mjs",
     "cdk:synth": "npm run templates:generate --silent && npm --workspace @esocial/cdk run cdk -- synth --all --output cdk.synth.out",
@@ -26,7 +26,7 @@
     "integration:localstack": "npm run build --silent && node scripts/integration-localstack.mjs",
     "migrate:dev": "node scripts/migrate-dev.mjs",
     "test:db": "node scripts/test-db.mjs",
-    "test:integration": "npm run build --silent && npm run templates:check --silent && node --test tests/integration/*.test.mjs tests/integration/localstack/*.test.mjs tests/integration/retry/*.test.mjs tests/soap/*.test.mjs"
+    "test:integration": "npm run build --silent && npm run templates:check --silent && node --test tests/integration/*.test.mjs tests/integration/localstack/*.test.mjs tests/integration/retry/*.test.mjs tests/observability/*.test.mjs tests/soap/*.test.mjs"
   },
   "engines": {
     "node": ">=20.0.0 <25",

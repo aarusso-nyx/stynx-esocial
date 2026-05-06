@@ -31,6 +31,16 @@ active production code. The lifted Nest-based SGP code under
 promote boundary-clean builders, parsers, signing, SOAP, retry, and return
 logic into standalone packages.
 
+Round 1 Batch 6 trims the Lambda surface to the services with distinct runtime
+responsibilities: `submission`, `retorno`, `certificado`, and `http-gateway`.
+The previous family-named handlers (`tabelas`, `trabalhador`, `folha`,
+`fechamento`, and `exclusao`) were deleted because they only returned
+placeholder data and had no separate queue, authorization profile, retry model,
+or operational runbook. Event-family routing now remains inside the active
+submission pipeline, where the typed DTO contract, idempotency check, XML
+builder dispatch, status publication, and observability fields are tested once
+for every event class.
+
 ## Flow
 
 1. SGP validates a business action such as admission, contract change,

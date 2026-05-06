@@ -106,7 +106,7 @@ test('SOAP WSDL stub is committed and dev/test guard rejects official hosts and 
   );
 });
 
-test('transport factory wires sandbox, restricted client, and TLS guards without hardcoded endpoints', () => {
+test('transport factory wires sandbox, restricted client, and per-stage TLS guards without hardcoded endpoints', () => {
   const qualification = transportFactory('qualification', {
     nodeEnv: 'test',
     ci: true,
@@ -125,6 +125,49 @@ test('transport factory wires sandbox, restricted client, and TLS guards without
     allowlistHosts: ['restricted-esocial.example.test'],
   });
   assert.equal(restricted instanceof SoapClientTransport, true);
+
+  for (const [stage, config] of [
+    [
+      'qualification',
+      {
+        qualification: {
+          submit: 'http://qualification-esocial.example.test/submit',
+          returnQuery: 'https://qualification-esocial.example.test/return',
+        },
+      },
+    ],
+    [
+      'restricted_production',
+      {
+        restricted_production: {
+          submit: 'http://restricted-esocial.example.test/submit',
+          returnQuery: 'https://restricted-esocial.example.test/return',
+        },
+      },
+    ],
+    [
+      'production',
+      {
+        production: {
+          submit: 'http://production-esocial.example.test/submit',
+          returnQuery: 'https://production-esocial.example.test/return',
+        },
+      },
+    ],
+  ]) {
+    assert.throws(
+      () =>
+        new SoapClientTransport({
+          environment: stage,
+          endpoints: config[stage],
+          allowlistHosts: [`${stage.replace('_', '-')}-esocial.example.test`],
+        }),
+      (error) =>
+        error instanceof SoapTransportGuardError &&
+        error.code === 'SOAP_ENDPOINT_HTTPS_REQUIRED',
+      stage,
+    );
+  }
 
   assert.throws(
     () =>
@@ -145,15 +188,17 @@ test('transport factory wires sandbox, restricted client, and TLS guards without
   );
 });
 
-test('SOAP client passes explicit TLS certificate verification to the underlying client', async () => {
+test('SOAP client passes TLS 1.2 policy and certificate-pinning hook to the underlying client', async () => {
   let capturedInit;
+  const pinningCalls = [];
   const transport = new SoapClientTransport({
-    environment: 'restricted_production',
+    environment: 'production',
     endpoints: {
-      submit: 'https://restricted-esocial.example.test/submit',
-      returnQuery: 'https://restricted-esocial.example.test/return',
+      submit: 'https://production-esocial.example.test/submit',
+      returnQuery: 'https://production-esocial.example.test/return',
     },
-    allowlistHosts: ['restricted-esocial.example.test'],
+    allowlistHosts: ['production-esocial.example.test'],
+    certificatePinning: (input) => pinningCalls.push(input),
     fetch: async (_url, init) => {
       capturedInit = init;
       return {
@@ -167,13 +212,25 @@ test('SOAP client passes explicit TLS certificate verification to the underlying
 
   await transport.submit('enviar_lote_eventos', '<eSocial><evt>ok</evt></eSocial>', {
     tenantId,
-    environment: 'restricted_production',
+    environment: 'production',
     eventClass: 'S-1000',
     requestXml: '<eSocial><evt>ok</evt></eSocial>',
     now,
   });
 
   assert.equal(capturedInit.rejectUnauthorized, true);
+  assert.deepEqual(capturedInit.tls, {
+    rejectUnauthorized: true,
+    minVersion: 'TLSv1.2',
+    certificatePinning: 'configured',
+  });
+  assert.deepEqual(pinningCalls, [
+    {
+      endpointUrl: 'https://production-esocial.example.test/submit',
+      environment: 'production',
+      minimumTlsVersion: 'TLSv1.2',
+    },
+  ]);
 });
 
 function localCertificate() {

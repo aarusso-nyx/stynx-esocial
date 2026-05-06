@@ -1,6 +1,6 @@
 # Operations
 
-This document describes the implemented Round 1 Batch 5 operating surface. The
+This document describes the implemented Round 1 Batch 6 operating surface. The
 runtime uses local PostgreSQL, local queue/event harnesses, deterministic SOAP
 stubs, sandbox certificate material in tests, CDK synthesis, and generated
 CloudFormation review templates. Real eSocial endpoints, real certificates, and
@@ -100,12 +100,13 @@ The generated templates include the current deployment surface: private VPC
 subnets, service and database security groups, RDS PostgreSQL with the `esocial`
 database name, Secrets Manager placeholders, separate KMS keys for database,
 certificate secret, and queue encryption, FIFO request, response, spool, retry,
-replay, and DLQ queues, EventBridge audit bus, nine Lambda functions
-(`submission`, `retorno`, `certificado`, `http-gateway`, `tabelas`,
-`trabalhador`, `folha`, `fechamento`, `exclusao`), one scoped IAM role per
-Lambda, event source mappings, a CodeBuild migration hook, CloudWatch alarms,
-and a dashboard. Template tests assert there are no `Resource: "*"` grants or
-IAM action wildcards in generated role policies.
+replay, and DLQ queues, EventBridge audit bus, four Lambda functions
+(`submission`, `retorno`, `certificado`, `http-gateway`), one scoped IAM role
+per Lambda, event source mappings, a CodeBuild migration hook, CloudWatch
+alarms, and a dashboard. Template tests assert there are no `Resource: "*"`
+grants or IAM action wildcards in generated role policies. Event-family kinds
+such as `tabelas`, `trabalhador`, `folha`, `fechamento`, and `exclusao` are
+contract classification values, not separate Lambda services.
 
 ## CI And Branch Protection
 
@@ -314,6 +315,7 @@ Metric helpers emit CloudWatch EMF-compatible JSON via `buildMetricPayload()` or
 | `esocial.validation_failed` | Counter | Count |
 | `esocial.parser_failures` | Counter | Count |
 | `esocial.circuit_open_events` | Counter | Count |
+| `esocial.certificate_days_until_expiry` | Gauge | None |
 | `esocial.soap_latency_ms` | Histogram | Milliseconds |
 | `esocial.xsd_latency_ms` | Histogram | Milliseconds |
 | `esocial.sign_latency_ms` | Histogram | Milliseconds |
@@ -324,6 +326,16 @@ Trace spans use `withTraceSpan()` around handler work and named stages:
 `xsd`, `sign`, `soap`, `submit`, `parse-return`, `persist`, and `publish`.
 The helper annotates OpenTelemetry spans with the same correlation fields and
 propagates the correlation id through baggage.
+
+## Alarm Runbook Index
+
+| Alarm | Metric | Operator page | First action |
+| --- | --- | --- | --- |
+| `RejectedRateAlarm` | `esocial.rejected` | CloudWatch Alarms > eSocial > RejectedRateAlarm | Open the rejected status sample, classify the regulatory code, and compare with the latest SGP payroll batch. |
+| `DlqGrowthAlarm` | `esocial.dlq` | CloudWatch Alarms > eSocial > DlqGrowthAlarm | Use the DLQ triage API below, confirm tenant/event class, and decide replay eligibility. |
+| `SoapLatencyP99Alarm` | `esocial.soap_latency_ms` | CloudWatch Alarms > eSocial > SoapLatencyP99Alarm | Check deterministic stub health in qualification or endpoint health in the authorized real stage before retrying. |
+| `CertificateExpiringAlarm` | `esocial.certificate_days_until_expiry` | CloudWatch Alarms > eSocial > CertificateExpiringAlarm | Follow the certificate rotation runbook and rotate before the tenant enters the signing failure window. |
+| `CircuitOpenAlarm` | `esocial.circuit_open_events` | CloudWatch Alarms > eSocial > CircuitOpenAlarm | Inspect circuit state, stop manual replays, and wait for the configured half-open probe. |
 
 ## Incident Runbooks
 

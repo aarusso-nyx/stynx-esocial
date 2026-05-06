@@ -77,6 +77,7 @@ export type SoapClientTransportOptions = Readonly<{
   endpoints: SoapEndpointSet;
   timeoutMs?: number | undefined;
   allowlistHosts?: readonly string[] | undefined;
+  certificatePinning?: CertificatePinningVerifier | undefined;
   fetch?: FetchLike | undefined;
   logger?: SoapLogger | undefined;
 }>;
@@ -88,6 +89,7 @@ export type TransportFactoryOptions = Readonly<{
   mode?: 'auto' | 'sandbox' | 'client' | undefined;
   allowlistHosts?: readonly string[] | undefined;
   timeoutMs?: number | undefined;
+  certificatePinning?: CertificatePinningVerifier | undefined;
   logger?: SoapLogger | undefined;
 }>;
 
@@ -102,6 +104,20 @@ export type SoapEndpointGuardOptions = Readonly<{
   requireHttps?: boolean | undefined;
 }>;
 
+export type TlsPolicy = Readonly<{
+  rejectUnauthorized: true;
+  minVersion: 'TLSv1.2';
+  certificatePinning: 'configured' | 'not-configured';
+}>;
+
+export type CertificatePinningVerifier = (
+  input: Readonly<{
+    endpointUrl: string;
+    environment: SoapEnvironment;
+    minimumTlsVersion: 'TLSv1.2';
+  }>,
+) => void | Promise<void>;
+
 type FetchLike = (
   url: string,
   init: {
@@ -110,6 +126,7 @@ type FetchLike = (
     body: string;
     signal?: AbortSignal | undefined;
     rejectUnauthorized: true;
+    tls: TlsPolicy;
   },
 ) => Promise<{
   status: number;
@@ -222,6 +239,7 @@ export class SoapClientTransport implements SoapTransport {
   private readonly allowlistHosts: readonly string[];
   private readonly fetch: FetchLike;
   private readonly logger?: SoapLogger | undefined;
+  private readonly certificatePinning?: CertificatePinningVerifier | undefined;
 
   constructor(options: SoapClientTransportOptions) {
     this.environment = options.environment;
@@ -230,13 +248,14 @@ export class SoapClientTransport implements SoapTransport {
     this.allowlistHosts = options.allowlistHosts ?? [];
     this.fetch = options.fetch ?? defaultFetch();
     this.logger = options.logger;
+    this.certificatePinning = options.certificatePinning;
 
     assertSoapEndpointAllowed(this.endpoints.submit, {
-      requireHttps: this.environment !== 'qualification',
+      requireHttps: true,
       allowlistHosts: this.allowlistHosts,
     });
     assertSoapEndpointAllowed(this.endpoints.returnQuery, {
-      requireHttps: this.environment !== 'qualification',
+      requireHttps: true,
       allowlistHosts: this.allowlistHosts,
     });
   }
@@ -277,8 +296,13 @@ export class SoapClientTransport implements SoapTransport {
     protocol?: string | undefined;
   }>): Promise<SoapResult> {
     assertSoapEndpointAllowed(input.endpointUrl, {
-      requireHttps: this.environment !== 'qualification',
+      requireHttps: true,
       allowlistHosts: this.allowlistHosts,
+    });
+    await this.certificatePinning?.({
+      endpointUrl: input.endpointUrl,
+      environment: this.environment,
+      minimumTlsVersion: 'TLSv1.2',
     });
 
     const started = Date.now();
@@ -295,6 +319,7 @@ export class SoapClientTransport implements SoapTransport {
         body: input.soapRequest,
         signal: controller.signal,
         rejectUnauthorized: true,
+        tls: buildTlsPolicy(this.certificatePinning),
       });
       const rawResponse = await response.text();
       const result = {
@@ -373,6 +398,7 @@ export function transportFactory(
     endpoints,
     allowlistHosts: options.allowlistHosts,
     timeoutMs: options.timeoutMs,
+    certificatePinning: options.certificatePinning,
     logger: options.logger,
   });
 }
@@ -480,15 +506,24 @@ function assertEndpointSetConfigured(
   environment: SoapEnvironment,
   endpoints: SoapEndpointSet,
 ): void {
-  const requireHttps = environment !== 'qualification';
   assertSoapEndpointAllowed(endpoints.submit, {
     nodeEnv: 'production',
-    requireHttps,
+    requireHttps: true,
   });
   assertSoapEndpointAllowed(endpoints.returnQuery, {
     nodeEnv: 'production',
-    requireHttps,
+    requireHttps: true,
   });
+}
+
+function buildTlsPolicy(
+  certificatePinning: CertificatePinningVerifier | undefined,
+): TlsPolicy {
+  return {
+    rejectUnauthorized: true,
+    minVersion: 'TLSv1.2',
+    certificatePinning: certificatePinning ? 'configured' : 'not-configured',
+  };
 }
 
 function localQualificationEndpoints(): SoapEndpointSet {

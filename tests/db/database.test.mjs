@@ -101,6 +101,11 @@ test('fresh migrations enforce tenant RLS, idempotency, and append-only history'
       SELECT string_agg(tenant_code, ',' ORDER BY tenant_code)
       FROM esocial.tenant;
     `).stdout.trim(), 'tenant-a');
+    assert.equal(psql(appUrl, `
+      SET app.current_tenant_id = ${quoteLiteral(tenantB)};
+      SELECT string_agg(tenant_code, ',' ORDER BY tenant_code)
+      FROM esocial.tenant;
+    `).stdout.trim(), 'tenant-b');
 
     assert.equal(psql(workerUrl, `
       SELECT count(*) FROM esocial.tenant;
@@ -296,6 +301,10 @@ test('fresh migrations enforce tenant RLS, idempotency, and append-only history'
     assert.equal(psql(workerUrl, `
       SELECT count(*) FROM esocial.dlq_item;
     `).stdout.trim(), '2');
+    assert.equal(psql(appUrl, `
+      SET app.current_tenant_id = ${quoteLiteral(tenantB)};
+      SELECT count(*) FROM esocial.dlq_item;
+    `).stdout.trim(), '1');
 
     psql(workerUrl, `
       INSERT INTO esocial.event_status_history (
@@ -326,6 +335,27 @@ test('fresh migrations enforce tenant RLS, idempotency, and append-only history'
         '{"source":"db-test"}'::jsonb
       );
     `);
+    assert.equal(psql(appUrl, `
+      SET app.current_tenant_id = ${quoteLiteral(tenantB)};
+      SELECT count(*) FROM esocial.event_status_history;
+    `).stdout.trim(), '0');
+    psql(workerUrl, `
+      INSERT INTO esocial.audit_event_log (
+        tenant_id,
+        event_record_id,
+        event_type,
+        payload
+      )
+      VALUES (
+        ${quoteLiteral(tenantB)},
+        NULL,
+        'rls.cross_tenant_select_denied',
+        '{"source":"db-test","tenant_visible_to_app":false}'::jsonb
+      );
+    `);
+    assert.equal(psql(workerUrl, `
+      SELECT count(*) FROM esocial.audit_event_log;
+    `).stdout.trim(), '2');
 
     assert.match(psql(workerUrl, `
       UPDATE esocial.event_status_history
@@ -335,6 +365,14 @@ test('fresh migrations enforce tenant RLS, idempotency, and append-only history'
     assert.match(psql(workerUrl, `
       DELETE FROM esocial.audit_event_log;
     `, { expectFailure: true }).stderr, /permission denied|append-only/iu);
+
+    assert.match(psql(workerUrl, `
+      TRUNCATE esocial.audit_event_log;
+    `, { expectFailure: true }).stderr, /permission denied|append-only|must be owner/iu);
+
+    assert.match(psql(workerUrl, `
+      TRUNCATE esocial.event_status_history;
+    `, { expectFailure: true }).stderr, /permission denied|append-only|must be owner/iu);
   } finally {
     cleanup(databaseName, appRole, workerRole);
   }

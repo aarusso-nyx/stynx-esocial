@@ -24,6 +24,7 @@ export const ESOCIAL_METRIC_NAMES = {
   validationFailed: 'esocial.validation_failed',
   parserFailures: 'esocial.parser_failures',
   circuitOpenEvents: 'esocial.circuit_open_events',
+  certificateDaysUntilExpiry: 'esocial.certificate_days_until_expiry',
   soapLatencyMs: 'esocial.soap_latency_ms',
   xsdLatencyMs: 'esocial.xsd_latency_ms',
   signLatencyMs: 'esocial.sign_latency_ms',
@@ -42,6 +43,7 @@ export const ESOCIAL_COUNTER_METRICS = [
 ] as const;
 
 export const ESOCIAL_HISTOGRAM_METRICS = [
+  ESOCIAL_METRIC_NAMES.certificateDaysUntilExpiry,
   ESOCIAL_METRIC_NAMES.soapLatencyMs,
   ESOCIAL_METRIC_NAMES.xsdLatencyMs,
   ESOCIAL_METRIC_NAMES.signLatencyMs,

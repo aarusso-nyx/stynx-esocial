@@ -8,11 +8,6 @@ const workspaceDirs = [
   'packages/domain',
   'packages/pki-pades',
   'services/submission',
-  'services/tabelas',
-  'services/trabalhador',
-  'services/folha',
-  'services/fechamento',
-  'services/exclusao',
   'services/retorno',
   'services/certificado',
   'services/http-gateway',
@@ -160,6 +155,14 @@ const activeSourceFiles = [
 
 for (const file of activeSourceFiles) {
   const source = readFileSync(join(root, file), 'utf8');
+  const liftedImports = activeImportSpecifiers(source).filter((specifier) =>
+    specifier.includes('sgp-lifted/'),
+  );
+  if (liftedImports.length > 0) {
+    throw new Error(
+      `[${mode}] active source imports from sgp-lifted/: ${file} -> ${liftedImports.join(', ')}`,
+    );
+  }
   if (/backend\/src\//u.test(source)) {
     throw new Error(`[${mode}] active source imports or references backend/src: ${file}`);
   }
@@ -187,3 +190,17 @@ for (const service of services) {
 }
 
 console.log(`[${mode}] esocial workspace checks passed`);
+
+function activeImportSpecifiers(source) {
+  const imports = [];
+  for (const match of source.matchAll(/\bimport\s+(?:type\s+)?(?:[\s\S]*?\s+from\s+)?['"]([^'"]+)['"]/gu)) {
+    imports.push(match[1]);
+  }
+  for (const match of source.matchAll(/\bexport\s+(?:type\s+)?(?:[\s\S]*?\s+from\s+)?['"]([^'"]+)['"]/gu)) {
+    imports.push(match[1]);
+  }
+  for (const match of source.matchAll(/\bimport\s*\(\s*['"]([^'"]+)['"]\s*\)/gu)) {
+    imports.push(match[1]);
+  }
+  return imports;
+}

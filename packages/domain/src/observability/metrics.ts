@@ -10,7 +10,7 @@ import type {
 } from './logger.js';
 import { redactForLog } from './redaction.js';
 
-export type MetricUnit = 'Count' | 'Milliseconds';
+export type MetricUnit = 'Count' | 'Milliseconds' | 'None';
 
 export type MetricContext = StructuredLogContext &
   Readonly<{
@@ -115,6 +115,7 @@ export function metricNameForStatus(status: string): EsocialMetricName | undefin
 }
 
 function defaultMetricUnit(name: EsocialMetricName): MetricUnit {
+  if (name.endsWith('_days_until_expiry')) return 'None';
   return name.endsWith('_ms') ? 'Milliseconds' : 'Count';
 }
 

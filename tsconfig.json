@@ -6,14 +6,9 @@
     { "path": "./packages/pki-pades" },
     { "path": "./services/shared" },
     { "path": "./services/certificado" },
-    { "path": "./services/exclusao" },
-    { "path": "./services/fechamento" },
-    { "path": "./services/folha" },
     { "path": "./services/http-gateway" },
     { "path": "./services/retorno" },
     { "path": "./services/submission" },
-    { "path": "./services/tabelas" },
-    { "path": "./services/trabalhador" },
     { "path": "./infra/cdk" }
   ]
 }

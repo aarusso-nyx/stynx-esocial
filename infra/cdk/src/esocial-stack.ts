@@ -12,11 +12,6 @@ export const ESOCIAL_LAMBDA_SERVICES = [
   'retorno',
   'certificado',
   'http-gateway',
-  'tabelas',
-  'trabalhador',
-  'folha',
-  'fechamento',
-  'exclusao',
 ] as const;
 
 export type EsocialLambdaService = (typeof ESOCIAL_LAMBDA_SERVICES)[number];

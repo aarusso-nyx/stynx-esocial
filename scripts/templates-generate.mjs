@@ -128,11 +128,6 @@ function templateFor(stage) {
     'retorno',
     'certificado',
     'http-gateway',
-    'tabelas',
-    'trabalhador',
-    'folha',
-    'fechamento',
-    'exclusao',
   ];
   const resources = {
     EsocialDatabaseKmsKey: {
