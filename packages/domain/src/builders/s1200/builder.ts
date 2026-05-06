@@ -25,7 +25,7 @@ export const S1200_METADATA: BuilderMetadata = {
   xmlRoot: 'eSocial',
   eventElement: 'evtRemun',
   namespace: 'http://www.esocial.gov.br/schema/evt/evtRemun/v_S_01_03_00',
-  xsdBinding: 'packages/domain/src/sgp-lifted/esocial-worker/xsd/evtRemun.xsd',
+  xsdBinding: 'packages/domain/src/xml/xsd/bundle/evtRemun.xsd',
   tableVersionDependencies: ['S-1000', 'S-1005', 'S-1010', 'S-1020'],
 };
 

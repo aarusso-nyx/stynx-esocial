@@ -158,7 +158,7 @@ export type BuiltTableXmlEvent = Readonly<{
   metadata: TableEventMetadata;
 }>;
 
-const XSD_ROOT = 'packages/domain/src/sgp-lifted/esocial-worker/xsd';
+const XSD_ROOT = 'packages/domain/src/xml/xsd/bundle';
 const DEFAULT_ENVIRONMENT: EsocialEnvironment = '2';
 const DEFAULT_PROCESS_EMITTER = '1';
 const DEFAULT_PROCESS_VERSION = 'SGP-0.0.1';

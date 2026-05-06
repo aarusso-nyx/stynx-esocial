@@ -10,6 +10,5 @@
     { "path": "../pki-pades" }
   ],
   "include": ["src/**/*.ts"],
-  // Round 0 fences SGP lift-out evidence from active builds; Round 1 promotes remaining slices.
-  "exclude": ["src/sgp-lifted/**", "dist", "node_modules"]
+  "exclude": ["dist", "node_modules"]
 }

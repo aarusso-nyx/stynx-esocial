@@ -135,7 +135,6 @@ function collectActiveSourceFiles(relativeDir, files = []) {
     const relativePath = `${relativeDir}/${entry.name}`;
     if (entry.isDirectory()) {
       if (entry.name === 'dist' || entry.name === 'node_modules') continue;
-      if (relativePath === 'packages/domain/src/sgp-lifted') continue;
       collectActiveSourceFiles(relativePath, files);
       continue;
     }

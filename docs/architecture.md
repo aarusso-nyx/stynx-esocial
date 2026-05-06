@@ -26,10 +26,9 @@ Cross-boundary traffic is queue/event delivery or backend-only HTTPS.
 The active runtime stack is AWS Lambda handlers written in plain TypeScript.
 This is the lighter standalone path for the current MQ-handler surface:
 queue-triggered functions, explicit package boundaries, and no Nest runtime in
-active production code. The lifted Nest-based SGP code under
-`packages/domain/src/sgp-lifted/` remains migration evidence until later phases
-promote boundary-clean builders, parsers, signing, SOAP, retry, and return
-logic into standalone packages.
+active production code. Round 2 moved the retained XSD bundle into
+`packages/domain/src/xml/xsd/bundle/`; active production code and XSD metadata
+no longer depend on `packages/domain/src/sgp-lifted/`.
 
 Round 1 Batch 6 trims the Lambda surface to the services with distinct runtime
 responsibilities: `submission`, `retorno`, `certificado`, and `http-gateway`.

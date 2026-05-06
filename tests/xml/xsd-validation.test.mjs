@@ -32,7 +32,7 @@ test('promoted table XML validates against bound S-1.3 XSDs with unsigned pre-si
     assert.equal(result.eventClass, eventClass);
     assert.equal(result.issues.length, 0);
     assert.match(result.payloadHash, /^sha256:[a-f0-9]{64}$/u);
-    assert.match(result.xsdPath, /^packages\/domain\/src\/xml\/xsd\/tables\//u);
+    assert.match(result.xsdPath, /^packages\/domain\/src\/xml\/xsd\/bundle\//u);
   }
 });
 

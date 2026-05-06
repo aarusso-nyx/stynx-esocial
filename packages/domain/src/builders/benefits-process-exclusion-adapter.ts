@@ -32,7 +32,7 @@ type BenefitProcessMetadata = BuilderMetadata & Readonly<{
   eventCode: EsocialPromotedBenefitProcessDtoEventClass;
 }>;
 
-const XSD_ROOT = 'packages/domain/src/sgp-lifted/esocial-worker/xsd';
+const XSD_ROOT = 'packages/domain/src/xml/xsd/bundle';
 
 export const BENEFIT_PROCESS_EVENT_METADATA: Readonly<Record<
   EsocialPromotedBenefitProcessDtoEventClass,

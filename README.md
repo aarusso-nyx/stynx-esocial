@@ -59,9 +59,9 @@ Implemented:
   integration tests, LocalStack-compatible queue/event/PostgreSQL harness, CDK
   synth gates, IAM scope checks, coverage threshold, SBOM generation, and
   release evidence under `docs/release/0.2.0/`.
-- Lifted builders, lifted return parsers, and `tests/sgp-lifted/` retired.
-  The only retained lifted runtime path is the XSD bundle documented in
-  `docs/work/round-1/lifted-retention.md`.
+- Lifted builders, lifted return parsers, `packages/domain/src/sgp-lifted/`,
+  and `tests/sgp-lifted/` retired. The active XSD bundle now lives under
+  `packages/domain/src/xml/xsd/bundle/`.
 
 Owner-blocked:
 

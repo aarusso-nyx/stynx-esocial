@@ -19,7 +19,7 @@ export const S1299_METADATA: BuilderMetadata = {
   xmlRoot: 'eSocial',
   eventElement: 'evtFechaEvPer',
   namespace: 'http://www.esocial.gov.br/schema/evt/evtFechaEvPer/v_S_01_03_00',
-  xsdBinding: 'packages/domain/src/sgp-lifted/esocial-worker/xsd/evtFechaEvPer.xsd',
+  xsdBinding: 'packages/domain/src/xml/xsd/bundle/evtFechaEvPer.xsd',
   tableVersionDependencies: ['S-1000'],
   receiptDependencies: ['S-1200', 'S-1202', 'S-1207', 'S-1210'],
 };

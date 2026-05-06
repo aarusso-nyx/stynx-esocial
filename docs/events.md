@@ -54,12 +54,12 @@ Event-specific DTO fields:
 
 | Event | Root | Event element | Namespace | XSD binding | Table dependencies |
 | --- | --- | --- | --- | --- | --- |
-| S-1000 | `eSocial` | `evtInfoEmpregador` | `http://www.esocial.gov.br/schema/evt/evtInfoEmpregador/v_S_01_03_00` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtInfoEmpregador.xsd` | None |
-| S-1005 | `eSocial` | `evtTabEstab` | `http://www.esocial.gov.br/schema/evt/evtTabEstab/v_S_01_03_00` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabEstab.xsd` | S-1000 |
-| S-1010 | `eSocial` | `evtTabRubrica` | `http://www.esocial.gov.br/schema/evt/evtTabRubrica/v_S_01_03_00` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabRubrica.xsd` | S-1000 |
-| S-1020 | `eSocial` | `evtTabLotacao` | `http://www.esocial.gov.br/schema/evt/evtTabLotacao/v_S_01_03_00` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabLotacao.xsd` | S-1000 |
-| S-1050 | `eSocial` | `evtTabJornada` | `http://www.esocial.gov.br/schema/evt/evtTabJornada/v_S_01_03_00` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabJornada.xsd` | S-1000 |
-| S-1070 | `eSocial` | `evtTabProcesso` | `http://www.esocial.gov.br/schema/evt/evtTabProcesso/v_S_01_03_00` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabProcesso.xsd` | S-1000 |
+| S-1000 | `eSocial` | `evtInfoEmpregador` | `http://www.esocial.gov.br/schema/evt/evtInfoEmpregador/v_S_01_03_00` | `packages/domain/src/xml/xsd/bundle/evtInfoEmpregador.xsd` | None |
+| S-1005 | `eSocial` | `evtTabEstab` | `http://www.esocial.gov.br/schema/evt/evtTabEstab/v_S_01_03_00` | `packages/domain/src/xml/xsd/bundle/evtTabEstab.xsd` | S-1000 |
+| S-1010 | `eSocial` | `evtTabRubrica` | `http://www.esocial.gov.br/schema/evt/evtTabRubrica/v_S_01_03_00` | `packages/domain/src/xml/xsd/bundle/evtTabRubrica.xsd` | S-1000 |
+| S-1020 | `eSocial` | `evtTabLotacao` | `http://www.esocial.gov.br/schema/evt/evtTabLotacao/v_S_01_03_00` | `packages/domain/src/xml/xsd/bundle/evtTabLotacao.xsd` | S-1000 |
+| S-1050 | `eSocial` | `evtTabJornada` | `http://www.esocial.gov.br/schema/evt/evtTabJornada/v_S_01_03_00` | `packages/domain/src/xml/xsd/bundle/evtTabJornada.xsd` | S-1000 |
+| S-1070 | `eSocial` | `evtTabProcesso` | `http://www.esocial.gov.br/schema/evt/evtTabProcesso/v_S_01_03_00` | `packages/domain/src/xml/xsd/bundle/evtTabProcesso.xsd` | S-1000 |
 
 ## Periodic Payroll Events
 
@@ -110,12 +110,12 @@ Event-specific DTO fields:
 
 | Event | Root | Event element | Namespace | XSD binding | Table dependencies | Receipt dependencies |
 | --- | --- | --- | --- | --- | --- | --- |
-| S-1200 | `eSocial` | `evtRemun` | `http://www.esocial.gov.br/schema/evt/evtRemun/v_S_01_03_00` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtRemun.xsd` | S-1000, S-1005, S-1010, S-1020 | None |
-| S-1202 | `eSocial` | `evtRmnRPPS` | `http://www.esocial.gov.br/schema/evt/evtRmnRPPS/v_S_01_03_00` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtRmnRPPS.xsd` | S-1000, S-1005, S-1010 | None |
-| S-1207 | `eSocial` | `evtBenPrRP` | `http://www.esocial.gov.br/schema/evt/evtBenPrRP/v_S_01_03_00` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtBenPrRP.xsd` | S-1000, S-1010 | S-2410 |
-| S-1210 | `eSocial` | `evtPgtos` | `http://www.esocial.gov.br/schema/evt/evtPgtos/v_S_01_03_00` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtPgtos.xsd` | S-1000 | S-1200, S-1202, S-1207 |
-| S-1298 | `eSocial` | `evtReabreEvPer` | `http://www.esocial.gov.br/schema/evt/evtReabreEvPer/v_S_01_03_00` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtReabreEvPer.xsd` | S-1000 | S-1299 |
-| S-1299 | `eSocial` | `evtFechaEvPer` | `http://www.esocial.gov.br/schema/evt/evtFechaEvPer/v_S_01_03_00` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtFechaEvPer.xsd` | S-1000 | S-1200, S-1202, S-1207, S-1210 |
+| S-1200 | `eSocial` | `evtRemun` | `http://www.esocial.gov.br/schema/evt/evtRemun/v_S_01_03_00` | `packages/domain/src/xml/xsd/bundle/evtRemun.xsd` | S-1000, S-1005, S-1010, S-1020 | None |
+| S-1202 | `eSocial` | `evtRmnRPPS` | `http://www.esocial.gov.br/schema/evt/evtRmnRPPS/v_S_01_03_00` | `packages/domain/src/xml/xsd/bundle/evtRmnRPPS.xsd` | S-1000, S-1005, S-1010 | None |
+| S-1207 | `eSocial` | `evtBenPrRP` | `http://www.esocial.gov.br/schema/evt/evtBenPrRP/v_S_01_03_00` | `packages/domain/src/xml/xsd/bundle/evtBenPrRP.xsd` | S-1000, S-1010 | S-2410 |
+| S-1210 | `eSocial` | `evtPgtos` | `http://www.esocial.gov.br/schema/evt/evtPgtos/v_S_01_03_00` | `packages/domain/src/xml/xsd/bundle/evtPgtos.xsd` | S-1000 | S-1200, S-1202, S-1207 |
+| S-1298 | `eSocial` | `evtReabreEvPer` | `http://www.esocial.gov.br/schema/evt/evtReabreEvPer/v_S_01_03_00` | `packages/domain/src/xml/xsd/bundle/evtReabreEvPer.xsd` | S-1000 | S-1299 |
+| S-1299 | `eSocial` | `evtFechaEvPer` | `http://www.esocial.gov.br/schema/evt/evtFechaEvPer/v_S_01_03_00` | `packages/domain/src/xml/xsd/bundle/evtFechaEvPer.xsd` | S-1000 | S-1200, S-1202, S-1207, S-1210 |
 
 ## Non-Periodic Labor, SST, and TS-V Events
 
@@ -153,19 +153,19 @@ submission, and status persistence are owned by the adjacent Wave B workers.
 
 | Event | DTO type | Active builder | Event element | XSD binding | Dependencies |
 | --- | --- | --- | --- | --- | --- |
-| S-1000 | `S1000EmployerInfoDto` | `packages/domain/src/builders/s1000/builder.ts` | `evtInfoEmpregador` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtInfoEmpregador.xsd` | None |
-| S-1005 | `S1005EstablishmentDto` | `packages/domain/src/builders/s1005/builder.ts` | `evtTabEstab` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabEstab.xsd` | S-1000 |
-| S-1010 | `S1010RubricDto` | `packages/domain/src/builders/s1010/builder.ts` | `evtTabRubrica` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabRubrica.xsd` | S-1000 |
-| S-1020 | `S1020TaxLotationDto` | `packages/domain/src/builders/s1020/builder.ts` | `evtTabLotacao` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabLotacao.xsd` | S-1000 |
-| S-1050 | `S1050WorkScheduleDto` | `packages/domain/src/builders/s1050/builder.ts` | `evtTabJornada` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabJornada.xsd` | S-1000 |
-| S-1070 | `S1070ProcessDto` | `packages/domain/src/builders/s1070/builder.ts` | `evtTabProcesso` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabProcesso.xsd` | S-1000 |
-| S-1200 | `S1200RemunerationDto` | `packages/domain/src/builders/s1200/builder.ts` | `evtRemun` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtRemun.xsd` | S-1000, S-1005, S-1010, S-1020 |
-| S-1202 | `S1202RppsRemunerationDto` | `packages/domain/src/builders/s1202/builder.ts` | `evtRmnRPPS` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtRmnRPPS.xsd` | S-1000, S-1005, S-1010 |
-| S-1207 | `S1207RppsBenefitPaymentDto` | `packages/domain/src/builders/s1207/builder.ts` | `evtBenPrRP` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtBenPrRP.xsd` | S-1000, S-1010; opaque S-2410 `benefitIdentifier` via `benefitSourceId` |
-| S-1210 | `S1210PaymentDto` | `packages/domain/src/builders/s1210/builder.ts` | `evtPgtos` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtPgtos.xsd` | S-1000; receipts from S-1200, S-1202, S-1207 |
-| S-1298 | `S1298ReopeningDto` | `packages/domain/src/builders/s1298/builder.ts` | `evtReabreEvPer` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtReabreEvPer.xsd` | S-1000; accepted S-1299 receipt |
-| S-1299 | `S1299ClosureDto` | `packages/domain/src/builders/s1299/builder.ts` | `evtFechaEvPer` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtFechaEvPer.xsd` | S-1000; receipts from S-1200, S-1202, S-1207, S-1210 |
-| S-2200 | `S2200AdmissionDto` | `packages/domain/src/builders/s2200/builder.ts` | `evtAdmissao` | `packages/domain/src/sgp-lifted/esocial-worker/xsd/evtAdmissao.xsd` | S-1000, S-1030, S-1050 |
+| S-1000 | `S1000EmployerInfoDto` | `packages/domain/src/builders/s1000/builder.ts` | `evtInfoEmpregador` | `packages/domain/src/xml/xsd/bundle/evtInfoEmpregador.xsd` | None |
+| S-1005 | `S1005EstablishmentDto` | `packages/domain/src/builders/s1005/builder.ts` | `evtTabEstab` | `packages/domain/src/xml/xsd/bundle/evtTabEstab.xsd` | S-1000 |
+| S-1010 | `S1010RubricDto` | `packages/domain/src/builders/s1010/builder.ts` | `evtTabRubrica` | `packages/domain/src/xml/xsd/bundle/evtTabRubrica.xsd` | S-1000 |
+| S-1020 | `S1020TaxLotationDto` | `packages/domain/src/builders/s1020/builder.ts` | `evtTabLotacao` | `packages/domain/src/xml/xsd/bundle/evtTabLotacao.xsd` | S-1000 |
+| S-1050 | `S1050WorkScheduleDto` | `packages/domain/src/builders/s1050/builder.ts` | `evtTabJornada` | `packages/domain/src/xml/xsd/bundle/evtTabJornada.xsd` | S-1000 |
+| S-1070 | `S1070ProcessDto` | `packages/domain/src/builders/s1070/builder.ts` | `evtTabProcesso` | `packages/domain/src/xml/xsd/bundle/evtTabProcesso.xsd` | S-1000 |
+| S-1200 | `S1200RemunerationDto` | `packages/domain/src/builders/s1200/builder.ts` | `evtRemun` | `packages/domain/src/xml/xsd/bundle/evtRemun.xsd` | S-1000, S-1005, S-1010, S-1020 |
+| S-1202 | `S1202RppsRemunerationDto` | `packages/domain/src/builders/s1202/builder.ts` | `evtRmnRPPS` | `packages/domain/src/xml/xsd/bundle/evtRmnRPPS.xsd` | S-1000, S-1005, S-1010 |
+| S-1207 | `S1207RppsBenefitPaymentDto` | `packages/domain/src/builders/s1207/builder.ts` | `evtBenPrRP` | `packages/domain/src/xml/xsd/bundle/evtBenPrRP.xsd` | S-1000, S-1010; opaque S-2410 `benefitIdentifier` via `benefitSourceId` |
+| S-1210 | `S1210PaymentDto` | `packages/domain/src/builders/s1210/builder.ts` | `evtPgtos` | `packages/domain/src/xml/xsd/bundle/evtPgtos.xsd` | S-1000; receipts from S-1200, S-1202, S-1207 |
+| S-1298 | `S1298ReopeningDto` | `packages/domain/src/builders/s1298/builder.ts` | `evtReabreEvPer` | `packages/domain/src/xml/xsd/bundle/evtReabreEvPer.xsd` | S-1000; accepted S-1299 receipt |
+| S-1299 | `S1299ClosureDto` | `packages/domain/src/builders/s1299/builder.ts` | `evtFechaEvPer` | `packages/domain/src/xml/xsd/bundle/evtFechaEvPer.xsd` | S-1000; receipts from S-1200, S-1202, S-1207, S-1210 |
+| S-2200 | `S2200AdmissionDto` | `packages/domain/src/builders/s2200/builder.ts` | `evtAdmissao` | `packages/domain/src/xml/xsd/bundle/evtAdmissao.xsd` | S-1000, S-1030, S-1050 |
 
 Known A3 DTO follow-ups for S-2200: the DTO lacks explicit address/contact,
 sex, marital status, education level, nationality, worker dependents'

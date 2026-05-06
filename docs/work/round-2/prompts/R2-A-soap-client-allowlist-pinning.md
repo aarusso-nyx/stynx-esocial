@@ -30,9 +30,8 @@
 
 ## Tasks
 
-1. Move or copy the retained XSD bundle from
-   `packages/domain/src/sgp-lifted/esocial-worker/xsd/` into active XML
-   ownership, or record a release-owner exception with expiration.
+1. Move or copy the retained XSD bundle into active XML ownership, or record a
+   release-owner exception with expiration.
 2. Update all active `xsdBinding` metadata to the active XSD path.
 3. Add explicit per-stage SOAP endpoint allowlists:
    - qualification
@@ -47,8 +46,7 @@
    - pin mismatch fails before payload submission
 6. Demonstrate kill switch and circuit breaker behavior before any official
    endpoint can be reached.
-7. Prove no active source imports remain from `sgp-lifted` except an approved
-   XSD-retention exception.
+7. Prove no active source imports remain from `sgp-lifted`.
 
 ## Verification
 

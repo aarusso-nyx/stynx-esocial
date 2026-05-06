@@ -12,14 +12,16 @@ before use.
 
 ## Start Gate
 
-Round 2 **cannot start** until every Round 1 closure item is `PASS`. Current
-recorded blockers from the live repository are:
+Round 2 real connectivity **cannot start** until every Round 1 closure item is
+`PASS`. Local, no-official-call foundation work may shrink prerequisites, but
+R2-B/R2-C remain blocked while any item below is open. Current recorded
+blockers from the live repository are:
 
 | Gate | Current status | Required before R2 |
 | --- | --- | --- |
 | All 15 Round 1 closure items | Blocked until release owner records final PASS evidence. | `docs/release/0.2.0/release-checklist.md` has no open item. |
 | Round 1 evidence bundle | Present, but final owner-accepted release state is not complete. | `docs/release/0.2.0/` contains CI URL, release decision, and owner approvals. |
-| Lifted tree retired | Product code retired; retained XSD bundle remains under `packages/domain/src/sgp-lifted/esocial-worker/xsd/`. | Move the XSD bundle into active XML ownership or record a release-owner exception before real connectivity. |
+| Lifted tree retired | Local R2-A foundation moved the retained XSD bundle into `packages/domain/src/xml/xsd/bundle/` and removed `packages/domain/src/sgp-lifted/`. | Keep active XSD bindings green in `npm test`, `npm run test:integration`, and `npm run integration:localstack`. |
 | Observability parity for all 39 families | Active families are covered by emitted fields and alarms; owner-blocked families remain explicit exceptions. | Observability matrix includes all active and explicitly retired/deferred families. |
 | Operator runbooks reference implemented endpoints | Implemented local/runtime endpoints are documented. | Real endpoint, certificate, replay, DLQ, and outage runbooks are updated from R2 evidence. |
 | DLQ replay endpoint authenticated and tested | Batch 6 local evidence passed. | Auth evidence is included in the 0.2.0 release bundle and stays green. |
@@ -49,8 +51,8 @@ Round 2 is done only when every item below is proven from CI, release evidence,
 or owner-signed operational evidence:
 
 1. All Round 1 closure items are `PASS` and linked from the Round 2 evidence.
-2. The retained XSD bundle is moved into the active XML package or has a
-   release-owner exception that expires before production cutover.
+2. The retained XSD bundle is moved into the active XML package and active
+   metadata no longer points at `packages/domain/src/sgp-lifted/`.
 3. Real SOAP endpoint routing uses an explicit per-stage allowlist and denies
    `gov.br` targets unless the stage is owner-authorized for real connectivity.
 4. TLS verification is `rejectUnauthorized: true`; endpoint thumbprints or CA

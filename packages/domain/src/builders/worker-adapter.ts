@@ -36,7 +36,7 @@ type WorkerMetadata = BuilderMetadata & Readonly<{
   eventCode: EsocialPromotedWorkerDtoEventClass;
 }>;
 
-const XSD_ROOT = 'packages/domain/src/sgp-lifted/esocial-worker/xsd';
+const XSD_ROOT = 'packages/domain/src/xml/xsd/bundle';
 
 export const WORKER_EVENT_METADATA: Readonly<Record<
   EsocialPromotedWorkerDtoEventClass,

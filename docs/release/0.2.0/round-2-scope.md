@@ -11,5 +11,6 @@ blocks are resolved or explicitly exceptioned by the release owner:
 - eSocial regulatory owner decision for S-1030, S-1040, and S-1060.
 - Release-owner decision for final `@esocial/contracts@1.1.0` publication or
   a recorded RC exception.
-- Active ownership or release-owner exception for the retained XSD bundle under
-  `packages/domain/src/sgp-lifted/esocial-worker/xsd/`.
+- Continued evidence that active XSD bindings use
+  `packages/domain/src/xml/xsd/bundle/` and `packages/domain/src/sgp-lifted/`
+  remains deleted.

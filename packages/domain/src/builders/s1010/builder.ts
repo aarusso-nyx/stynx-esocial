@@ -19,7 +19,7 @@ export const S1010_METADATA: BuilderMetadata = {
   xmlRoot: 'eSocial',
   eventElement: 'evtTabRubrica',
   namespace: 'http://www.esocial.gov.br/schema/evt/evtTabRubrica/v_S_01_03_00',
-  xsdBinding: 'packages/domain/src/sgp-lifted/esocial-worker/xsd/evtTabRubrica.xsd',
+  xsdBinding: 'packages/domain/src/xml/xsd/bundle/evtTabRubrica.xsd',
   tableVersionDependencies: ['S-1000'],
 };
 

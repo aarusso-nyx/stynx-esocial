@@ -21,7 +21,7 @@ export const S2200_METADATA: BuilderMetadata = {
   xmlRoot: 'eSocial',
   eventElement: 'evtAdmissao',
   namespace: 'http://www.esocial.gov.br/schema/evt/evtAdmissao/v_S_01_03_00',
-  xsdBinding: 'packages/domain/src/sgp-lifted/esocial-worker/xsd/evtAdmissao.xsd',
+  xsdBinding: 'packages/domain/src/xml/xsd/bundle/evtAdmissao.xsd',
   tableVersionDependencies: ['S-1000', 'S-1030', 'S-1050'],
 };
 

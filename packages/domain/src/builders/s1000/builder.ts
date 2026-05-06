@@ -20,7 +20,7 @@ export const S1000_METADATA: BuilderMetadata = {
   eventElement: 'evtInfoEmpregador',
   namespace:
     'http://www.esocial.gov.br/schema/evt/evtInfoEmpregador/v_S_01_03_00',
-  xsdBinding: 'packages/domain/src/sgp-lifted/esocial-worker/xsd/evtInfoEmpregador.xsd',
+  xsdBinding: 'packages/domain/src/xml/xsd/bundle/evtInfoEmpregador.xsd',
   tableVersionDependencies: [],
 };
 
