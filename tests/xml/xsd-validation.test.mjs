@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 import { generateKeyPairSync } from 'node:crypto';
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { test } from 'node:test';
 
 import {
@@ -13,6 +15,7 @@ import {
 } from '../../packages/domain/dist/index.js';
 
 const now = new Date('2026-05-05T12:00:00.000Z');
+const root = new URL('../..', import.meta.url).pathname;
 const tenantId = '00000000-0000-4000-8000-000000000601';
 const environment = 'QUALIFICATION';
 
@@ -33,6 +36,26 @@ test('promoted table XML validates against bound S-1.3 XSDs with unsigned pre-si
     assert.equal(result.issues.length, 0);
     assert.match(result.payloadHash, /^sha256:[a-f0-9]{64}$/u);
     assert.match(result.xsdPath, /^packages\/domain\/src\/xml\/xsd\/bundle\//u);
+  }
+});
+
+test('committed table golden variants validate against their bound S-1.3 XSDs', () => {
+  for (const event of ['s1000', 's1005', 's1010', 's1020', 's1050', 's1070']) {
+    const eventClass = `S-${event.slice(1)}`;
+    const dir = join(root, 'docs/templates/golden/builders', event);
+    for (const fileName of readdirSync(dir).filter((file) => file.endsWith('.golden.xml'))) {
+      const result = validatePromotedTableXml({
+        eventClass,
+        xml: readFileSync(join(dir, fileName), 'utf8'),
+        tenantId,
+        environment,
+        now,
+      });
+
+      assert.equal(result.valid, true, fileName);
+      assert.equal(result.eventClass, eventClass, fileName);
+      assert.equal(result.issues.length, 0, fileName);
+    }
   }
 });
 

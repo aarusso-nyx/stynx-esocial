@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtCdBenIn/v_S_01_03_00">
+  <evtCdBenIn Id="ID4230820610353535825032212430362351">
+    <ideEvento><indRetif>1</indRetif><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+
+    <beneficiario><cpfBenef>11144477735</cpfBenef><matricula>MAT-1</matricula></beneficiario>
+    <infoBenInicio>
+      <cadIni>N</cadIni>
+      <indSitBenef>1</indSitBenef>
+      <nrBeneficio>RET08000000000002413</nrBeneficio>
+      <dtIniBeneficio>2026-05-01</dtIniBeneficio>
+      <dadosBeneficio>
+        <tpBeneficio>0101</tpBeneficio>
+        <tpPlanRP>0</tpPlanRP>
+        <dsc>Aposentadoria por tempo de contribuicao</dsc>
+        <indDecJud>N</indDecJud>
+      </dadosBeneficio>
+    </infoBenInicio>
+  </evtCdBenIn>
+</eSocial>

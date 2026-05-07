@@ -5,6 +5,41 @@ export const ESOCIAL_AWS_BOUNDARY = {
   databaseAccess: 'lambda-private-subnets-only',
   forbiddenNetworkPaths: ['vpc-peering-to-sgp', 'fdw-to-sgp', 'shared-db-url'],
   allowedCrossAccountPaths: ['sqs', 'eventbridge', 'mtls-api-gateway'],
+  privateApiAccess: ['sqs', 'secretsmanager', 'kms', 'events', 'logs', 's3-gateway'],
+} as const;
+
+export const ESOCIAL_INTERFACE_VPC_ENDPOINTS = [
+  'sqs',
+  'secretsmanager',
+  'kms',
+  'events',
+  'logs',
+] as const;
+
+export const ESOCIAL_GATEWAY_VPC_ENDPOINTS = ['s3'] as const;
+
+export const ESOCIAL_ENDPOINT_SECURITY_GROUP = {
+  id: 'EsocialEndpointSecurityGroup',
+  ingressFrom: 'EsocialLambdaSecurityGroup',
+  port: 443,
+  egress: 'none',
+  principalAccountCondition: 'aws:PrincipalAccount',
+} as const;
+
+export const ESOCIAL_HTTP_GATEWAY_WAF = {
+  id: 'EsocialHttpGatewayWebAcl',
+  attachedStages: ['restricted-production', 'production'],
+  unattachedStages: ['qualification'],
+  managedRules: [
+    'AWSManagedRulesCommonRuleSet',
+    'AWSManagedRulesKnownBadInputsRuleSet',
+  ],
+  rateLimitRequestsPerFiveMinutes: 2_000,
+  defaultAction: 'ALLOW',
+  visibility: {
+    cloudWatchMetricsEnabled: true,
+    sampledRequestsEnabled: true,
+  },
 } as const;
 
 export const ESOCIAL_LAMBDA_SERVICES = [

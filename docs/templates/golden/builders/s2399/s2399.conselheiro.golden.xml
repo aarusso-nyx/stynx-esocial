@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtTSVTermino/v_S_01_03_00">
+  <evtTSVTermino Id="ID2232330307130105132861366366509632">
+    <ideEvento><indRetif>1</indRetif><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+    <ideTrabSemVinculo><cpfTrab>22255588804</cpfTrab><matricula>TSV-CON-01</matricula></ideTrabSemVinculo>
+    <infoTSVTermino>
+      <dtTerm>2027-03-14</dtTerm>
+    </infoTSVTermino>
+  </evtTSVTermino>
+</eSocial>

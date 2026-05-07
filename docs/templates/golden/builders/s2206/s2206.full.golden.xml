@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtAltContratual/v_S_01_03_00">
+  <evtAltContratual Id="ID2481500450289618220561516275122324">
+    <ideEvento><indRetif>1</indRetif><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+
+    <ideVinculo><cpfTrab>12345678901</cpfTrab><matricula>MAT-1</matricula></ideVinculo>
+    <altContratual>
+      <dtAlteracao>2026-05-10</dtAlteracao>
+      <dtEf>2026-05-15</dtEf>
+      <dscAlt>Promocao funcional aprovada</dscAlt>
+      <vinculo>
+        <tpRegPrev>2</tpRegPrev>
+        <infoRegimeTrab><infoEstatutario><tpPlanRP>0</tpPlanRP><indTetoRGPS>N</indTetoRGPS><indAbonoPerm>N</indAbonoPerm></infoEstatutario></infoRegimeTrab>
+        <infoContrato><nmCargo>Coordenador Administrativo</nmCargo><nmFuncao>Coordenador de Cadastro</nmFuncao><acumCargo>N</acumCargo><codCateg>301</codCateg><localTrabalho><localTrabGeral><tpInsc>1</tpInsc><nrInsc>12345678000270</nrInsc><descComp>Nova secretaria</descComp></localTrabGeral></localTrabalho></infoContrato>
+      </vinculo>
+    </altContratual>
+  </evtAltContratual>
+</eSocial>

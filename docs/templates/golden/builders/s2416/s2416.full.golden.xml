@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtCdBenAlt/v_S_01_03_00">
+  <evtCdBenAlt Id="ID1583179475957292572532584067285132">
+    <ideEvento><indRetif>1</indRetif><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+
+    <ideBeneficio><cpfBenef>12345678901</cpfBenef><nrBeneficio>PEN08000000000000001</nrBeneficio></ideBeneficio>
+    <infoBenAlteracao>
+      <dtAltBeneficio>2026-05-16</dtAltBeneficio>
+      <dadosBeneficio>
+        <tpBeneficio>0601</tpBeneficio>
+        <tpPlanRP>0</tpPlanRP>
+        <dsc>Alteracao de beneficio com suspensao temporaria</dsc>
+        <indSuspensao>S</indSuspensao>
+        <infoPenMorte><tpPenMorte>1</tpPenMorte><instPenMorte><tpDepInst>03</tpDepInst></instPenMorte></infoPenMorte>
+      </dadosBeneficio>
+    </infoBenAlteracao>
+  </evtCdBenAlt>
+</eSocial>

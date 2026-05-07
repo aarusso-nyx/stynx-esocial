@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtTSVInicio/v_S_01_03_00">
+  <evtTSVInicio Id="ID3455845252015559821248695351542143">
+    <ideEvento><indRetif>1</indRetif><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+    <trabalhador>
+      <cpfTrab>22255588804</cpfTrab>
+      <nmTrab>Bruno Conselheiro</nmTrab>
+      <sexo>M</sexo>
+      <racaCor>1</racaCor>
+      <estCiv>1</estCiv>
+      <grauInstr>09</grauInstr>
+
+      <nascimento><dtNascto>1995-01-02</dtNascto><paisNascto>105</paisNascto><paisNac>105</paisNac></nascimento>
+      <endereco><brasil><tpLograd>R</tpLograd><dscLograd>Rua Central</dscLograd><nrLograd>100</nrLograd><bairro>Centro</bairro><cep>70000000</cep><codMunic>5300108</codMunic><uf>DF</uf></brasil></endereco>
+
+      <contato><fonePrinc>61999998888</fonePrinc><emailPrinc>conselheiro@example.test</emailPrinc></contato>
+    </trabalhador>
+    <infoTSVInicio>
+      <cadIni>N</cadIni>
+      <matricula>TSV-CON-01</matricula>
+      <codCateg>410</codCateg>
+      <dtInicio>2026-03-15</dtInicio>
+      <infoComplementares><cargoFuncao><nmCargo>Conselheiro Tutelar</nmCargo></cargoFuncao><remuneracao><vrSalFx>3200.00</vrSalFx><undSalFixo>5</undSalFixo></remuneracao><infoTrabCedido><categOrig>301</categOrig><cnpjCednt>98765432000188</cnpjCednt><matricCed>TSV-CON-01</matricCed><dtAdmCed>2026-03-15</dtAdmCed><tpRegTrab>2</tpRegTrab><tpRegPrev>2</tpRegPrev></infoTrabCedido><localTrabGeral><tpInsc>1</tpInsc><nrInsc>12345678000270</nrInsc></localTrabGeral></infoComplementares>
+    </infoTSVInicio>
+  </evtTSVInicio>
+</eSocial>

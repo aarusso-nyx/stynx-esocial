@@ -162,6 +162,16 @@ function templateFor(stage) {
     },
     EsocialPrivateSubnetA: privateSubnet(stage, 'a', stage.subnetCidrs[0], 0),
     EsocialPrivateSubnetB: privateSubnet(stage, 'b', stage.subnetCidrs[1], 1),
+    EsocialPrivateRouteTableA: privateRouteTable(stage, 'a'),
+    EsocialPrivateRouteTableB: privateRouteTable(stage, 'b'),
+    EsocialPrivateRouteTableAssociationA: privateRouteTableAssociation(
+      'EsocialPrivateSubnetA',
+      'EsocialPrivateRouteTableA',
+    ),
+    EsocialPrivateRouteTableAssociationB: privateRouteTableAssociation(
+      'EsocialPrivateSubnetB',
+      'EsocialPrivateRouteTableB',
+    ),
     EsocialLambdaSecurityGroup: {
       Type: 'AWS::EC2::SecurityGroup',
       Properties: {
@@ -174,6 +184,23 @@ function templateFor(stage) {
             Description: 'Outbound only; no SGP database ingress is allowed.',
           },
         ],
+      },
+    },
+    EsocialEndpointSecurityGroup: {
+      Type: 'AWS::EC2::SecurityGroup',
+      Properties: {
+        GroupDescription: `esocial ${stage.name} interface endpoint ingress from service lambdas`,
+        VpcId: { Ref: 'EsocialVpc' },
+        SecurityGroupIngress: [
+          {
+            IpProtocol: 'tcp',
+            FromPort: 443,
+            ToPort: 443,
+            SourceSecurityGroupId: { Ref: 'EsocialLambdaSecurityGroup' },
+            Description: 'HTTPS from eSocial service compute only.',
+          },
+        ],
+        SecurityGroupEgress: [],
       },
     },
     EsocialDatabaseSecurityGroup: {
@@ -271,6 +298,11 @@ function templateFor(stage) {
     ReturnDlq: fifoQueue(`sgp.esocial.return.dlq.${stage.name}.fifo`),
   };
 
+  for (const endpoint of interfaceEndpointSpecs()) {
+    resources[endpoint.logicalId] = interfaceEndpoint(endpoint);
+  }
+  resources.EsocialS3GatewayEndpoint = gatewayEndpoint('s3');
+
   for (const serviceName of serviceNames) {
     const id = logicalId(serviceName);
     resources[`${id}Role`] = lambdaRoleResource(stage, serviceName);
@@ -317,6 +349,74 @@ function templateFor(stage) {
 
   resources.SubmissionEventSource = eventSource('SubmissionFunction', 'SubmitRequestQueue');
   resources.RetornoEventSource = eventSource('RetornoFunction', 'SubmitResponseQueue');
+  resources.HttpGatewayRestApi = {
+    Type: 'AWS::ApiGateway::RestApi',
+    Properties: {
+      Name: `esocial-${stage.name}-http-gateway`,
+      EndpointConfiguration: { Types: ['REGIONAL'] },
+    },
+  };
+  resources.HttpGatewayRootMethod = {
+    Type: 'AWS::ApiGateway::Method',
+    Properties: {
+      RestApiId: { Ref: 'HttpGatewayRestApi' },
+      ResourceId: { 'Fn::GetAtt': ['HttpGatewayRestApi', 'RootResourceId'] },
+      HttpMethod: 'ANY',
+      AuthorizationType: 'AWS_IAM',
+      Integration: {
+        Type: 'AWS_PROXY',
+        IntegrationHttpMethod: 'POST',
+        Uri: {
+          'Fn::Sub':
+            'arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${HttpGatewayFunction.Arn}/invocations',
+        },
+      },
+    },
+  };
+  resources.HttpGatewayDeployment = {
+    Type: 'AWS::ApiGateway::Deployment',
+    DependsOn: ['HttpGatewayRootMethod'],
+    Properties: {
+      RestApiId: { Ref: 'HttpGatewayRestApi' },
+      Description: `esocial ${stage.name} http-gateway deployment`,
+    },
+  };
+  resources.HttpGatewayStage = {
+    Type: 'AWS::ApiGateway::Stage',
+    Properties: {
+      RestApiId: { Ref: 'HttpGatewayRestApi' },
+      DeploymentId: { Ref: 'HttpGatewayDeployment' },
+      StageName: stage.name,
+      TracingEnabled: true,
+    },
+  };
+  resources.HttpGatewayLambdaPermission = {
+    Type: 'AWS::Lambda::Permission',
+    Properties: {
+      Action: 'lambda:InvokeFunction',
+      FunctionName: { Ref: 'HttpGatewayFunction' },
+      Principal: 'apigateway.amazonaws.com',
+      SourceArn: {
+        'Fn::Sub':
+          'arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${HttpGatewayRestApi}/*/*/',
+      },
+    },
+  };
+  if (stage.name !== 'qualification') {
+    resources.EsocialHttpGatewayWebAcl = wafWebAcl(stage);
+    resources.EsocialHttpGatewayWebAclAssociation = {
+      Type: 'AWS::WAFv2::WebACLAssociation',
+      DependsOn: ['HttpGatewayStage'],
+      Properties: {
+        ResourceArn: {
+          'Fn::Sub':
+            'arn:${AWS::Partition}:apigateway:${AWS::Region}::/restapis/${HttpGatewayRestApi}/stages/${HttpGatewayStage}',
+        },
+        WebACLArn: { 'Fn::GetAtt': ['EsocialHttpGatewayWebAcl', 'Arn'] },
+      },
+    };
+    resources.WafBlockedRequestsAlarm = wafBlockedRequestsAlarm(stage);
+  }
   resources.AuditRule = {
     Type: 'AWS::Events::Rule',
     Properties: {
@@ -417,6 +517,13 @@ function templateFor(stage) {
       SubmitRequestQueueUrl: { Value: { Ref: 'SubmitRequestQueue' } },
       SpoolQueueUrl: { Value: { Ref: 'SpoolQueue' } },
       LambdaCount: { Value: String(serviceNames.length) },
+      HttpGatewayApiId: { Value: { Ref: 'HttpGatewayRestApi' } },
+      HttpGatewayWebAclArn: {
+        Value:
+          stage.name === 'qualification'
+            ? 'unattached-in-qualification'
+            : { 'Fn::GetAtt': ['EsocialHttpGatewayWebAcl', 'Arn'] },
+      },
     },
   };
 }
@@ -432,6 +539,214 @@ function privateSubnet(stage, suffix, cidrBlock, availabilityZoneIndex) {
       },
       MapPublicIpOnLaunch: false,
       Tags: [{ Key: 'Name', Value: `esocial-${stage.name}-private-${suffix}` }],
+    },
+  };
+}
+
+function privateRouteTable(stage, suffix) {
+  return {
+    Type: 'AWS::EC2::RouteTable',
+    Properties: {
+      VpcId: { Ref: 'EsocialVpc' },
+      Tags: [{ Key: 'Name', Value: `esocial-${stage.name}-private-${suffix}` }],
+    },
+  };
+}
+
+function privateRouteTableAssociation(subnetLogicalId, routeTableLogicalId) {
+  return {
+    Type: 'AWS::EC2::SubnetRouteTableAssociation',
+    Properties: {
+      SubnetId: { Ref: subnetLogicalId },
+      RouteTableId: { Ref: routeTableLogicalId },
+    },
+  };
+}
+
+function interfaceEndpointSpecs() {
+  return [
+    {
+      logicalId: 'EsocialSqsEndpoint',
+      service: 'sqs',
+      actions: [
+        'sqs:SendMessage',
+        'sqs:ReceiveMessage',
+        'sqs:DeleteMessage',
+        'sqs:GetQueueAttributes',
+      ],
+      resource: { 'Fn::Sub': 'arn:${AWS::Partition}:sqs:${AWS::Region}:${AWS::AccountId}:sgp.esocial.*' },
+    },
+    {
+      logicalId: 'EsocialSecretsManagerEndpoint',
+      service: 'secretsmanager',
+      actions: ['secretsmanager:GetSecretValue'],
+      resource: { 'Fn::Sub': 'arn:${AWS::Partition}:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:esocial/*' },
+    },
+    {
+      logicalId: 'EsocialKmsEndpoint',
+      service: 'kms',
+      actions: ['kms:Decrypt', 'kms:GenerateDataKey'],
+      resource: kmsKeyArns(),
+    },
+    {
+      logicalId: 'EsocialEventsEndpoint',
+      service: 'events',
+      actions: ['events:PutEvents'],
+      resource: { 'Fn::GetAtt': ['EsocialEventsBus', 'Arn'] },
+    },
+    {
+      logicalId: 'EsocialLogsEndpoint',
+      service: 'logs',
+      actions: ['logs:CreateLogStream', 'logs:PutLogEvents'],
+      resource: { 'Fn::Sub': 'arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/*' },
+    },
+  ];
+}
+
+function interfaceEndpoint(spec) {
+  return {
+    Type: 'AWS::EC2::VPCEndpoint',
+    Properties: {
+      VpcEndpointType: 'Interface',
+      VpcId: { Ref: 'EsocialVpc' },
+      ServiceName: { 'Fn::Sub': `com.amazonaws.\${AWS::Region}.${spec.service}` },
+      PrivateDnsEnabled: true,
+      SubnetIds: [
+        { Ref: 'EsocialPrivateSubnetA' },
+        { Ref: 'EsocialPrivateSubnetB' },
+      ],
+      SecurityGroupIds: [{ Ref: 'EsocialEndpointSecurityGroup' }],
+      PolicyDocument: endpointPolicy(spec.actions, spec.resource),
+    },
+  };
+}
+
+function gatewayEndpoint(service) {
+  return {
+    Type: 'AWS::EC2::VPCEndpoint',
+    Properties: {
+      VpcEndpointType: 'Gateway',
+      VpcId: { Ref: 'EsocialVpc' },
+      ServiceName: { 'Fn::Sub': `com.amazonaws.\${AWS::Region}.${service}` },
+      RouteTableIds: [
+        { Ref: 'EsocialPrivateRouteTableA' },
+        { Ref: 'EsocialPrivateRouteTableB' },
+      ],
+      PolicyDocument: endpointPolicy(
+        ['s3:GetObject', 's3:PutObject', 's3:ListBucket'],
+        [
+          { 'Fn::Sub': 'arn:${AWS::Partition}:s3:::cdk-*-${AWS::AccountId}-${AWS::Region}' },
+          { 'Fn::Sub': 'arn:${AWS::Partition}:s3:::cdk-*-${AWS::AccountId}-${AWS::Region}/*' },
+        ],
+      ),
+    },
+  };
+}
+
+function endpointPolicy(actions, resource) {
+  return {
+    Version: '2012-10-17',
+    Statement: [
+      {
+        Effect: 'Allow',
+        Principal: '*',
+        Action: actions,
+        Resource: resource,
+        Condition: {
+          StringEquals: {
+            'aws:PrincipalAccount': { Ref: 'AWS::AccountId' },
+          },
+        },
+      },
+    ],
+  };
+}
+
+function wafWebAcl(stage) {
+  const metricPrefix = `esocial-${stage.name}-http-gateway`;
+  return {
+    Type: 'AWS::WAFv2::WebACL',
+    Properties: {
+      Name: metricPrefix,
+      Scope: 'REGIONAL',
+      DefaultAction: { Allow: {} },
+      VisibilityConfig: {
+        CloudWatchMetricsEnabled: true,
+        MetricName: `${metricPrefix}-all`,
+        SampledRequestsEnabled: true,
+      },
+      Rules: [
+        {
+          Name: 'AWSManagedRulesCommonRuleSet',
+          Priority: 0,
+          OverrideAction: { None: {} },
+          Statement: {
+            ManagedRuleGroupStatement: {
+              VendorName: 'AWS',
+              Name: 'AWSManagedRulesCommonRuleSet',
+            },
+          },
+          VisibilityConfig: {
+            CloudWatchMetricsEnabled: true,
+            MetricName: `${metricPrefix}-common`,
+            SampledRequestsEnabled: true,
+          },
+        },
+        {
+          Name: 'AWSManagedRulesKnownBadInputsRuleSet',
+          Priority: 1,
+          OverrideAction: { None: {} },
+          Statement: {
+            ManagedRuleGroupStatement: {
+              VendorName: 'AWS',
+              Name: 'AWSManagedRulesKnownBadInputsRuleSet',
+            },
+          },
+          VisibilityConfig: {
+            CloudWatchMetricsEnabled: true,
+            MetricName: `${metricPrefix}-known-bad-inputs`,
+            SampledRequestsEnabled: true,
+          },
+        },
+        {
+          Name: 'RateLimitPerIp',
+          Priority: 2,
+          Action: { Block: {} },
+          Statement: {
+            RateBasedStatement: {
+              AggregateKeyType: 'IP',
+              Limit: 2_000,
+            },
+          },
+          VisibilityConfig: {
+            CloudWatchMetricsEnabled: true,
+            MetricName: `${metricPrefix}-rate-limit`,
+            SampledRequestsEnabled: true,
+          },
+        },
+      ],
+    },
+  };
+}
+
+function wafBlockedRequestsAlarm(stage) {
+  return {
+    Type: 'AWS::CloudWatch::Alarm',
+    Properties: {
+      AlarmName: `esocial-${stage.name}-waf-blocked-requests`,
+      Namespace: 'AWS/WAFV2',
+      MetricName: 'BlockedRequests',
+      Dimensions: [
+        { Name: 'WebACL', Value: `esocial-${stage.name}-http-gateway` },
+        { Name: 'Rule', Value: 'ALL' },
+        { Name: 'Region', Value: { Ref: 'AWS::Region' } },
+      ],
+      Statistic: 'Sum',
+      Period: 300,
+      EvaluationPeriods: 1,
+      Threshold: 100,
+      ComparisonOperator: 'GreaterThanThreshold',
+      TreatMissingData: 'notBreaching',
     },
   };
 }

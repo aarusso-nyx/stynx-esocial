@@ -1,3 +1,4 @@
+import type { TenantId } from './branded.js';
 import type {
   EsocialContractVersion,
   EsocialEnvironment,
@@ -40,7 +41,7 @@ export type EsocialEnvelopeBase<TFamily extends EsocialTransportFamily> =
     'correlation-id': string;
     'idempotency-key': string;
     created_at: string;
-    tenant_id: string;
+    tenant_id: TenantId;
     environment: EsocialEnvironment;
     event_class: EsocialRelayEventClass;
     source: EsocialSourceReference;

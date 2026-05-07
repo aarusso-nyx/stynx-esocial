@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtTSVAltContr/v_S_01_03_00">
+  <evtTSVAltContr Id="ID3839413529349408082255425152279304">
+    <ideEvento><indRetif>1</indRetif><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+
+    <ideTrabSemVinculo><cpfTrab>12345678901</cpfTrab><matricula>TSV-1</matricula></ideTrabSemVinculo>
+    <infoTSVAlteracao>
+      <dtAlteracao>2026-05-15</dtAlteracao>
+      <infoComplementares><remuneracao><vrSalFx>1234.56</vrSalFx><undSalFixo>5</undSalFixo></remuneracao></infoComplementares>
+    </infoTSVAlteracao>
+  </evtTSVAltContr>
+</eSocial>

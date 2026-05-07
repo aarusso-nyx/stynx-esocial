@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtTabJornada/v_S_01_03_00">
+  <evtTabJornada Id="ID8250125478119821901431603111125113">
+    <ideEvento><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+    <infoJornada>
+      <inclusao>
+        <ideJornada><codJornada>JORN12</codJornada><iniValid>2026-01</iniValid></ideJornada>
+        <dadosJornada><dscJornada>Jornada especial de doze horas</dscJornada><durJornada>PT12H0M</durJornada></dadosJornada>
+      </inclusao>
+    </infoJornada>
+  </evtTabJornada>
+</eSocial>

@@ -393,6 +393,15 @@ SGP can expose local read-only status in its own business screens, but
 operational eSocial dashboards, certificate rotation, DLQ replay, and payload
 evidence belong in this repository.
 
+## End-to-End Scenario Test
+
+`tests/integration/payroll-cycle.test.mjs` is the deterministic consumer
+scenario for a single monthly payroll cycle. It builds one S-1200 remuneration
+DTO and one S-1299 closure DTO, submits both through a mock SOAP boundary with
+deterministic protocols, parses S-5001 and S-5011 totalizer XML from committed
+fixtures, and asserts the in-memory audit log preserves tenant, competence,
+event order, and idempotency-key correlation across submissions and returns.
+
 ## Compatibility
 
 This project is pre-production. Do not add backward-compatibility shims for old

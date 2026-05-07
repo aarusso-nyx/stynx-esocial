@@ -126,6 +126,56 @@
         ]
       }
     },
+    "EsocialPrivateRouteTableA": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "EsocialVpc"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "esocial-qualification-private-a"
+          }
+        ]
+      }
+    },
+    "EsocialPrivateRouteTableB": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "EsocialVpc"
+        },
+        "Tags": [
+          {
+            "Key": "Name",
+            "Value": "esocial-qualification-private-b"
+          }
+        ]
+      }
+    },
+    "EsocialPrivateRouteTableAssociationA": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "EsocialPrivateSubnetA"
+        },
+        "RouteTableId": {
+          "Ref": "EsocialPrivateRouteTableA"
+        }
+      }
+    },
+    "EsocialPrivateRouteTableAssociationB": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "EsocialPrivateSubnetB"
+        },
+        "RouteTableId": {
+          "Ref": "EsocialPrivateRouteTableB"
+        }
+      }
+    },
     "EsocialLambdaSecurityGroup": {
       "Type": "AWS::EC2::SecurityGroup",
       "Properties": {
@@ -140,6 +190,27 @@
             "Description": "Outbound only; no SGP database ingress is allowed."
           }
         ]
+      }
+    },
+    "EsocialEndpointSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "esocial qualification interface endpoint ingress from service lambdas",
+        "VpcId": {
+          "Ref": "EsocialVpc"
+        },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 443,
+            "ToPort": 443,
+            "SourceSecurityGroupId": {
+              "Ref": "EsocialLambdaSecurityGroup"
+            },
+            "Description": "HTTPS from eSocial service compute only."
+          }
+        ],
+        "SecurityGroupEgress": []
       }
     },
     "EsocialDatabaseSecurityGroup": {
@@ -432,6 +503,320 @@
         "ContentBasedDeduplication": false,
         "KmsMasterKeyId": {
           "Ref": "EsocialQueueKmsKey"
+        }
+      }
+    },
+    "EsocialSqsEndpoint": {
+      "Type": "AWS::EC2::VPCEndpoint",
+      "Properties": {
+        "VpcEndpointType": "Interface",
+        "VpcId": {
+          "Ref": "EsocialVpc"
+        },
+        "ServiceName": {
+          "Fn::Sub": "com.amazonaws.${AWS::Region}.sqs"
+        },
+        "PrivateDnsEnabled": true,
+        "SubnetIds": [
+          {
+            "Ref": "EsocialPrivateSubnetA"
+          },
+          {
+            "Ref": "EsocialPrivateSubnetB"
+          }
+        ],
+        "SecurityGroupIds": [
+          {
+            "Ref": "EsocialEndpointSecurityGroup"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": "*",
+              "Action": [
+                "sqs:SendMessage",
+                "sqs:ReceiveMessage",
+                "sqs:DeleteMessage",
+                "sqs:GetQueueAttributes"
+              ],
+              "Resource": {
+                "Fn::Sub": "arn:${AWS::Partition}:sqs:${AWS::Region}:${AWS::AccountId}:sgp.esocial.*"
+              },
+              "Condition": {
+                "StringEquals": {
+                  "aws:PrincipalAccount": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "EsocialSecretsManagerEndpoint": {
+      "Type": "AWS::EC2::VPCEndpoint",
+      "Properties": {
+        "VpcEndpointType": "Interface",
+        "VpcId": {
+          "Ref": "EsocialVpc"
+        },
+        "ServiceName": {
+          "Fn::Sub": "com.amazonaws.${AWS::Region}.secretsmanager"
+        },
+        "PrivateDnsEnabled": true,
+        "SubnetIds": [
+          {
+            "Ref": "EsocialPrivateSubnetA"
+          },
+          {
+            "Ref": "EsocialPrivateSubnetB"
+          }
+        ],
+        "SecurityGroupIds": [
+          {
+            "Ref": "EsocialEndpointSecurityGroup"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": "*",
+              "Action": [
+                "secretsmanager:GetSecretValue"
+              ],
+              "Resource": {
+                "Fn::Sub": "arn:${AWS::Partition}:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:esocial/*"
+              },
+              "Condition": {
+                "StringEquals": {
+                  "aws:PrincipalAccount": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "EsocialKmsEndpoint": {
+      "Type": "AWS::EC2::VPCEndpoint",
+      "Properties": {
+        "VpcEndpointType": "Interface",
+        "VpcId": {
+          "Ref": "EsocialVpc"
+        },
+        "ServiceName": {
+          "Fn::Sub": "com.amazonaws.${AWS::Region}.kms"
+        },
+        "PrivateDnsEnabled": true,
+        "SubnetIds": [
+          {
+            "Ref": "EsocialPrivateSubnetA"
+          },
+          {
+            "Ref": "EsocialPrivateSubnetB"
+          }
+        ],
+        "SecurityGroupIds": [
+          {
+            "Ref": "EsocialEndpointSecurityGroup"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": "*",
+              "Action": [
+                "kms:Decrypt",
+                "kms:GenerateDataKey"
+              ],
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "EsocialDatabaseKmsKey",
+                    "Arn"
+                  ]
+                },
+                {
+                  "Fn::GetAtt": [
+                    "EsocialCertificateKmsKey",
+                    "Arn"
+                  ]
+                },
+                {
+                  "Fn::GetAtt": [
+                    "EsocialQueueKmsKey",
+                    "Arn"
+                  ]
+                }
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:PrincipalAccount": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "EsocialEventsEndpoint": {
+      "Type": "AWS::EC2::VPCEndpoint",
+      "Properties": {
+        "VpcEndpointType": "Interface",
+        "VpcId": {
+          "Ref": "EsocialVpc"
+        },
+        "ServiceName": {
+          "Fn::Sub": "com.amazonaws.${AWS::Region}.events"
+        },
+        "PrivateDnsEnabled": true,
+        "SubnetIds": [
+          {
+            "Ref": "EsocialPrivateSubnetA"
+          },
+          {
+            "Ref": "EsocialPrivateSubnetB"
+          }
+        ],
+        "SecurityGroupIds": [
+          {
+            "Ref": "EsocialEndpointSecurityGroup"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": "*",
+              "Action": [
+                "events:PutEvents"
+              ],
+              "Resource": {
+                "Fn::GetAtt": [
+                  "EsocialEventsBus",
+                  "Arn"
+                ]
+              },
+              "Condition": {
+                "StringEquals": {
+                  "aws:PrincipalAccount": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "EsocialLogsEndpoint": {
+      "Type": "AWS::EC2::VPCEndpoint",
+      "Properties": {
+        "VpcEndpointType": "Interface",
+        "VpcId": {
+          "Ref": "EsocialVpc"
+        },
+        "ServiceName": {
+          "Fn::Sub": "com.amazonaws.${AWS::Region}.logs"
+        },
+        "PrivateDnsEnabled": true,
+        "SubnetIds": [
+          {
+            "Ref": "EsocialPrivateSubnetA"
+          },
+          {
+            "Ref": "EsocialPrivateSubnetB"
+          }
+        ],
+        "SecurityGroupIds": [
+          {
+            "Ref": "EsocialEndpointSecurityGroup"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": "*",
+              "Action": [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+              ],
+              "Resource": {
+                "Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/*"
+              },
+              "Condition": {
+                "StringEquals": {
+                  "aws:PrincipalAccount": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "EsocialS3GatewayEndpoint": {
+      "Type": "AWS::EC2::VPCEndpoint",
+      "Properties": {
+        "VpcEndpointType": "Gateway",
+        "VpcId": {
+          "Ref": "EsocialVpc"
+        },
+        "ServiceName": {
+          "Fn::Sub": "com.amazonaws.${AWS::Region}.s3"
+        },
+        "RouteTableIds": [
+          {
+            "Ref": "EsocialPrivateRouteTableA"
+          },
+          {
+            "Ref": "EsocialPrivateRouteTableB"
+          }
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": "*",
+              "Action": [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:ListBucket"
+              ],
+              "Resource": [
+                {
+                  "Fn::Sub": "arn:${AWS::Partition}:s3:::cdk-*-${AWS::AccountId}-${AWS::Region}"
+                },
+                {
+                  "Fn::Sub": "arn:${AWS::Partition}:s3:::cdk-*-${AWS::AccountId}-${AWS::Region}/*"
+                }
+              ],
+              "Condition": {
+                "StringEquals": {
+                  "aws:PrincipalAccount": {
+                    "Ref": "AWS::AccountId"
+                  }
+                }
+              }
+            }
+          ]
         }
       }
     },
@@ -1295,6 +1680,78 @@
         ]
       }
     },
+    "HttpGatewayRestApi": {
+      "Type": "AWS::ApiGateway::RestApi",
+      "Properties": {
+        "Name": "esocial-qualification-http-gateway",
+        "EndpointConfiguration": {
+          "Types": [
+            "REGIONAL"
+          ]
+        }
+      }
+    },
+    "HttpGatewayRootMethod": {
+      "Type": "AWS::ApiGateway::Method",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "HttpGatewayRestApi"
+        },
+        "ResourceId": {
+          "Fn::GetAtt": [
+            "HttpGatewayRestApi",
+            "RootResourceId"
+          ]
+        },
+        "HttpMethod": "ANY",
+        "AuthorizationType": "AWS_IAM",
+        "Integration": {
+          "Type": "AWS_PROXY",
+          "IntegrationHttpMethod": "POST",
+          "Uri": {
+            "Fn::Sub": "arn:${AWS::Partition}:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${HttpGatewayFunction.Arn}/invocations"
+          }
+        }
+      }
+    },
+    "HttpGatewayDeployment": {
+      "Type": "AWS::ApiGateway::Deployment",
+      "DependsOn": [
+        "HttpGatewayRootMethod"
+      ],
+      "Properties": {
+        "RestApiId": {
+          "Ref": "HttpGatewayRestApi"
+        },
+        "Description": "esocial qualification http-gateway deployment"
+      }
+    },
+    "HttpGatewayStage": {
+      "Type": "AWS::ApiGateway::Stage",
+      "Properties": {
+        "RestApiId": {
+          "Ref": "HttpGatewayRestApi"
+        },
+        "DeploymentId": {
+          "Ref": "HttpGatewayDeployment"
+        },
+        "StageName": "qualification",
+        "TracingEnabled": true
+      }
+    },
+    "HttpGatewayLambdaPermission": {
+      "Type": "AWS::Lambda::Permission",
+      "Properties": {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": {
+          "Ref": "HttpGatewayFunction"
+        },
+        "Principal": "apigateway.amazonaws.com",
+        "SourceArn": {
+          "Fn::Sub": "arn:${AWS::Partition}:execute-api:${AWS::Region}:${AWS::AccountId}:${HttpGatewayRestApi}/*/*/"
+        }
+      }
+    },
     "AuditRule": {
       "Type": "AWS::Events::Rule",
       "Properties": {
@@ -1431,6 +1888,14 @@
     },
     "LambdaCount": {
       "Value": "4"
+    },
+    "HttpGatewayApiId": {
+      "Value": {
+        "Ref": "HttpGatewayRestApi"
+      }
+    },
+    "HttpGatewayWebAclArn": {
+      "Value": "unattached-in-qualification"
     }
   }
 }

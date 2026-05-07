@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtPgtos/v_S_01_03_00">
+  <evtPgtos Id="ID6530558008629594514112177766840098">
+    <ideEvento><indRetif>1</indRetif><perApur>2026-01</perApur><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+    <ideBenef>
+      <cpfBenef>11122233344</cpfBenef>
+      <infoPgto>
+        <dtPgto>2026-01-25</dtPgto>
+        <tpPgto>1</tpPgto>
+        <perRef>2026-01</perRef>
+        <ideDmDev>DMPAYALT0000000000001</ideDmDev>
+        <vrLiq>1000.00</vrLiq>
+      </infoPgto>
+    </ideBenef>
+  </evtPgtos>
+</eSocial>
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtPgtos/v_S_01_03_00">
+  <evtPgtos Id="ID9546489517208322483090103582716127">
+    <ideEvento><indRetif>1</indRetif><perApur>2026-01</perApur><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+    <ideBenef>
+      <cpfBenef>22233344405</cpfBenef>
+      <infoPgto>
+        <dtPgto>2026-01-25</dtPgto>
+        <tpPgto>1</tpPgto>
+        <perRef>2026-01</perRef>
+        <ideDmDev>DM00000000000000000000</ideDmDev>
+        <vrLiq>2000.00</vrLiq>
+      </infoPgto>
+    </ideBenef>
+  </evtPgtos>
+</eSocial>

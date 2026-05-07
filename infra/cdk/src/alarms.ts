@@ -68,3 +68,15 @@ export const ESOCIAL_ALARM_REGISTRY: readonly EsocialAlarmDeclaration[] = [
     description: 'An eSocial endpoint circuit remained open longer than the policy window.',
   },
 ] as const;
+
+export const ESOCIAL_WAF_BLOCKED_REQUESTS_ALARM = {
+  name: 'WafBlockedRequestsAlarm',
+  namespace: 'AWS/WAFV2',
+  metricName: 'BlockedRequests',
+  statistic: 'Sum',
+  threshold: 100,
+  comparison: 'GreaterThanThreshold',
+  evaluationPeriods: 1,
+  periodSeconds: 300,
+  description: 'WAF blocked requests exceeded 100 in 5 minutes.',
+} as const;

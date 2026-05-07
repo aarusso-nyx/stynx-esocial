@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtContProc/v_S_01_03_00">
+  <evtContProc Id="ID0512523935331350344546613460240204">
+    <ideEvento><indRetif>1</indRetif><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+
+    <ideProc>
+      <nrProcTrab>12345678901234567890</nrProcTrab>
+      <perApurPgto>2026-05</perApurPgto>
+      <ideSeqProc>2</ideSeqProc><obs>Observed</obs>
+    </ideProc>
+    <ideTrab cpfTrab="12345678901"><calcTrib perRef="2026-05" vrBcCpMensal="1000.00" vrBcCp13="0.00"><infoCRContrib tpCR="113851" vrCR="110.00"/></calcTrib><infoCRIRRF tpCR="593656" vrCR="50.00"/></ideTrab>
+  </evtContProc>
+</eSocial>

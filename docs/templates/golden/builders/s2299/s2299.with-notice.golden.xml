@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtDeslig/v_S_01_03_00">
+  <evtDeslig Id="ID0219422218494442534588155291410378">
+    <ideEvento><indRetif>1</indRetif><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+
+    <ideVinculo><cpfTrab>12345678901</cpfTrab><matricula>MAT-1</matricula></ideVinculo>
+    <infoDeslig>
+      <mtvDeslig>02</mtvDeslig>
+      <dtDeslig>2026-05-31</dtDeslig>
+      <indPagtoAPI>S</indPagtoAPI>
+      <dtProjFimAPI>2026-06-30</dtProjFimAPI>
+      <verbasResc>
+        <dmDev>
+          <ideDmDev>RESC-1</ideDmDev>
+          <infoPerApur>
+            <ideEstabLot>
+              <tpInsc>1</tpInsc>
+              <nrInsc>12345678000199</nrInsc>
+              <codLotacao>LOT01</codLotacao>
+              <detVerbas><codRubr>RUB-RESC</codRubr><ideTabRubr>SGP</ideTabRubr><qtdRubr>1.00</qtdRubr><vrRubr>2500.00</vrRubr><indApurIR>0</indApurIR></detVerbas>
+            </ideEstabLot>
+          </infoPerApur>
+        </dmDev>
+      </verbasResc>
+    </infoDeslig>
+  </evtDeslig>
+</eSocial>

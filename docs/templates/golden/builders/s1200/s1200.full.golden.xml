@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtRemun/v_S_01_03_00">
+  <evtRemun Id="ID6147722505041620020405535998422816">
+    <ideEvento><indRetif>1</indRetif><indApuracao>1</indApuracao><perApur>2026-01</perApur><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+    <ideTrabalhador><cpfTrab>11122233344</cpfTrab></ideTrabalhador>
+    <dmDev>
+      <ideDmDev>DM00000000000000000000</ideDmDev>
+      <codCateg>101</codCateg>
+      <infoPerApur>
+        <ideEstabLot>
+          <tpInsc>1</tpInsc>
+          <nrInsc>12345678000199</nrInsc>
+          <codLotacao>LOT01</codLotacao>
+          <remunPerApur>
+            <matricula>MAT-REGISTRATION-1234567890123</matricula>
+            <itensRemun><codRubr>BASIC</codRubr><ideTabRubr>SGP</ideTabRubr><qtdRubr>1.0000</qtdRubr><vrRubr>3000.00</vrRubr><indApurIR>0</indApurIR></itensRemun>
+            <itensRemun><codRubr>RPPS</codRubr><ideTabRubr>SGP</ideTabRubr><qtdRubr>1.0000</qtdRubr><vrRubr>330.00</vrRubr><indApurIR>0</indApurIR></itensRemun>
+          </remunPerApur>
+        </ideEstabLot>
+      </infoPerApur>
+    </dmDev>
+  </evtRemun>
+</eSocial>
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtRemun/v_S_01_03_00">
+  <evtRemun Id="ID6292253274521902824885081625504515">
+    <ideEvento><indRetif>1</indRetif><indApuracao>1</indApuracao><perApur>2026-01</perApur><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+    <ideTrabalhador><cpfTrab>22233344405</cpfTrab></ideTrabalhador>
+    <dmDev>
+      <ideDmDev>DM00000000000000000000</ideDmDev>
+      <codCateg>101</codCateg>
+      <infoPerApur>
+        <ideEstabLot>
+          <tpInsc>1</tpInsc>
+          <nrInsc>12345678000199</nrInsc>
+          <codLotacao>LOT01</codLotacao>
+          <remunPerApur>
+            <matricula>MAT-002</matricula>
+            <itensRemun><codRubr>BASIC</codRubr><ideTabRubr>SGP</ideTabRubr><qtdRubr>1.0000</qtdRubr><vrRubr>4200.00</vrRubr><indApurIR>0</indApurIR></itensRemun>
+            <itensRemun><codRubr>IRRF</codRubr><ideTabRubr>SGP</ideTabRubr><qtdRubr>1.0000</qtdRubr><vrRubr>245.50</vrRubr><indApurIR>0</indApurIR></itensRemun>
+          </remunPerApur>
+        </ideEstabLot>
+      </infoPerApur>
+    </dmDev>
+  </evtRemun>
+</eSocial>
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtRemun/v_S_01_03_00">
+  <evtRemun Id="ID1314444009744040730017118855632514">
+    <ideEvento><indRetif>1</indRetif><indApuracao>1</indApuracao><perApur>2026-01</perApur><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+    <ideTrabalhador><cpfTrab>33344455506</cpfTrab></ideTrabalhador>
+    <dmDev>
+      <ideDmDev>DM00000000000000000000</ideDmDev>
+      <codCateg>101</codCateg>
+      <infoPerApur>
+        <ideEstabLot>
+          <tpInsc>1</tpInsc>
+          <nrInsc>12345678000199</nrInsc>
+          <codLotacao>LOT01</codLotacao>
+          <remunPerApur>
+            <matricula>MAT-003</matricula>
+            <itensRemun><codRubr>AUX</codRubr><ideTabRubr>SGP</ideTabRubr><qtdRubr>1.0000</qtdRubr><vrRubr>800.00</vrRubr><indApurIR>0</indApurIR></itensRemun>
+            <itensRemun><codRubr>BASIC</codRubr><ideTabRubr>SGP</ideTabRubr><qtdRubr>1.0000</qtdRubr><vrRubr>2800.00</vrRubr><indApurIR>0</indApurIR></itensRemun>
+          </remunPerApur>
+        </ideEstabLot>
+      </infoPerApur>
+    </dmDev>
+  </evtRemun>
+</eSocial>

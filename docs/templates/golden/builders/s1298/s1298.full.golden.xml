@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtReabreEvPer/v_S_01_03_00">
+  <evtReabreEvPer Id="ID0000000000000000000000000001298001">
+    <ideEvento><indApuracao>1</indApuracao><perApur>2026-01</perApur><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+  </evtReabreEvPer>
+</eSocial>

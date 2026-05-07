@@ -15,6 +15,7 @@ import type {
   QueueAdapterRequestEnvelope,
   QueueAdapterResponseEnvelope,
   SpoolUpdateEnvelope,
+  TenantId,
 } from '@esocial/contracts';
 
 import {
@@ -711,7 +712,7 @@ function buildDlqEnvelopeFromCandidate(
 ): SubmissionDlqEnvelope {
   const requestId = stringOr(candidate?.['request-id'], `malformed-${occurredAt}`);
   const correlationId = stringOr(candidate?.['correlation-id'], requestId);
-  const tenantId = isUuid(candidate?.['tenant_id']) ? candidate['tenant_id'] : NIL_TENANT_ID;
+  const tenantId = (isUuid(candidate?.['tenant_id']) ? candidate['tenant_id'] : NIL_TENANT_ID) as TenantId;
   const eventClass = includesString(ESOCIAL_RELAY_EVENT_CLASSES, candidate?.['event_class'])
     ? candidate['event_class']
     : FALLBACK_EVENT_CLASS;

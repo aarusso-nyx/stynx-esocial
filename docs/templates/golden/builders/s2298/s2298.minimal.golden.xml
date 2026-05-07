@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtReintegr/v_S_01_03_00">
+  <evtReintegr Id="ID3809333910798340204242214181357300">
+    <ideEvento><indRetif>1</indRetif><nrRecibo>1.1.0000000000000002299</nrRecibo><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+
+    <ideVinculo><cpfTrab>12345678901</cpfTrab><matricula>MAT-1</matricula></ideVinculo>
+    <infoReintegr>
+      <tpReint>1</tpReint>
+      <nrProcJud>12345678901234567890</nrProcJud>
+      <dtEfetRetorno>2026-05-20</dtEfetRetorno>
+      <dtEfeito>2026-05-20</dtEfeito>
+    </infoReintegr>
+  </evtReintegr>
+</eSocial>

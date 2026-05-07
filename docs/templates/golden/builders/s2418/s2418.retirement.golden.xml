@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtReativBen/v_S_01_03_00">
+  <evtReativBen Id="ID3931080564321351523341140295011365">
+    <ideEvento><indRetif>1</indRetif><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+
+    <ideBeneficio><cpfBenef>12345678901</cpfBenef><nrBeneficio>RET08000000000000001</nrBeneficio></ideBeneficio>
+    <infoReativ>
+      <dtEfetReativ>2026-05-20</dtEfetReativ>
+      <dtEfeito>2026-05-01</dtEfeito>
+    </infoReativ>
+  </evtReativBen>
+</eSocial>

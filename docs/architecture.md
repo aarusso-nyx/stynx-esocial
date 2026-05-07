@@ -40,6 +40,51 @@ submission pipeline, where the typed DTO contract, idempotency check, XML
 builder dispatch, status publication, and observability fields are tested once
 for every event class.
 
+## End-to-End Submission Flow
+
+```mermaid
+sequenceDiagram
+    participant Producer
+    participant http-gateway
+    participant submission
+    participant Database
+    participant XMLBuilder as XML Builder
+    participant XSD
+    participant PKI
+    participant GovBrSOAP as gov.br SOAP
+    participant retorno
+    participant Audit
+
+    Producer->>http-gateway: DTO request (IAM SigV4)
+    http-gateway->>submission: SQS request envelope
+    submission->>Database: idempotency check
+    submission->>XMLBuilder: build()
+    XMLBuilder->>XSD: validate
+    XSD-->>submission: ok
+    submission->>PKI: sign(xml)
+    PKI-->>submission: signed xml
+    submission->>GovBrSOAP: lote
+    GovBrSOAP-->>submission: protocolo
+    submission->>Database: persist (audit, payload hashes)
+    GovBrSOAP->>retorno: response batch (async)
+    retorno->>Database: parse + persist totalizers
+    retorno->>Audit: append-only event
+```
+
+Happy-path submission flow only; failure, retry, DLQ, and replay branches are
+covered by the state diagrams in `docs/operations.md`.
+
+Source of truth: XML construction lives under `packages/domain/src/builders/`,
+retry and replay decisions live in `packages/domain/src/operations/retry.ts`,
+and queue entrypoints live in `services/submission/src/handler.ts` and
+`services/retorno/src/handler.ts`.
+
+The public envelope contract uses the branded `TenantId` type for `tenant_id`
+in `packages/contracts/src/envelope.ts`. The compile-time proof in
+`tests/contract/tenant-isolation.type-test.ts` rejects plain strings at the
+validated submission and return processor boundaries; runtime handlers still
+accept raw SQS/HTTP JSON and must validate before constructing typed envelopes.
+
 ## Flow
 
 1. SGP validates a business action such as admission, contract change,

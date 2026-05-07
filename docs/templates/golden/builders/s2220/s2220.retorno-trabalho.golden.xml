@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtMonit/v_S_01_03_00">
+  <evtMonit Id="ID7558759437830831535162042183830945">
+    <ideEvento><indRetif>1</indRetif><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+    <ideVinculo><cpfTrab>11122233344</cpfTrab><matricula>MAT-2220</matricula></ideVinculo>
+    <exMedOcup>
+      <tpExameOcup>2</tpExameOcup>
+      <aso>
+        <dtAso>2026-05-02</dtAso>
+        <resAso>1</resAso>
+        <exame><dtExm>2026-05-02</dtExm><procRealizado>0295</procRealizado><obsProc>Avaliacao clinica do ASO</obsProc><indResult>1</indResult></exame>
+        <medico><nmMed>Dra Monitoramento</nmMed><nrCRM>12345</nrCRM><ufCRM>SP</ufCRM></medico>
+      </aso>
+    </exMedOcup>
+  </evtMonit>
+</eSocial>

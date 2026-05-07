@@ -13,6 +13,7 @@ import type {
   EsocialStatus,
   QueueAdapterRequestEnvelope,
   SpoolUpdateEnvelope,
+  TenantId,
 } from '@esocial/contracts';
 
 import {
@@ -596,7 +597,7 @@ function buildReturnDlqEnvelope(
     'correlation-id': correlationId,
     'idempotency-key': stringValue(candidate?.['idempotency-key']) ?? `malformed-return:${requestId}`,
     created_at: occurredAt,
-    tenant_id: isUuid(candidate?.['tenant_id']) ? candidate['tenant_id'] : NIL_TENANT_ID,
+    tenant_id: (isUuid(candidate?.['tenant_id']) ? candidate['tenant_id'] : NIL_TENANT_ID) as TenantId,
     environment: includesString(ESOCIAL_ENVIRONMENTS, candidate?.['environment'])
       ? candidate['environment']
       : 'QUALIFICATION',

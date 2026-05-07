@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtTabProcesso/v_S_01_03_00">
+  <evtTabProcesso Id="ID0431282450233213434469411893062252">
+    <ideEvento><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+    <infoProcesso>
+      <inclusao>
+        <ideProcesso><tpProc>2</tpProc><nrProc>12345678901234567</nrProc><iniValid>2026-01</iniValid></ideProcesso>
+        <dadosProc><indMatProc>1</indMatProc><observacao>Processo administrativo</observacao></dadosProc>
+      </inclusao>
+    </infoProcesso>
+  </evtTabProcesso>
+</eSocial>

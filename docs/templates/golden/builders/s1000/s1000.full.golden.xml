@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eSocial xmlns="http://www.esocial.gov.br/schema/evt/evtInfoEmpregador/v_S_01_03_00">
+  <evtInfoEmpregador Id="ID0574203510920611329752235002348238">
+    <ideEvento><tpAmb>2</tpAmb><procEmi>1</procEmi><verProc>SGP-0.0.1</verProc></ideEvento>
+    <ideEmpregador><tpInsc>1</tpInsc><nrInsc>12345678</nrInsc></ideEmpregador>
+    <infoEmpregador>
+      <inclusao>
+        <idePeriodo><iniValid>2026-01</iniValid></idePeriodo>
+        <infoCadastro>
+          <classTrib>85</classTrib>
+          <indCoop>1</indCoop>
+          <indConstr>1</indConstr>
+          <indDesFolha>1</indDesFolha>
+          <indOptRegEletron>1</indOptRegEletron>
+        </infoCadastro>
+      </inclusao>
+    </infoEmpregador>
+  </evtInfoEmpregador>
+</eSocial>

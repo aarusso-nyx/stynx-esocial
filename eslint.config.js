@@ -13,6 +13,7 @@ export default [
     ignores: [
       'dist/**',
       '**/dist/**',
+      '.claude/**',
       '.stryker-tmp/**',
       'node_modules/**',
       'coverage/**',
