@@ -6,8 +6,8 @@
   "main": "./dist/handler.js",
   "types": "./dist/handler.d.ts",
   "dependencies": {
-    "@aws-sdk/client-eventbridge": "^3.1042.0",
-    "@aws-sdk/client-sqs": "^3.1042.0",
+    "@aws-sdk/client-eventbridge": "^3.1045.0",
+    "@aws-sdk/client-sqs": "^3.1045.0",
     "@esocial/contracts": "1.1.0-rc.0",
     "@esocial/domain": "0.0.0-r6.0",
     "@esocial/service-shared": "0.0.0-r6.0",
