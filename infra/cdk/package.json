@@ -11,7 +11,7 @@
     "templates:check": "node ../../scripts/templates-generate.mjs --check"
   },
   "dependencies": {
-    "aws-cdk-lib": "^2.252.0",
+    "aws-cdk-lib": "^2.253.1",
     "constructs": "^10.6.0"
   },
   "devDependencies": {
