@@ -1,14 +1,9 @@
 name: Security
 
 on:
-  pull_request:
-    branches:
-      - main
-  push:
-    branches:
-      - main
+  workflow_dispatch:
   schedule:
-    - cron: "0 12 * * 1"
+    - cron: '0 12 * * 1'
 
 permissions:
   contents: read
@@ -29,13 +24,13 @@ jobs:
       - run: npm run sbom -- --format=cyclonedx --out docs/release/1.1.0/sbom/contracts.cdx.json
       - run: npm run sbom -- --format=spdx --out docs/release/1.1.0/sbom/contracts.spdx.json
       - name: OSV scanner
-        uses: google/osv-scanner-action/osv-scanner-action@0864a3db047b8c7f28f0172a18e6a808ffbbb74d # v2.0.3
+        uses: google/osv-scanner-action@9a498708959aeaef5ef730655706c5a1df1edbc2 # v2.3.8
         with:
-          scan-args: "-L package-lock.json"
+          scan-args: '-L package-lock.json'
       - name: Trivy filesystem scan
-        uses: aquasecurity/trivy-action@0.31.0
+        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
         with:
           scan-type: fs
           scan-ref: .
           severity: HIGH,CRITICAL
-          exit-code: "1"
+          exit-code: '1'

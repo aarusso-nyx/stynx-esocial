@@ -1,8 +1,9 @@
 name: chaos
 
 on:
-  pull_request:
   workflow_dispatch:
+  schedule:
+    - cron: '47 4 * * 3'
 
 jobs:
   local-chaos:
