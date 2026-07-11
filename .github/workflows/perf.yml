@@ -1,9 +1,9 @@
 name: Performance
 
 on:
-  pull_request:
-    branches:
-      - main
+  workflow_dispatch:
+  schedule:
+    - cron: '31 4 * * 2'
 
 permissions:
   contents: read
@@ -20,6 +20,7 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: sudo apt-get update && sudo apt-get install --yes libxml2-utils
       - run: npm run bench:smoke
       - name: Upload perf evidence
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

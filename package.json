@@ -2,6 +2,7 @@
   "name": "esocial",
   "version": "0.0.0",
   "private": true,
+  "license": "UNLICENSED",
   "packageManager": "npm@11.12.1",
   "type": "module",
   "workspaces": [
@@ -20,7 +21,7 @@
     "test:e2e": "npm run build --silent && node --test tests/e2e/*.test.mjs",
     "build": "tsc -b && npm run schemas:generate --workspace @esocial/contracts --silent",
     "coverage": "npm run build --silent && vitest run && node scripts/coverage-check.mjs",
-    "mutation": "stryker run packages/domain/stryker.conf.cjs",
+    "mutation": "npm run build --silent && stryker run packages/domain/stryker.conf.cjs",
     "test:mutation": "stryker run stryker.conf.mjs",
     "mutation:summary": "node scripts/mutation-summary.mjs",
     "bench:smoke": "npm run build --silent && node scripts/perf-regression.mjs --smoke",

@@ -19,3 +19,4 @@ Architecture Decision Records capture durable repository decisions using the con
 | [0012](0012-sgp-lifted-lifecycle.md) | `sgp-lifted` Lifecycle | Accepted | 2026-05-06 | - |
 | [0013](0013-s1060-current-leiaute-decision.md) | S-1030/S-1040/S-1060 Current Leiaute Binding | Accepted | 2026-05-06 | - |
 | [0013](0013-service-handler-surface.md) | Service Handler Surface | Accepted | 2026-05-06 | - |
+| [0014](0014-standalone-governance-exception.md) | Standalone Governance Exception | Accepted | 2026-07-10 | - |
