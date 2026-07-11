@@ -110,8 +110,8 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Builder Mutation Tests
-        run: npm run test:mutation
+      - name: Release-critical builder mutation gate
+        run: npm run mutation:release-critical
 
       - name: Upload mutation report
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

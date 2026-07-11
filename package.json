@@ -21,8 +21,10 @@
     "test:e2e": "npm run build --silent && node --test tests/e2e/*.test.mjs",
     "build": "tsc -b && npm run schemas:generate --workspace @esocial/contracts --silent",
     "coverage": "npm run build --silent && vitest run && node scripts/coverage-check.mjs",
-    "mutation": "npm run build --silent && stryker run packages/domain/stryker.conf.cjs",
-    "test:mutation": "stryker run stryker.conf.mjs",
+    "mutation": "npm run mutation:full --silent",
+    "mutation:full": "npm run build --silent && stryker run packages/domain/stryker.conf.cjs",
+    "mutation:release-critical": "stryker run stryker.conf.mjs",
+    "test:mutation": "npm run mutation:release-critical --silent",
     "mutation:summary": "node scripts/mutation-summary.mjs",
     "bench:smoke": "npm run build --silent && node scripts/perf-regression.mjs --smoke",
     "bench": "npm run build --silent && node scripts/perf-regression.mjs --full",
@@ -59,22 +61,25 @@
     "node": ">=20.0.0 <25",
     "npm": ">=10.0.0 <12"
   },
+  "overrides": {
+    "qs": "6.15.3"
+  },
   "devDependencies": {
-    "@eslint/js": "^9.39.1",
+    "@eslint/js": "^9.39.5",
     "@stryker-mutator/core": "^9.6.1",
     "@stryker-mutator/typescript-checker": "^9.6.1",
     "@stryker-mutator/vitest-runner": "^9.6.1",
-    "@typescript-eslint/eslint-plugin": "8.59.2",
-    "@typescript-eslint/parser": "8.59.2",
-    "@vitest/coverage-v8": "4.1.5",
-    "eslint": "^9.39.1",
+    "@typescript-eslint/eslint-plugin": "^8.63.0",
+    "@typescript-eslint/parser": "^8.63.0",
+    "@vitest/coverage-v8": "^4.1.10",
+    "eslint": "^9.39.5",
     "eslint-plugin-import": "2.32.0",
-    "fast-check": "^4.7.0",
+    "fast-check": "^4.9.0",
     "prettier": "3.8.3",
-    "tinybench": "^6.0.1",
-    "tsx": "4.21.0",
+    "tinybench": "^6.0.2",
+    "tsx": "^4.23.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.46.3",
-    "vitest": "4.1.5"
+    "typescript-eslint": "^8.63.0",
+    "vitest": "^4.1.10"
   }
 }
