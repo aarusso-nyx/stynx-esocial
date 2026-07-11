@@ -12,6 +12,12 @@ on:
       - package.json
       - .github/workflows/release.yml
   workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish the already-versioned contracts package after verification succeeds
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -38,6 +44,9 @@ jobs:
       - name: Install
         run: npm ci
 
+      - name: Install XML schema validator
+        run: sudo apt-get update && sudo apt-get install --yes libxml2-utils
+
       - name: Build
         run: npm run build
 
@@ -63,15 +72,18 @@ jobs:
         run: npm run sbom -- --out sbom/contracts-active-services.cdx.json
 
       - name: Publish Contracts
+        if: github.event_name == 'workflow_dispatch' && inputs.publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: npm publish --workspace @esocial/contracts
 
       - name: Resolve Version
+        if: github.event_name == 'workflow_dispatch' && inputs.publish
         id: version
         run: node -e "const p=require('./packages/contracts/package.json'); console.log('version=' + p.version)" >> "$GITHUB_OUTPUT"
 
       - name: Tag Release
+        if: github.event_name == 'workflow_dispatch' && inputs.publish
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -79,6 +91,7 @@ jobs:
           git push origin "contracts-v${{ steps.version.outputs.version }}"
 
       - name: Create GitHub Release
+        if: github.event_name == 'workflow_dispatch' && inputs.publish
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
