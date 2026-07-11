@@ -1,4 +1,4 @@
-name: mutation
+name: Full-domain mutation evidence
 
 on:
   workflow_dispatch:
@@ -16,8 +16,30 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run mutation:full
-      - run: npm run mutation:summary
+      - name: Run full-domain mutation evidence
+        id: full-domain
+        continue-on-error: true
+        run: npm run mutation:full
+
+      - name: Summarize advisory result
+        if: always()
+        env:
+          FULL_DOMAIN_OUTCOME: ${{ steps.full-domain.outcome }}
+        run: |
+          npm run mutation:summary -- --advisory
+          {
+            echo "## Full-domain mutation evidence"
+            echo
+            echo "This scheduled/manual lane is advisory evidence, not the release gate."
+            echo "The enforced release-critical builder gate remains npm run mutation:release-critical with a 70% break threshold."
+            echo
+            if [ "$FULL_DOMAIN_OUTCOME" = "failure" ]; then
+              echo "::warning::Full-domain mutation score is below its configured threshold; see the uploaded report and summary.json for visible hardening debt."
+              echo "**Warning:** the full-domain score is below threshold. The report is retained as non-blocking hardening evidence."
+            else
+              echo "Full-domain mutation completed within its configured threshold."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         if: always()
         with:

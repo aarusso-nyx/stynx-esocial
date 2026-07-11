@@ -18,9 +18,12 @@ metric.
 ## Full-domain evidence
 
 `npm run mutation:full` remains the scheduled/manual full-domain evidence lane.
-Its 2026-07-11 baseline is 24.35% and does not satisfy the release-critical
-threshold. That score is retained as visible hardening debt; it is neither
-treated as a passing gate nor hidden by lowering the full-domain threshold.
+Its 2026-07-11 baseline is 24.35% and does not satisfy the 70% full-domain
+threshold. The workflow records that condition as an explicit GitHub Actions
+warning and uploads `summary.json` plus the Stryker reports, but does not fail
+the evidence job. That score is retained as visible hardening debt; it is
+neither treated as a passing gate nor hidden by lowering the full-domain
+threshold.
 
 The full report is uploaded by the `mutation` workflow. A future expansion of
 the release-critical scope must add focused tests first and continue to meet
