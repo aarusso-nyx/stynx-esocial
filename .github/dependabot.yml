@@ -3,12 +3,30 @@ updates:
   - package-ecosystem: npm
     directory: /
     schedule:
-      interval: weekly
-      day: monday
-      time: "08:00"
+      interval: monthly
       timezone: America/Sao_Paulo
-    open-pull-requests-limit: 10
+    # Security updates bypass this version-update schedule and remain ungrouped.
+    cooldown:
+      default-days: 90
+    open-pull-requests-limit: 2
     groups:
-      aws-sdk:
-        patterns:
-          - "@aws-sdk/*"
+      npm-minor-patch:
+        applies-to: version-updates
+        update-types:
+          - minor
+          - patch
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+      timezone: America/Sao_Paulo
+    cooldown:
+      default-days: 90
+    open-pull-requests-limit: 1
+    groups:
+      actions-minor-patch:
+        applies-to: version-updates
+        update-types:
+          - minor
+          - patch
