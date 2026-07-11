@@ -12,6 +12,7 @@ Status values: `complete`, `blocked`, or `deferred`.
 | Return/retry integration | complete | `npm run test:integration`, `tests/returns/`, `tests/integration/retry/`. |
 | Deployment templates | complete | `npm run templates:check`, `infra/cdk/cdk.out/`. |
 | CI workflows | complete | `.github/workflows/ci.yml`, `.github/workflows/release.yml`, `.github/dependabot.yml`. |
+| Governance posture | complete | Standalone exception accepted in [ADR 0014](adrs/0014-standalone-governance-exception.md); re-review before platform integration. |
 | SBOM | complete | `npm run sbom`, `docs/release/0.1.0/sbom/contracts-active-services.cdx.json`. |
 | Round 0 evidence bundle | complete | `docs/release/0.1.0/`, generated from deterministic fixtures and local gates. |
 | Restricted-production evidence | deferred | Owner: release owner. Review date: 2026-06-05. Requires explicit authorization and redaction rules. |
