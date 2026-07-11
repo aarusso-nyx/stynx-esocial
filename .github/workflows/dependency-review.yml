@@ -42,7 +42,7 @@ jobs:
           NODE
       - name: Dependency Review
         if: steps.dependency-diff.outputs.changed == 'true'
-        uses: actions/dependency-review-action@v4
+        uses: actions/dependency-review-action@v4.9.0
         with:
           fail-on-severity: high
           comment-summary-in-pr: on-failure
