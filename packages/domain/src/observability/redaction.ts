@@ -8,7 +8,7 @@ const FINGERPRINT_FIELD_PATTERN = /(certificatefingerprint|fingerprint)/iu;
 const CPF_FIELD_PATTERN = /cpf/iu;
 const CNPJ_FIELD_PATTERN = /cnpj/iu;
 const SALARY_FIELD_PATTERN = /(salary|salario|salário|remuneration|remuneracao|remuneração|wage|basepay|grosspay)/iu;
-const XML_STRING_PATTERN = /<\?xml|<eSocial\b|<Envelope\b|<[^>]+>[\s\S]*<\/[^>]+>/iu;
+const XML_STRING_PATTERN = /<\?xml|<eSocial\b|<Envelope\b/iu;
 const FORMATTED_CPF_PATTERN = /\b\d{3}\.\d{3}\.\d{3}-\d{2}\b/gu;
 const FORMATTED_CNPJ_PATTERN = /\b\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}\b/gu;
 const DIGIT_DOCUMENT_PATTERN = /(?<!\d)(\d{11}|\d{14})(?!\d)/gu;
@@ -70,7 +70,7 @@ function redactString(value: string, key: string | undefined): string {
   if (key && CPF_FIELD_PATTERN.test(normalizeKey(key))) return maskCpf(value);
   if (key && CNPJ_FIELD_PATTERN.test(normalizeKey(key))) return maskCnpj(value);
   if (key && SALARY_FIELD_PATTERN.test(normalizeKey(key))) return SALARY_REDACTION;
-  if (XML_STRING_PATTERN.test(value)) return XML_REDACTION;
+  if (XML_STRING_PATTERN.test(value) || looksLikeMarkup(value)) return XML_REDACTION;
   return redactDocumentStrings(value);
 }
 
@@ -85,4 +85,9 @@ function redactDocumentStrings(value: string): string {
 
 function normalizeKey(key: string): string {
   return key.replace(/[-_\s.]/gu, '').toLowerCase();
+}
+
+function looksLikeMarkup(value: string): boolean {
+  const opening = value.indexOf('<');
+  return opening !== -1 && value.indexOf('>', opening + 1) !== -1;
 }

@@ -45,6 +45,7 @@ test('structured logger redacts PII and preserves required log dictionary fields
       certificateFingerprintSha256: 'abcdef1234567890',
       salary: 12345.67,
       note: 'formatted documents 987.654.321-00 and 12.345.678/0001-95',
+      unkeyedMarkup: '<soap:Envelope><Body /></soap:Envelope>',
     },
   });
 
@@ -62,6 +63,7 @@ test('structured logger redacts PII and preserves required log dictionary fields
   assert.doesNotMatch(serialized, /987\.654\.321-00/u);
   assert.doesNotMatch(serialized, /12\.345\.678\/0001-95/u);
   assert.doesNotMatch(serialized, /<eSocial>/u);
+  assert.doesNotMatch(serialized, /<soap:Envelope>/u);
   assert.doesNotMatch(serialized, /abcdef1234567890/u);
   assert.doesNotMatch(serialized, /12345\.67/u);
   assert.match(serialized, /\[REDACTED_XML_PAYLOAD\]/u);
