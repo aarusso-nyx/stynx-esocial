@@ -2,7 +2,9 @@
 
 ## Status
 
-Accepted — 2026-07-10.
+Accepted
+
+**Accepted date:** 2026-07-10.
 
 ## Context
 
